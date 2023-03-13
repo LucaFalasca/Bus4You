@@ -1,0 +1,5 @@
+*As a user, I want to book a stop and accept a proposed route, if available, to have a faster trip than fixed routes without taking my personal vehicle.
+*As a user, I want to obtain available stops in a particular location, so that I can choose the most convenient one for my route.
+*As a driver, I want to be able to accept a route proposal calculated by the system, so that I can organize my breaks and my work.
+*As a user, I want to be able to cancel a stop reservation so that I can make any changes to my travel plan.
+*As a user, I want to see the bus route assigned to my reservation, so that i can get a better understanding of the route to plan my next moves.
