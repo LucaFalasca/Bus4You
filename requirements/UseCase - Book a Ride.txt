@@ -1,0 +1,50 @@
+Name:
+	Book a ride
+
+Goal level:
+	User-goal
+
+Goal:
+	L'utente prende l'autobus alla fermata da lui scelta e scende alla fermata da lui scelta entro tempi massimi da lui scelti.
+
+Interessi stakeholders:
+	-L'utente vuole prenotare la corsa in autobus
+
+Attori primari:
+	-User
+
+Attori secondari:
+	Snap4City API
+
+Includes (pre-requisiti):
+	-Pay ticket
+	-Compute route
+	-Sign in
+
+Scenario di successo:
+	L'utente tramite il sistema cerca e seleziona la fermata dell'autobus da cui vuole partire (A) e quella in cui vuole 	arrivare (B), specificando un orario di partenza ed un ritardo massimo che è disposto ad accettare dal tempo di base che 	gli viene indicato dal sistema per arrivare dalla fermata A alla fermata B. Il sistema prende i dati inseriti dall'utente e 	li utilizza e verifica se cè un percorso* già esistente in cui possono essere inserite le fermate A e B rispettando i 	vincoli dell'utente corrente e degli altri utenti già associati a fermate lungo il percorso (Compute route), se questo 	percorso esiste il sistema accetta la richiesta e lo comunica all'utente, gli fornisce un riepilogo del percorso e gli 	richiede il pagamento (Pay ticket). Una volta che l'utente ha pagato la prenotazione viene confermata ed il percorso viene 	effettivamente modificato aggiungendo le fermate inserite dall'utente.
+
+Scenario alternativo 1:
+	L'utente tramite il sistema cerca e seleziona la fermata dell'autobus da cui vuole partire (A) e quella in cui vuole 	arrivare (B) che però non sono gestite dal sistema, il sistema comunica all'utente che tali fermate non sono gestite.
+
+Scenari alternativo 2:
+	L'utente tramite il sistema cerca e seleziona la fermata dell'autobus da cui vuole partire (A) e quella in cui vuole 	arrivare (B), specificando un orario di partenza ed un ritardo massimo che è disposto ad accettare dal tempo di base che 	gli viene indicato dal sistema per arrivare dalla fermata A alla fermata B. Il sistema prende i dati inseriti dall'utente e 	li utilizza e verifica se cè un percorso già esistente in cui possono essere inserite le fermate A e B rispettando i 	vincoli dell'utente corrente e degli altri utenti già associati a fermate lungo il percorso, se questo percorso non esiste 	e non ci sono percorsi simili a quello specificato dall'utente, viene generato un nuovo percorso che contiene le sole due 	fermate A e B, il sistema  accetta la richiesta e comunica tale percorso all'utente, gli fornisce un riepilogo del percorso 	e gli richiede il pagamento. Una volta che l'utente ha pagato la prenotazione viene confermata ed il percorso viene 	effettivamente inserito nel sistema.
+
+Scenari alternativo 3:
+	L'utente tramite il sistema cerca e seleziona la fermata dell'autobus da cui vuole partire (A) e quella in cui vuole 	arrivare (B), specificando un orario di partenza ed un ritardo massimo che è disposto ad accettare dal tempo di base che 	gli viene indicato dal sistema per arrivare dalla fermata A alla fermata B. Il sistema prende i dati inseriti dall'utente e 	li utilizza e verifica se cè un percorso già esistente in cui possono essere inserite le fermate A e B rispettando i 	vincoli dell'utente corrente e degli altri utenti già associati a fermate lungo il percorso, se questo percorso non esiste 	e ci sono percorsi simili a quello specificato dall'utente, il sistema rigetta la richiesta dell'utente e gli propone 	percorsi alternativi, l'utente  accetta e seleziona uno dei percorsi alternativi, il sistema gli fornisce un riepilogo del 	percorso e gli richiede il pagamento. Una volta che l'utente ha pagato la prenotazione viene confermata ed il percorso 	viene effettivamente inserito nel sistema.
+
+Scenari alternativo 4:
+	L'utente tramite il sistema cerca e seleziona la fermata dell'autobus da cui vuole partire (A) e quella in cui vuole 	arrivare (B), specificando un orario di partenza ed un ritardo massimo che è disposto ad accettare dal tempo di base che 	gli viene indicato dal sistema per arrivare dalla fermata A alla fermata B. Il sistema prende i dati inseriti dall'utente e 	li utilizza e verifica se cè un percorso già esistente in cui possono essere inserite le fermate A e B rispettando i 	vincoli dell'utente corrente e degli altri utenti già associati a fermate lungo il percorso, se questo percorso non esiste 	e ci sono percorsi simili a quello specificato dall'utente, il sistema rigetta la richiesta dell'utente e gli propone 	percorsi alternativi, l'utente non accetta nessuno dei percorsi alternativi.
+
+Dizionario:
+-Percorso:
+	Un percorso è un aggregato di fermate, esso deve contenere tutte le fermate di partenza e arrivo specificate dagli utenti 	rispettando i vincoli di ritardo massimo sull'arrivo inserito da tutti gli utenti.
+	E.g c'è un percorso formato solo dalle fermate A e B indicate dall'utente 1 che ha specificato un ritardo di arrivo massimo 	di 10 minuti su un tempo di base di 15 minuti arriva l'utende 2 ed inserisce le fermate C e D con ritardo massimo di 5 	minuti su un tempo di base di 10 minuti, si possono verificare i seguenti casi:
+
+	-Inserire C e D nel percorso fa si che per arrivare da A a B si impiegano più 25 minuti (più di 10 minuti di ritardo), la 	richiesta dell'utente 2 viene rigettata perchè non sono rispettati i vincoli specificati dall'utente 1.
+
+	-Inserire C e D nel percorso, dovendo passare anche per A e B, si ha che per arrivare da C e D si impiegano più di 15 	minuti (più di 5 minuti di ritardo), la richiesta dell'utente 2 viene rigettata perchè non sono rispettati i vincoli 	specificati dall'utente 2.
+
+	-Inserire C e D nel percorso fa si che per arrivare da A e B si impieghino meno di 25 minuti e per arrivare da C a D si 	impieghino meno di 15 minuti, la richiesta dell'utente 2 viene accettata perchè sono rispettati sia vincoli specificati	dall'utente 1 che quelli specificati dall'utente 2.
+
+
