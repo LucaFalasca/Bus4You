@@ -1,0 +1,1 @@
+Per l'autenticazioen sto utilizzando il pattern "Access Token" https://microservices.io/patterns/security/access-token.html
