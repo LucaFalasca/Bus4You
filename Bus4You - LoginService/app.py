@@ -8,7 +8,7 @@ app = Flask(__name__)
 def login(conn, username, password):
     usr_db_curs = conn.cursor()
     args = (username, password)
-    usr_db_curs.callproc('login', args)
+    usr_db_curs.callproc('services', args)
     res = []
     for result in usr_db_curs.stored_results():
         res.append(result.fetchall())
@@ -20,7 +20,7 @@ def login(conn, username, password):
 
 @app.route('/')
 def prova():
-    usr_db = usrDb.UserDbDao('docker.host.internal', 'b4y_userdb', 'root', 'root')
+    usr_db = usrDb.UserDbDao()
     conn = usr_db.connect()
     if conn is not None:
         # print("Connection successful")
@@ -39,7 +39,7 @@ def prova():
     conn = usr_db.connect()
     if conn is not None:
         print("Connection successful")
-        log_res=login(conn, 'prova', '1234')
+        log_res=services(conn, 'prova', '1234')
         if log_res==0:
             print("Login successful")
         else:

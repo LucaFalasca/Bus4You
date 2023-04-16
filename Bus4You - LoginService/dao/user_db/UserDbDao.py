@@ -4,10 +4,10 @@ from mysql.connector import Error
 
 class UserDbDao:
     def __init__(self, db_ip, db_name, usr, pwd):
-        self.db_ip = db_ip
-        self.db_name = db_name
-        self.usr = usr
-        self.pwd = pwd
+        self.db_ip = 'host.docker.internal'
+        self.db_name = 'b4y_userdb'
+        self.usr = 'root'
+        self.pwd = 'root'
 
     def connect(self):
         try:
