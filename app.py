@@ -1,6 +1,6 @@
 from flask import Flask
 
-from dao.user_db import UserDbDao as usrDb
+from loginService.dao.user_db import UserDbDao as usrDb
 
 app = Flask(__name__)
 

@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+service Login {
+  rpc Login(LoginCredentials) returns (LoginResponse) {}
+}
+
+message LoginCredentials {
+  required string username = 1;
+  required string password = 2;
+}
+
+message LoginResponse {
+  required string token = 1;
+}
