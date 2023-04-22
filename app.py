@@ -33,17 +33,3 @@ def prova():
     else:
         return "Connection failed"
 
-
-'''if __name__ == "__main__":
-    usr_db = usrDb.UserDbDao('localhost', 'b4y_userdb', 'root', 'root')
-    conn = usr_db.connect()
-    if conn is not None:
-        print("Connection successful")
-        log_res=services(conn, 'prova', '1234')
-        if log_res==0:
-            print("Login successful")
-        else:
-            print("Login failed")
-        conn.close()
-    else:
-        print("F bro")'''
