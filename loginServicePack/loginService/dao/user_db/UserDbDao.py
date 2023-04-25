@@ -4,8 +4,8 @@ from mysql.connector import Error
 
 class UserDbDao:
     def __init__(self):
-        #self.db_ip = 'host.docker.internal' #For docker if the db is deployed in the docker container host
-        self.db_ip = 'localhost'
+        self.db_ip = 'host.docker.internal' #For docker if the db is deployed in the docker container host
+        #self.db_ip = 'localhost'
         self.db_name = 'b4y_userdb'
         self.usr = 'root'
         self.pwd = 'root'
