@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from protos import login_service_pb2 as protos_dot_login__service__pb2
+from protos import login_service_ss_pb2 as protos_dot_login__service__ss__pb2
 
 
 class LoginStub(object):
@@ -16,8 +16,8 @@ class LoginStub(object):
         """
         self.RpcLogin = channel.unary_unary(
                 '/Login/RpcLogin',
-                request_serializer=protos_dot_login__service__pb2.LoginCredentials.SerializeToString,
-                response_deserializer=protos_dot_login__service__pb2.LoginResponse.FromString,
+                request_serializer=protos_dot_login__service__ss__pb2.LoginCredentials.SerializeToString,
+                response_deserializer=protos_dot_login__service__ss__pb2.LoginResponse.FromString,
                 )
 
 
@@ -35,8 +35,8 @@ def add_LoginServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'RpcLogin': grpc.unary_unary_rpc_method_handler(
                     servicer.RpcLogin,
-                    request_deserializer=protos_dot_login__service__pb2.LoginCredentials.FromString,
-                    response_serializer=protos_dot_login__service__pb2.LoginResponse.SerializeToString,
+                    request_deserializer=protos_dot_login__service__ss__pb2.LoginCredentials.FromString,
+                    response_serializer=protos_dot_login__service__ss__pb2.LoginResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +60,7 @@ class Login(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Login/RpcLogin',
-            protos_dot_login__service__pb2.LoginCredentials.SerializeToString,
-            protos_dot_login__service__pb2.LoginResponse.FromString,
+            protos_dot_login__service__ss__pb2.LoginCredentials.SerializeToString,
+            protos_dot_login__service__ss__pb2.LoginResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

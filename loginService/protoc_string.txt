@@ -1,1 +1,0 @@
-python -m grpc_tools.protoc --proto_path=.\loginService --python_out=.\loginService --pyi_out=.\loginService --grpc_python_out=.\loginService .\loginService\protos\login_service.proto

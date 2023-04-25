@@ -1,0 +1,1 @@
+docker run -dp 50051:50051 login-service
