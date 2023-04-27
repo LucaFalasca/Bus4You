@@ -54,7 +54,7 @@ def two_opt_multistart(route, dist_matrix, pred_hash, multistart_number):
     return resultMin[:2]
 
 if __name__ == "__main__":
-    server = xmlrpc.server.SimpleXMLRPCServer(("localhost", 8000))
+    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
 
     server.register_function(two_opt_multistart, "two_opt_multistart")
