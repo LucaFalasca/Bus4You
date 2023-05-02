@@ -1,0 +1,13 @@
+services:
+  server:
+    build: ./2-OPT
+    container_name: server
+  client:
+    build: ./GatewayAPI
+    container_name: client
+    environment:
+      - FLASK_APP=/GatewayAPI/gateway_api.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - DEBUG=True
+    ports:
+      - "7000:5000"
