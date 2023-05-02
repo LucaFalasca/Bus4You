@@ -9,7 +9,7 @@ api = Flask(__name__)
 @api.route('/login', methods=['GET'])
 def get_companies():
     res={}
-    channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('login-service:50051') #Insert the name of the service as IP if using docker network
     stub = protos.login_service_cs_pb2_grpc.LoginStub(channel)
     login_request = protos.login_service_cs_pb2.LoginCredentials(username="prova", password="1234")
     response = stub.RpcLogin(login_request)
@@ -20,4 +20,4 @@ def get_companies():
 
 
 if __name__ == '__main__':
-    api.run()
+    api.run(debug=True, host='0.0.0.0', port=50052)
