@@ -2,7 +2,7 @@ import xmlrpc.client
 
 import random
 import time
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, json
 
 app = Flask(__name__)
 
@@ -25,8 +25,26 @@ def request_route():
 @app.route('/')
 def index():
     return render_template("request_route.html")
-    
 
+@app.route('/api/route-from-map', methods=['GET'])
+def route_from_map():
+    if (request.args.get('starting_point') == "" and request.args.get('ending_point') == ""):
+        return render_template("select_route_from_map.html")
+    else:
+        user = request.args.get('user')
+        starting_point = request.args.get('starting_point')
+        ending_point = request.args.get('ending_point')
+        date = request.args.get('date')
+        arrival_time = request.args.get('arrival_time')
+        travel_time = request.args.get('travel_time')
+        print(user, starting_point, ending_point, date, arrival_time, travel_time)
+        return render_template("select_route_from_map.html", ok = True)
+        '''
+        with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
+            result = proxy.insert_booking(user, starting_point, ending_point, date, arrival_time, travel_time)
+            return json.dumps(result)
+        '''
+        
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())
     dist_matrix = []
