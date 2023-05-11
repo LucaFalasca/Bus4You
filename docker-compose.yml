@@ -1,5 +1,23 @@
 version: "3.9"
 services:
+  neo4j:
+    # Docker image to be used
+    image: neo4j:latest
+
+    # Hostname
+    hostname: neo4j
+
+    # The ports that will be accessible from outside the container - HTTP (7474) and Bolt (7687).
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    
+    volumes:
+      - ./neo4j/data:/data
+
+     # Passes the following environment variables to the container
+    environment:
+      - NEO4J_AUTH=none
 
   gateway-api:
     build: ./gatewayApiPack
