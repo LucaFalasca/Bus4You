@@ -12,6 +12,18 @@ services:
     container_name: login-service
     networks:
       - backend-net
+  server:
+    build: ./2-OPT
+    container_name: server
+  client:
+    build: ./GatewayAPI
+    container_name: client
+    ports:
+      - "7000:5000"
+    volumes:
+      - ./GatewayAPI:/app
+    environment:
+      FLASK_DEBUG: "true"
 
 networks:
   backend-net:
