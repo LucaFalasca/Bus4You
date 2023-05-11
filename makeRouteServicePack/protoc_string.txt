@@ -1,1 +1,0 @@
-python -m grpc_tools.protoc --proto_path=.\makeRouteService --python_out=.\makeRouteService --pyi_out=.\makeRouteService --grpc_python_out=.\makeRouteService .\makeRouteService\protos\make_route_service_ss.proto

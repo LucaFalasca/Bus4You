@@ -19,6 +19,11 @@ class LoginStub(object):
                 request_serializer=protos_dot_login__service__ss__pb2.LoginCredentials.SerializeToString,
                 response_deserializer=protos_dot_login__service__ss__pb2.LoginResponse.FromString,
                 )
+        self.RpcSignUp = channel.unary_unary(
+                '/Login/RpcSignUp',
+                request_serializer=protos_dot_login__service__ss__pb2.SignUpCredentials.SerializeToString,
+                response_deserializer=protos_dot_login__service__ss__pb2.LoginResponse.FromString,
+                )
 
 
 class LoginServicer(object):
@@ -30,12 +35,23 @@ class LoginServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RpcSignUp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LoginServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'RpcLogin': grpc.unary_unary_rpc_method_handler(
                     servicer.RpcLogin,
                     request_deserializer=protos_dot_login__service__ss__pb2.LoginCredentials.FromString,
+                    response_serializer=protos_dot_login__service__ss__pb2.LoginResponse.SerializeToString,
+            ),
+            'RpcSignUp': grpc.unary_unary_rpc_method_handler(
+                    servicer.RpcSignUp,
+                    request_deserializer=protos_dot_login__service__ss__pb2.SignUpCredentials.FromString,
                     response_serializer=protos_dot_login__service__ss__pb2.LoginResponse.SerializeToString,
             ),
     }
@@ -61,6 +77,23 @@ class Login(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Login/RpcLogin',
             protos_dot_login__service__ss__pb2.LoginCredentials.SerializeToString,
+            protos_dot_login__service__ss__pb2.LoginResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RpcSignUp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Login/RpcSignUp',
+            protos_dot_login__service__ss__pb2.SignUpCredentials.SerializeToString,
             protos_dot_login__service__ss__pb2.LoginResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

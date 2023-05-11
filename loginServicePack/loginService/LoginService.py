@@ -34,6 +34,19 @@ class LoginService(protos.login_service_ss_pb2_grpc.LoginServicer):
             print("Connection with db failed")
             return protos.login_service_ss_pb2.LoginResponse(message="Connection with db failed")
 
+    def RpcSignUp(self, request, context):
+        usr_db = UserDbDao()
+        conn = usr_db.connect()
+        sign_up_ret = usr_db.sign_up(conn, request.name, request.surname, request.username, request.password)
+        conn.close()
+        if sign_up_ret == 0:
+            print("Sign up successful")
+            token = hashlib.md5((request.username + request.password).encode('utf-8')).hexdigest()
+            return protos.login_service_ss_pb2.LoginResponse(message="Sign up successful", token=token)
+        else:
+            print("Sign up failed")
+            return protos.login_service_ss_pb2.LoginResponse(message="Sign up failed")
+
 
 if __name__ == "__main__":
     serve()

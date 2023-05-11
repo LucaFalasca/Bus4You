@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>Bus4You-SignUp</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/login.css">
+  </head>
+  <div class="form-body">
+      <div class="row">
+        <div class="form-holder">
+          <div class="form-content">
+            <div class="form-items">
+              <h3>Sign Up</h3>
+              <form class="requires-validation" novalidate action="/signUp" method="POST">
+
+                <div class="col-md-12">
+                  <input class="form-control" type="text" id="txtName" name="txtName" placeholder="Name*" required>
+                </div>
+
+                <div class="col-md-12">
+                  <input class="form-control" type="text" id="txtSurname" name="txtSurname" placeholder="Surname*" required>
+                </div>
+
+                <div class="col-md-12">
+                  <input class="form-control" type="text" id="txtMail" name="txtMail" placeholder="Mail*" required>
+                </div>
+
+                <div class="col-md-12">
+                  <input class="form-control" type="password" id="txtPwd" name="txtPwd" placeholder="Password*" required>
+                </div>
+
+                <div class="col-md-12">
+                  <input class="form-control" type="password" id="txtPwdConf" name="txtPwdConf" placeholder=" Confirm Password*" required>
+                </div>
+
+                <br>
+
+                <div class="form-button mt-3">
+                  <button id="btnSignUp" name="btnSignUp" type="submit" class="btn btn-primary">Sign Up</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </html>

@@ -5,7 +5,7 @@ from mysql.connector import Error
 class UserDbDao:
     def __init__(self):
         self.db_ip = 'host.docker.internal'  # For docker if the db is deployed in the docker container host
-        # self.db_ip = 'localhost'
+        #self.db_ip = 'localhost'
         self.db_name = 'b4y_userdb'
         self.usr = 'root'
         self.pwd = 'root'
@@ -42,6 +42,21 @@ class UserDbDao:
                 return 0
             else:
                 return 1
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def sign_up(conn, name, surname, mail, password):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            args = (name, surname, mail, password)
+            print(args)
+            curs.callproc('sign_up', args)
+            conn.commit()
+            curs.close()
+            return 0
         else:
             print("Connection with db failed")
             return -1

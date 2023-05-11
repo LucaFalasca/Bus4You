@@ -19,3 +19,15 @@ class LoginResponse(_message.Message):
     message: str
     token: str
     def __init__(self, message: _Optional[str] = ..., token: _Optional[str] = ...) -> None: ...
+
+class SignUpCredentials(_message.Message):
+    __slots__ = ["name", "password", "surname", "username"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    PASSWORD_FIELD_NUMBER: _ClassVar[int]
+    SURNAME_FIELD_NUMBER: _ClassVar[int]
+    USERNAME_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    password: str
+    surname: str
+    username: str
+    def __init__(self, name: _Optional[str] = ..., surname: _Optional[str] = ..., username: _Optional[str] = ..., password: _Optional[str] = ...) -> None: ...

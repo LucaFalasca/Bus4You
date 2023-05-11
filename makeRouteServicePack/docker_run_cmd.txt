@@ -1,1 +1,0 @@
-docker run -dp 50052:50052 make-route-service

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 service Login {
   rpc RpcLogin(LoginCredentials) returns (LoginResponse) {}
+  rpc RpcSignUp(SignUpCredentials) returns (LoginResponse) {}
 }
 
 message LoginCredentials {
@@ -13,3 +14,12 @@ message LoginResponse {
   string message=1;
   optional string token = 2;
 }
+
+message SignUpCredentials {
+  string name = 1;
+  string surname= 2;
+  string username= 3;
+  string password = 4;
+
+}
+
