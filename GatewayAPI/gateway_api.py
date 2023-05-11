@@ -28,7 +28,7 @@ def index():
 
 @app.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
-    if (request.args.get('starting_point') == "" and request.args.get('ending_point') == ""):
+    if (len(request.args) == 0):
         return render_template("select_route_from_map.html")
     else:
         user = request.args.get('user')
@@ -38,12 +38,9 @@ def route_from_map():
         arrival_time = request.args.get('arrival_time')
         travel_time = request.args.get('travel_time')
         print(user, starting_point, ending_point, date, arrival_time, travel_time)
-        return render_template("select_route_from_map.html", ok = True)
-        '''
         with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
             result = proxy.insert_booking(user, starting_point, ending_point, date, arrival_time, travel_time)
             return json.dumps(result)
-        '''
         
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())

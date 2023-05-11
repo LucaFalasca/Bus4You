@@ -1,12 +1,14 @@
 from neo4j import GraphDatabase
+import xmlrpc.server
 
 from connect import create_person, create_stop, create_startStop, create_endStop
 
 
 class Neo4jMicroservice:
+
     def __init__(self, uri, auth):
-        self.driver = GraphDatabase.driver(uri, auth=auth)
-        self.driver.verify_connectivity()
+        #self.driver = GraphDatabase.driver(uri, auth=auth)
+        #self.driver.verify_connectivity()
         self.db = "neo4j"
 
     #Funzioni Dao
@@ -33,12 +35,25 @@ class Neo4jMicroservice:
         session.close()
 
     #L'esecuzione è un placeholder quindi alcuni dati non hanno un senso logico
-    def insert_booking(self , user , starting_point , ending_point , data , arrival_time , travel_time):
-            self.insert_startStop(user, starting_point, arrival_time, data)
-            self.insert_endStop(user, ending_point, arrival_time+travel_time, data)
+    def insert_booking(self, user , starting_point , ending_point , data , arrival_time , travel_time):
+            #self.insert_startStop(user, starting_point, arrival_time, data)
+            #self.insert_endStop(user, ending_point, arrival_time+travel_time, data)
+            return "ok"
 
 
+def insert_booking(user , starting_point , ending_point , data , arrival_time , travel_time):
+        return service.insert_booking(user , starting_point , ending_point , data , arrival_time , travel_time)
 
+if __name__ == "__main__":
+    uri = "bolt://localhost:7687"
+    auth=("neo4j", "password")
+    service = Neo4jMicroservice(uri, auth)
+
+    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
+    print("Listening on port 8000...")
+
+    server.register_function(insert_booking, "insert_booking")
+    server.serve_forever()
 
 # Esempio di utilizzo
 uri = "bolt://localhost:7687"

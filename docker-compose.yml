@@ -11,3 +11,8 @@ services:
       - ./GatewayAPI:/app
     environment:
       FLASK_DEBUG: "true"
+  booking_service:
+    build: ./booking-service
+    container_name: booking_service
+    volumes:
+      - ./booking-service:/app
