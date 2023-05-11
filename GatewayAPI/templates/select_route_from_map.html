@@ -1,0 +1,103 @@
+<style>
+    #map { height: 80% }
+</style>
+<html>
+<head>
+    <title>GatewayAPI - Select route from map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
+    <input type="hidden" id="response" value= "{{ ok }}">
+</head>
+<body>
+    <br>
+    <form action="/api/route-from-map" method="GET">
+        <!-- campo per l'inserimento dell'username -->
+        <input type="text" id="username" name="user" placeholder="Username"><br>
+        
+        <!-- campo per l'inserimento del punto di partenza -->
+        <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+        <button type="button" id="start_point" onclick="set_starting_coord()">Select Start Point</button><br>
+        
+        <!-- campo per l'inserimento del punto di arrivo -->
+        <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+        <button type="button" id="end_point" onclick="set_ending_coord()">Select End Point</button><br>
+        
+        <!-- campo per l'inserimento della data -->
+        Date <input type="date" id="date" name="date" placeholder="Date"><br>
+        
+        <!-- campo per l'inserimento dell'ora di arrivo -->
+        Arrival time <input type="time" id="arrival_time" name="arrival_time" placeholder="Ending time"><br>
+        
+        <!-- campo per l'inserimento del tempo di percorrenza massimo -->
+        Maximum travel time <input type="time" id="travel_time" name="travel_time"><br>
+        
+        <!-- pulsante di submit del form -->
+        <input type="submit" value="Submit"><br>
+    </form>
+    
+    
+    <div id="map"></div>
+    
+    <script>
+        
+        var map = L.map('map').setView([41.85578716505089, 12.62212090183184], 17);
+        
+        
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        
+        
+        var startingPoint;
+        var endingPoint;
+        var popup = L.popup();
+        var point = null;
+        function onMapClick(e) {
+            if (point != null){
+                coord = e.latlng.toString().split("(")[1].split(")")[0];
+                if(point == "start"){
+                    if (startingPoint != null)
+                    map.removeLayer(startingPoint);
+                    startingPoint = L.marker(e.latlng).addTo(map);
+                    document.getElementById("starting_point").value = coord;
+                    popup
+                    .setLatLng(e.latlng)
+                    .setContent("Starting Point " + e.latlng.toString())
+                    .openOn(map);
+                }
+                else if (point == "end"){
+                    if (endingPoint != null)
+                    map.removeLayer(endingPoint);
+                    endingPoint = L.marker(e.latlng).addTo(map);
+                    document.getElementById("ending_point").value = coord;
+                    popup
+                    .setLatLng(e.latlng)
+                    .setContent("Ending Point " + e.latlng.toString())
+                    .openOn(map);
+                }
+            }
+            
+        }
+
+        map.on('click', onMapClick);
+
+        function set_starting_coord(){
+            point = "start";
+        }
+
+        function set_ending_coord(){
+            point = "end";
+        }
+    if(document.getElementById("response").value == "True")
+        alert("Your request has been successfully sent!")
+    </script>
+    
+    
+</body>
+</html>
