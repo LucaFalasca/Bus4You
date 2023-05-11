@@ -1,0 +1,3 @@
+docker run -dp 50051:50051 --network backend-net login-service
+no -p 50051:50051 if using all containers
+backend-net must be created before

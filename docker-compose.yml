@@ -1,4 +1,17 @@
+version: "3.9"
 services:
+  gateway-api:
+    build: ./gatewayApiPack
+    container_name: gateway-api
+    ports:
+      - "50052:50052"
+    networks:
+      - backend-net
+  login-service:
+    build: ./loginServicePack
+    container_name: login-service
+    networks:
+      - backend-net
   server:
     build: ./2-OPT
     container_name: server
@@ -11,3 +24,8 @@ services:
       - ./GatewayAPI:/app
     environment:
       FLASK_DEBUG: "true"
+
+networks:
+  backend-net:
+    name: backend-net
+    external: true
