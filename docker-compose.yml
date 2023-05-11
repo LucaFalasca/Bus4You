@@ -5,13 +5,13 @@ services:
     container_name: gateway-api
     ports:
       - "50052:50052"
-    networks:
-      - backend-net
+    #networks:
+      #- backend-net
   login-service:
     build: ./loginServicePack
     container_name: login-service
-    networks:
-      - backend-net
+    #networks:
+      #- backend-net
   server:
     build: ./2-OPT
     container_name: server
@@ -25,7 +25,7 @@ services:
     environment:
       FLASK_DEBUG: "true"
 
-networks:
-  backend-net:
-    name: backend-net
-    external: true
+#networks:
+  #backend-net:
+    #name: backend-net
+    #external: true
