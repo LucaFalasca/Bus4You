@@ -1,0 +1,8 @@
+Il sistema che vogliamo sviluppare è un servizio di trasporto pubblico innovativo che consente agli utenti di prenotare delle fermate personalizzate con le quali il sistema crea un percorso personalizzato, utilizzando autobus adibiti a questo scopo. Il sistema tiene conto di diversi vincoli, come la tempistica richiesta dagli utenti, la gestione della benzina, le strade possibili, la disponibilità dei mezzi, il costo massimo del biglietto ed il preavviso di accettazione della richiesta. Il sistema deve calcolare il percorso migliore considerando le posizioni richieste dalle prenotazioni e se fattibile comunicarlo entro un tempo stabilito. Il costo del biglietto varia a seconda della corsa e di quante persone si prenotano. Un utente può visualizzare le corse già confermate ed utilizzarle come un normale autobus. Se l’autobus ha poche fermate prenotate può includere delle fermate di altre linee fisse per smaltire l’affluenza di persone in tali fermate. Il sistema potrebbe anche suggerire dei punti critici in cui è più probabile che la richiesta venga accettata.
+
+Vantaggi
+*Incentiva l’utilizzo del trasporto pubblico da parte di persone che non lo utilizzano per motivi di scomodità.
+*E' un sistema auto adattativo perché permette di gestire in maniera dinamica l’affluenza inattesa di persone.
+*Permette di equilibrare il congestionamento delle fermate con tanta affluenza.
+*Permette di raccogliere informazioni per un piano urbanistico più efficiente.
+*Ottimizzazione dell’utilizzo degli autobus totali a disposizione degli utenti.

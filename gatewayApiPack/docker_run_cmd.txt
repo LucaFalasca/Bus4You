@@ -1,0 +1,2 @@
+docker run -dp 50052:50052 --network backend-net gateway-api
+backend-net must be created before
