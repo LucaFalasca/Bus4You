@@ -1,5 +1,43 @@
 version: "3.9"
 services:
+
+  neo4jDb:
+    # Docker image to be used
+    image: neo4j:latest
+
+    # Hostname
+    hostname: neo4jDb
+
+    container_name: neo4jDb
+
+    # The ports that will be accessible from outside the container - HTTP (7474) and Bolt (7687).
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    
+    volumes:
+      - ./neo4j/data:/data
+
+     # Passes the following environment variables to the container
+    environment:
+      NEO4J_AUTH : "neo4j/123456789"
+
+    healthcheck:
+      test: wget http://localhost:7474 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 20
+      start_period: 3s
+
+  booking_service:
+      build: ./booking-service
+      container_name: booking_service
+      volumes:
+        - ./booking-service:/app
+      depends_on:
+        neo4jDb:
+          condition: service_healthy
+
   gateway-api:
     build: ./gateway-api
     container_name: gateway-api
@@ -7,9 +45,18 @@ services:
       - "50052:50052"
     volumes:
       - ./gateway-api:/app
+
   login-service:
     build: ./login-service
     container_name: login-service
+
   make-root-service:
     build: ./make-root-service
     container_name: make-root-service
+
+
+#networks:
+  #backend-net:
+    #name: backend-net
+    #external: true
+
