@@ -1,4 +1,6 @@
-from neo4j import GraphDatabase
+import time
+
+from neo4j import GraphDatabase, basic_auth
 import xmlrpc.server
 
 from connect import create_person, create_stop, create_startStop, create_endStop
@@ -7,8 +9,8 @@ from connect import create_person, create_stop, create_startStop, create_endStop
 class Neo4jMicroservice:
 
     def __init__(self, uri, auth):
-        #self.driver = GraphDatabase.driver(uri, auth=auth)
-        #self.driver.verify_connectivity()
+        self.driver = GraphDatabase.driver(uri, auth=auth, encrypted=False)
+        self.driver.verify_connectivity()
         self.db = "neo4j"
 
     #Funzioni Dao
@@ -45,9 +47,15 @@ def insert_booking(user , starting_point , ending_point , data , arrival_time , 
         return service.insert_booking(user , starting_point , ending_point , data , arrival_time , travel_time)
 
 if __name__ == "__main__":
-    uri = "bolt://localhost:7687"
-    auth=("neo4j", "password")
+    
+    uri = "neo4j://neo4jDb:7687"
+    auth=basic_auth("neo4j", "123456789")
     service = Neo4jMicroservice(uri, auth)
+    service.insert_person("Luca")
+    service.insert_stop("Tor Vergata (Medicina)", "13:45", "11/05/2023")
+    service.insert_startStop("Luca", "Tor Vergata (Medicina)", "13:45", "11/05/2023")
+    service.insert_endStop("Luca", "Anagnina", "14:00", "11/05/2023")
+    service.insert_booking("Stefan", "Anagnina", "Tor Vergata", "12/05/2023", "14:00", "00:15")
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
