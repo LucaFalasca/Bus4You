@@ -1,31 +1,15 @@
 version: "3.9"
 services:
   gateway-api:
-    build: ./gatewayApiPack
+    build: ./gateway-api
     container_name: gateway-api
     ports:
       - "50052:50052"
-    #networks:
-      #- backend-net
-  login-service:
-    build: ./loginServicePack
-    container_name: login-service
-    #networks:
-      #- backend-net
-  server:
-    build: ./2-OPT
-    container_name: server
-  client:
-    build: ./GatewayAPI
-    container_name: client
-    ports:
-      - "7000:5000"
     volumes:
-      - ./GatewayAPI:/app
-    environment:
-      FLASK_DEBUG: "true"
-
-#networks:
-  #backend-net:
-    #name: backend-net
-    #external: true
+      - ./gateway-api:/app
+  login-service:
+    build: ./login-service
+    container_name: login-service
+  make-root-service:
+    build: ./make-root-service
+    container_name: make-root-service
