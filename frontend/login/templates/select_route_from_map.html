@@ -15,7 +15,7 @@
 </head>
 <body>
     <br>
-    <form action="/api/route-from-map" method="GET">
+    <form action="/select-route-from-map" method="GET">
         <!-- campo per l'inserimento dell'username -->
         <input type="text" id="username" name="user" placeholder="Username"><br>
         
@@ -96,8 +96,9 @@
         }
     if(document.getElementById("response").value == "True")
         alert("Your request has been successfully sent!")
+    echo(sessionStorage.getItem("response"))
     </script>
-    
+    {{ response }}
     
 </body>
 </html>
