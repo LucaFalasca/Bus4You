@@ -51,7 +51,7 @@ class UserDbDao:
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            args = (name, surname, mail, password)
+            args = (name, surname, mail, password, mail.split('@')[0])
             print(args)
             curs.callproc('sign_up', args)
             conn.commit()

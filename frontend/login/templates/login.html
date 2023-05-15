@@ -1,9 +1,12 @@
 <html>
   <head>
-    <title>Bus4You-Login</title>
+    <title>Bus4You</title>
     <link rel="stylesheet" type="text/css" href="../static/css/login.css">
   </head>
   <div class="form-body">
+      {% for msg in get_flashed_messages() %}
+      <h1>{{ msg }}</h1>
+      {% endfor %}
       <div class="row">
         <div class="form-holder">
           <div class="form-content">
@@ -12,17 +15,17 @@
               <form class="requires-validation" novalidate action="/login" method="POST">
 
                 <div class="col-md-12">
-                  <input class="form-control" type="text" id="txtUsr" name="txtMail" placeholder="Mail" required>
+                  <input class="form-control" type="text" id="txtUsr" name="txtMail" placeholder="Mail*" required>
                 </div>
 
                 <div class="col-md-12">
-                  <input class="form-control" type="password" id="txtPwd" name="txtPwd" placeholder="Password" required>
+                  <input class="form-control" type="password" id="txtPwd" name="txtPwd" placeholder="Password*" required>
                 </div>
 
                 <br>
 
                 <div class="form-button mt-3">
-                  <button id="btnLogin" name="btnLogin" type="submit" class="btn btn-primary">Login</button>
+                  <button id="btnLogin" name="btnLogin" type="submit" class="btn btn-primary">Sign In</button>
                 </div>
               </form>
             </div>

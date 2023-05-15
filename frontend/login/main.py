@@ -7,7 +7,7 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('login.html') #TODO aggiustare mettendo una navbar che porta alle varie pagine
+    return render_template('login.html')
 
 
 @app.route('/login', methods=['POST'])
@@ -27,10 +27,10 @@ def login():
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
             session['token'] = response['token']
-            return render_template("loginSuccess.html")
+            return render_template("select_route_from_map.html")
         else:
-            flash('Login failed incorrect mail or password')
-            return render_template("loginFailed.html")
+            flash('Login failed incorrect mail or password', category='info')
+            return render_template("login.html")
 
 
 
@@ -38,7 +38,8 @@ def login():
 def logout():
     session.pop('logged', None)
     session.pop('usr', None)
-    return render_template("logout.html")
+    flash("You have been logged out", category='info')
+    return render_template("login.html")
 
 
 @app.route('/sign-up', methods=['POST'])
@@ -58,14 +59,11 @@ def signUp():
         gateway_sign_up_url = 'http://localhost:50052/api/sign-up?name=' + name + '&surname=' + surname + '&usr=' + mail + '&pwd=' + pwd
         response = requests.get(gateway_sign_up_url).json()
         if response['message'] == 'Sign up successful':
-            session['logged'] = True
-            session['usr'] = mail.split('@')[0]
-            session['mail'] = mail
-            session['token'] = response['token']
-            return render_template("signUpSuccess.html")
+            flash('Sign Up successful now you can access with your credentials', category='info')
+            return render_template("login.html")
         else:
-            flash('Signup failed')
-            return render_template("signUpFailed.html")
+            flash('Signup failed', category='info')
+            return render_template("signUp.html")
 
 @app.route('/select-route-from-map', methods=['GET'])
 def request_route():

@@ -1,9 +1,13 @@
 <html>
   <head>
-    <title>Bus4You-SignUp</title>
+    <title>Bus4You</title>
     <link rel="stylesheet" type="text/css" href="../static/css/login.css">
   </head>
-  <div class="form-body">
+  <body>
+    {% for msg in get_flashed_messages() %}
+      <h1>{{ msg }}</h1>
+      {% endfor %}
+    <div class="form-body">
       <div class="row">
         <div class="form-holder">
           <div class="form-content">
@@ -42,4 +46,5 @@
         </div>
       </div>
     </div>
+  </body>
   </html>
