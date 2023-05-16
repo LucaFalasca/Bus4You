@@ -9,6 +9,9 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 def index():
     return render_template('login.html')
 
+@app.route('/signUpForm')
+def signUpPage():
+    return render_template('signUp.html')
 
 @app.route('/login', methods=['POST'])
 def login():
