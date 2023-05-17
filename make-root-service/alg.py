@@ -8,8 +8,8 @@ def two_opt(route, dist_matrix, pred_hash):
     best_distance = route_distance(route, dist_matrix)
     while improvement:
         improvement = False
-        for i in range(0, n):
-            for j in range(i, n):
+        for i in range(0, n - 1):
+            for j in range(i, n - 1):
                 if i == j:
                     continue
                 new_route = route[:]
