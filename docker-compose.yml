@@ -1,6 +1,22 @@
 version: "3.9"
 services:
 
+  mysqlDb:
+    image: mysql:latest
+    container_name: mysqlDb
+    restart: always
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'b4y_userDb'
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
   neo4jDb:
     # Docker image to be used
     image: neo4j:latest
@@ -14,7 +30,7 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
-    
+
     volumes:
       - ./neo4j/data:/data
 
@@ -49,10 +65,14 @@ services:
   login-service:
     build: ./login-service
     container_name: login-service
+    depends_on:
+      mysqlDb:
+        condition: service_healthy
 
   make-root-service:
     build: ./make-root-service
     container_name: make-root-service
+
 
 
 #networks:
