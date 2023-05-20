@@ -41,7 +41,7 @@ def logout():
     return render_template("logout.html")
 
 
-@app.route('/sign-up', methods=['POST'])
+@app.route('/signUp', methods=['POST'])
 def signUp():
     name = request.form.get('txtName')
     surname = request.form.get('txtSurname')
