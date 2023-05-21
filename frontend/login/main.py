@@ -7,7 +7,7 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('login.html') #TODO aggiustare mettendo una navbar che porta alle varie pagine
+    return render_template('userRoutes.html')
 
 
 @app.route('/login', methods=['POST'])
