@@ -1,6 +1,6 @@
 import time
 
-from neo4j import GraphDatabase, basic_auth
+#from neo4j import GraphDatabase, basic_auth
 import xmlrpc.server
 
 from connect import create_person, create_stop, create_startStop, create_endStop
@@ -62,9 +62,9 @@ def take_nodes_from_bd(number_of_nodes):
             Node("2", "3", "11/05/2023", "14:00", "00:40"),
             Node("4", "5", "11/05/2023", "14:15", "00:40"),
             Node("6", "7", "11/05/2023", "14:30", "00:40"),
-            Node("8", "9", "11/05/2023", "14:45", "00:40"),
+            Node("8", "10", "11/05/2023", "14:45", "00:40"),
             Node("10", "11", "11/05/2023", "15:00", "00:15"),
-            Node("12", "13", "11/05/2023", "15:15", "00:15")]
+            Node("10", "13", "11/05/2023", "15:15", "00:15")]
 
 def calculate_initial_route(nodes_list):
     route = []
@@ -96,7 +96,10 @@ def calculate_pred_hash(nodes_list):
     nodes_list = list(nodes_list)
     pred_hash = {}
     for n in nodes_list:
-        pred_hash[n.starting_point] = int(n.ending_point)
+        if(n.starting_point in pred_hash):
+            pred_hash[n.starting_point].append(int(n.ending_point))
+        else:
+            pred_hash[n.starting_point] = [(int(n.ending_point))]
     return pred_hash
 
 def try_make_route_from_node(node):
@@ -118,6 +121,7 @@ def try_make_route_from_node(node):
 if __name__ == "__main__":
     
     print(try_make_route_from_node(Node("14", "15", "11/05/2023", "15:30", "00:15")))
+    '''
     uri = "neo4j://neo4jDb:7687"
     auth=basic_auth("neo4j", "123456789")
     service = Neo4jMicroservice(uri, auth)
@@ -143,3 +147,4 @@ service.insert_stop("Tor Vergata (Medicina)", "13:45", "11/05/2023")
 service.insert_startStop("Luca", "Tor Vergata (Medicina)", "13:45", "11/05/2023")
 service.insert_endStop("Luca", "Anagnina", "14:00", "11/05/2023")
 service.insert_booking("Stefan", "Anagnina", "Tor Vergata", "12/05/2023", "14:00", "00:15")
+'''
