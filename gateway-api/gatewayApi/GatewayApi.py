@@ -52,7 +52,7 @@ def request_route():
     dist_matrix = generate_dist_matrix(20, 10)
     pred_hash = {"0": [1, 2], "1": [], "2": [4], "3": [4], "4": []}
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
-        result = proxy.two_opt_multistart(route, dist_matrix, pred_hash, 10)
+        result = proxy.two_opt_multistart(dist_matrix, pred_hash)
         return json.dumps(result)
 
 @api.route('/api/route-from-map', methods=['GET'])
