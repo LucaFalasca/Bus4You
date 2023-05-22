@@ -1,6 +1,6 @@
 import time
 
-#from neo4j import GraphDatabase, basic_auth
+from neo4j import GraphDatabase, basic_auth
 import xmlrpc.server
 
 from connect import create_person, create_stop, create_startStop, create_endStop
@@ -118,7 +118,7 @@ def try_make_route_from_node(node):
 if __name__ == "__main__":
     
     print(try_make_route_from_node(Node("14", "15", "11/05/2023", "15:30", "00:15")))
-    '''    uri = "neo4j://neo4jDb:7687"
+    uri = "neo4j://neo4jDb:7687"
     auth=basic_auth("neo4j", "123456789")
     service = Neo4jMicroservice(uri, auth)
     service.insert_person("Luca")
@@ -143,4 +143,3 @@ service.insert_stop("Tor Vergata (Medicina)", "13:45", "11/05/2023")
 service.insert_startStop("Luca", "Tor Vergata (Medicina)", "13:45", "11/05/2023")
 service.insert_endStop("Luca", "Anagnina", "14:00", "11/05/2023")
 service.insert_booking("Stefan", "Anagnina", "Tor Vergata", "12/05/2023", "14:00", "00:15")
-'''
