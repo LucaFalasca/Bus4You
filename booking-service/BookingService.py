@@ -66,12 +66,6 @@ def take_nodes_from_bd(number_of_nodes):
             Node("10", "11", "11/05/2023", "15:00", "00:15"),
             Node("10", "13", "11/05/2023", "15:15", "00:15")]
 
-def calculate_initial_route(nodes_list):
-    route = []
-    for n in nodes_list:
-        route.append(int(n.starting_point))
-        route.append(int(n.ending_point))
-    return route
 
 def calculate_dist_matrix(nodes_list):
     #TODO
@@ -100,17 +94,19 @@ def calculate_pred_hash(nodes_list):
             pred_hash[n.starting_point].append(int(n.ending_point))
         else:
             pred_hash[n.starting_point] = [(int(n.ending_point))]
+        if(n.ending_point not in pred_hash):
+            pred_hash[n.ending_point] = []
     return pred_hash
 
 def try_make_route_from_node(node):
     nodes_list = take_nodes_from_bd(7)
     nodes_list.append(node)
-    route = calculate_initial_route(nodes_list)
     dist_matrix = calculate_dist_matrix(nodes_list)
     pred_hash = calculate_pred_hash(nodes_list)
+
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
-        print(route, dist_matrix, pred_hash)
-        result = proxy.two_opt_multistart(route, dist_matrix, pred_hash, 10)
+        print(pred_hash)
+        result = proxy.calculate_route(dist_matrix, pred_hash)
         return result
         
 

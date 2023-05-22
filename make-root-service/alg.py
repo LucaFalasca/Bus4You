@@ -1,6 +1,7 @@
 import xmlrpc.server
 import random
 import time
+from collections import deque
 
 def two_opt(route, dist_matrix, pred_hash):
     alternative_route = []
@@ -47,8 +48,6 @@ def check_pred(route, pred_hash):
     return True
 
 def two_opt_multistart(route, dist_matrix, pred_hash, multistart_number):
-    remove_duplicates(route)
-    print(route)
     result = two_opt(route, dist_matrix, pred_hash)
     resultMin = result
     min = result[1]
@@ -75,22 +74,62 @@ def generate_dist_matrix(size, max_val):
         dist_matrix.append(row)
     return dist_matrix
 
-def remove_duplicates(route):
-    new_list = []
-    for item in route:
-        if item not in new_list:
-            new_list.append(item)
-    route[:] = new_list
+def remove_duplicates(nodes):
+    nodes = list(set(nodes))
+
+def topological_sort(graph):
+    # Inizializza il conteggio delle dipendenze per ogni nodo del grafo
+    in_degree = {node: 0 for node in graph}
+    print(in_degree)
+    # Calcola il conteggio delle dipendenze per ogni nodo del grafo
+    for node in graph:
+        for neighbor in graph[node]:
+            print(graph[node])
+            in_degree[str(neighbor)] += 1
+    print(in_degree)
+
+    # Inizializza la coda di lavoro con i nodi senza dipendenze
+    queue = deque([node for node in in_degree if in_degree[node] == 0])
+    
+    # Inizializza l'ordinamento topologico
+    topological_order = []
+
+    # Ripeti finché la coda non è vuota
+    while queue:
+        print(queue)
+        # Prende un nodo dalla coda
+        node = queue.popleft()
+
+        # Aggiunge il nodo all'ordinamento topologico
+        topological_order.append(int(node))
+
+        # Aggiorna il conteggio delle dipendenze per ogni vicino del nodo
+        for neighbor in graph[node]:
+            in_degree[str(neighbor)] -= 1
+
+            # Se il vicino non ha dipendenze, lo aggiunge alla coda
+            if in_degree[str(neighbor)] == 0:
+                queue.append(str(neighbor))
+
+   # Restituisce l'ordinamento topologico, se esiste
+    if len(topological_order) == len(graph):
+        return topological_order
+    else:
+        return None
+
+def calculate_route(dist_matrix, pred_hash):
+    node_list = list(map(int, pred_hash.keys()))
+    remove_duplicates(node_list)
+    route = topological_sort(pred_hash)
+    print(route)
+    if(route == None):
+        return None
+    else:
+        return two_opt_multistart(route, dist_matrix, pred_hash, 10)
 
 if __name__ == "__main__":
-    route = [0, 1, 3]
-    dist_matrix = generate_dist_matrix(5, 10)
-    pred_hash = {"0": [1, 3]}
-
-    print(two_opt_multistart(route, dist_matrix, pred_hash, 1))
-
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
 
-    server.register_function(two_opt_multistart, "two_opt_multistart")
+    server.register_function(calculate_route, "calculate_route")
     server.serve_forever()
