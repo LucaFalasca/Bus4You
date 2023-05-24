@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
     {% block stylesheets%}
             <link rel="stylesheet" type="text/css" href="../static/css/userRoutes.css">
     {% endblock %}
@@ -6,37 +7,29 @@
 
     {% block body %}
         <div id="divAccordion" class="accordion accordion-background-hover accordion-background-active">
-          <div id="divAcc1" class="accordion-item">
-            <h2 class="accordion-header " id="heading1d">
-              <button id="btnAcc1" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc1" aria-expanded="false" aria-controls="acc1">
-               Alessandrino(MC) -> Sorbona - Data: 21/05/2021 - Partenza: 10:00 - Arrivo: 10:30
-              </button>
-            </h2>
-            <div id="acc1" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="heading1d">
-              <div class="accordion-body">
-                  Data: 21/05/2021 <br><br>
-                  Partenza: 10:00 <br>
-                  Arrivo: 10:30 <br><br>
-                  Percorso: <br>
-                    Alessandrino(MC) -> Romanisti/Giaquinto -> Torre Maura -> Sorbona
-              </div>
+        {% for route in user_routes %}
+            <div id="divAcc{{ user_routes.index(route) }}" class="accordion-item">
+                <h2 class="accordion-header" id="head{{ user_routes.index(route) }}">
+                  <button id="btnAcc{{ user_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ user_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ user_routes.index(route) }}">
+                   {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getDate() }} - Partenza: {{ route.getStartHour() }} - Arrivo: {{ route.getEndHour() }}
+                  </button>
+                </h2>
+                <div id="acc{{ user_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="head{{ user_routes.index(route) }}">
+                  <div class="accordion-body">
+                      Data: {{ route.getDate() }} <br><br>
+                      Partenza: {{ route.getStartHour() }} <br>
+                      Arrivo: {{ route.getEndHour() }} <br><br>
+                      Percorso: <br>
+                      {% for stop in route.getStops() %}
+                          {% if route.getStops().index(stop) == 0 %}
+                            {{ stop.getName() }}
+                          {% else %}
+                            -> {{ stop.getName() }}
+                          {% endif %}
+                      {% endfor %}
+                  </div>
+                </div>
             </div>
-          </div>
-          <div id="divAcc1" class="accordion-item">
-            <h2 class="accordion-header " id="heading2d">
-              <button id="btnAcc2" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc2" aria-expanded="false" aria-controls="acc2">
-                Sorbona -> Romanisti/Giaquinto - Data: 21/05/2021 - Partenza: 17:00 - Arrivo: 18:05
-              </button>
-            </h2>
-            <div id="acc2" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="heading2d">
-              <div class="accordion-body">
-                  Data: 21/05/2021 <br><br>
-                  Partenza: 17:00 <br>
-                  Arrivo: 18:05 <br><br>
-                  Percorso: <br>
-                    Sorbona -> Torre Maura -> Romanisti/Torre Spaccata -> Casilina/Eriche -> Romanisti/Giaquinto
-              </div>
-            </div>
-          </div>
+        {% endfor %}
         </div>
     {% endblock %}

@@ -37,12 +37,14 @@ def signUp():
     channel = grpc.insecure_channel(
         'login-service:50051')  # Insert the name of the service as IP if using docker network
     stub = protos.login_service_cs_pb2_grpc.LoginStub(channel)
-    sign_up_request = protos.login_service_cs_pb2.SignUpCredentials(name=name, surname=surname, username=username, password=password)
+    sign_up_request = protos.login_service_cs_pb2.SignUpCredentials(name=name, surname=surname, username=username,
+                                                                    password=password)
     response = stub.RpcSignUp(sign_up_request)
     res['message'] = response.message
     res['token'] = response.token
     print("LoginService sign up client received: " + response.message + " Token: " + response.token)
     return json.dumps(res)
+
 
 @api.route('/api/request-route', methods=['GET'])
 def request_route():
@@ -50,11 +52,13 @@ def request_route():
     ending_point = request.args.get('ending_point')
 
     dist_matrix = generate_dist_matrix(20, 10)
-    pred_hash = {"0":4, "1":3, "7":8, "3":6, "4":11, "5":14, "0":9, "6":9, "8":9, "11":15, "11":14, "18":11, "13":12, "14":17, "15":19, "16":18, "17":19, "18":19}
+    pred_hash = {"0": 4, "1": 3, "7": 8, "3": 6, "4": 11, "5": 14, "0": 9, "6": 9, "8": 9, "11": 15, "11": 14, "18": 11,
+                 "13": 12, "14": 17, "15": 19, "16": 18, "17": 19, "18": 19}
     route = [0, 2, 1, 3, 6, 5, 4, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 10]
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
         result = proxy.two_opt_multistart(route, dist_matrix, pred_hash, 10)
         return json.dumps(result)
+
 
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
@@ -68,8 +72,54 @@ def route_from_map():
     with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
         result = proxy.insert_booking(user, starting_point, ending_point, date, arrival_time, travel_time)
         return json.dumps(result)
-        
-        
+
+
+@api.route('/api/load_user_routes', methods=['GET'])
+def load_user_routes():
+    mail = request.args.get('mail')
+    token = request.args.get('token')
+    # TODO check token e retrieve delle route vere dal db
+    user_routes = [{"startStop": "Alessandrino (MC)",
+                   "endStop": "Sorbona",
+                   "startHour": "10:00",
+                   "endHour": "10:30",
+                   "date": "24/05/2023",
+                   "cost": "1.50€",
+                   "stops": [
+                       {"name": "Alessandrino (MC)", "pos": "xy"},
+                       {"name": "Romanisti/Giaquinto", "pos": "xy"},
+                       {"name": "Torre Maura", "pos": "xy"},
+                       {"name": "Sorbona", "pos": "xy"}]},
+
+                  {"startStop": "Sorbona",
+                   "endStop": "Romanisti/Giaquinto",
+                   "startHour": "17:00",
+                   "endHour": "17:38",
+                   "date": "24/05/2023",
+                   "cost": "1.00€",
+                   "stops": [
+                       {"name": "Sorbona", "pos": "xy"},
+                       {"name": "Torre Maura", "pos": "xy"},
+                       {"name": "Romanisti/Torre Spaccata", "pos": "xy"},
+                       {"name": "Casilina/Eriche", "pos": "xy"},
+                       {"name": "Romanisti/Giaquinto", "pos": "xy"}]},
+
+                  {"startStop": "Sium (MC[had])",
+                   "endStop": "Chaddopia",
+                   "startHour": "17:60",
+                   "endHour": "18:00",
+                   "date": "30/02/2345",
+                   "cost": "0.99€",
+                   "stops": [
+                       {"name": "Sium (MC[had])", "pos": "xy"},
+                       {"name": "Anor Londo", "pos": "xy"},
+                       {"name": "Raftel", "pos": "xy"},
+                       {"name": "Zanarkand", "pos": "xy"},
+                       {"name": "Sparta", "pos": "xy"},
+                       {"name": "Chaddopia", "pos": "xy"}]}]
+    return json.dumps(user_routes)
+
+
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())
     dist_matrix = []
