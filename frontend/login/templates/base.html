@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/bootstrap-italia/css/bootstrap-italia.min.css" />
+    {% block stylesheets%}
+    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="../static/css/base.css">
+    <title>Bus4You</title>
+</head>
+<body>
+    <div id="navbar-div">
+        <ul id="navbar-ul">
+            <li id="navbar-li"><button id="navbar-button" onclick="">Sign Out</button></li>
+            <li id="navbar-li"><button id="navbar-button" onclick="">Account</button></li>
+            <form action="/loadUserRoutesPage">
+                <li id="navbar-li"><button id="navbar-button" type="submit">My Routes</button></li>
+            </form>
+            <li id="navbar-li"><button id="navbar-button" onclick="">Request Route</button></li>
+        </ul>
+    </div>
+<script src="../static/bootstrap-italia/js/bootstrap-italia.bundle.min.js"></script>
+{% block body %}
+{% endblock %}
+</body>
+</html>
