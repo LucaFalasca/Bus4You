@@ -17,7 +17,7 @@
     <br>
     <form action="/select-route-from-map" method="GET">
         <!-- campo per l'inserimento dell'username -->
-        <input type="text" id="username" name="user" placeholder="Username"><br>
+        <input type="text" id="username" name="user" placeholder={{ session['usr'] }}><br>
         
         <!-- campo per l'inserimento del punto di partenza -->
         <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
