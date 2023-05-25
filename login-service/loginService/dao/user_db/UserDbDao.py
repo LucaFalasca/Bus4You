@@ -4,7 +4,8 @@ from mysql.connector import Error
 
 class UserDbDao:
     def __init__(self):
-        self.db_ip = 'host.docker.internal'  # For docker if the db is deployed in the docker container host
+        self.db_ip = 'mysqlDb' # For docker if the db is deployed in a container
+        #self.db_ip = 'host.docker.internal'  # For docker if the db is deployed in the docker container host
         #self.db_ip = 'localhost'
         self.db_name = 'b4y_userdb'
         self.usr = 'root'
@@ -27,15 +28,13 @@ class UserDbDao:
 
     @staticmethod
     def login_query(conn, mail, password):
-        res = None
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
+            query = "SELECT * FROM user WHERE mail = %s AND pwd = %s"
             args = (mail, password)
-            print(args)
-            curs.callproc('login', args)
-            for result in curs.stored_results():
-                res = result.fetchall()
+            curs.execute(query, args)
+            res = curs.fetchall()
             curs.close()
             # Check result
             if res[0][0] == 1:
@@ -51,9 +50,9 @@ class UserDbDao:
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            args = (name, surname, mail, password)
-            print(args)
-            curs.callproc('sign_up', args)
+            query = "INSERT INTO user(mail, pwd, username, name, surname) VALUES (%s,%s,%s,%s,%s)"
+            args = (mail, password, mail.split('@')[0], name, surname)
+            curs.execute(query, args)
             conn.commit()
             curs.close()
             return 0
