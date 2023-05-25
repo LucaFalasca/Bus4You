@@ -1,5 +1,2 @@
 Flask
-mysql-connector-python
-grpcio
-grpcio-tools
 requests

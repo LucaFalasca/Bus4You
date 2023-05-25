@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, flash
 import requests
+from frontend.login.utils.json_parser import parse_user_routes_json
 
 app = Flask(__name__)
 app.secret_key = '1234 bianchi legge questo e si sente male'
@@ -36,7 +37,6 @@ def login():
             return render_template("login.html")
 
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged', None)
@@ -45,7 +45,7 @@ def logout():
     return render_template("login.html")
 
 
-@app.route('/sign-up', methods=['POST'])
+@app.route('/signUp', methods=['POST'])
 def signUp():
     name = request.form.get('txtName')
     surname = request.form.get('txtSurname')
@@ -68,6 +68,7 @@ def signUp():
             flash('Signup failed', category='info')
             return render_template("signUp.html")
 
+
 @app.route('/select-route-from-map', methods=['GET'])
 def request_route():
     starting_point = request.args.get('starting_point')
@@ -86,8 +87,33 @@ def request_route():
         gateway_request_route_url = 'http://localhost:50052/api/route_from_map?starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
-        session['response'] = response
-        return render_template("select_route_from_map.html", response=response) 
+        session['user_routes'] = response
+        return render_template("select_route_from_map.html", response=response)
+
+
+@app.route('/loadUserRoutesPage', methods=['GET', 'POST'])
+def load_user_routes_page():
+    print('loadUserRoutesPage')
+    session['logged'] = True #TODO remove this lines is only for testing
+    session['usr'] = 'test'
+    session['mail'] = 'test@gmail.com'
+    session['token'] = 'test'
+    if session['logged']:
+        usr = session['usr']
+        mail = session['mail']
+        token = session['token']
+        gateway_load_user_routes_url = 'http://localhost:50052/api/load_user_routes?mail=' + mail + '&token=' + token
+        response = requests.get(gateway_load_user_routes_url).json()
+        user_routes = parse_user_routes_json(response)
+        return render_template("userRoutes.html", user_routes=user_routes)
+
+    else:
+        flash('You have to be signed in to access this page')
+        return render_template("login.html")
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

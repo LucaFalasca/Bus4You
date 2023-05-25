@@ -1,0 +1,30 @@
+.accordion{
+    padding-top: 50px !important;
+    padding-left: 20px !important;
+    width: 80% !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
+.accordion-collapse{
+    color: #ffffff !important;
+    border-radius: 12px !important;
+}
+
+.accordion-button{
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
+
+.accordion-button:hover, .accordion-button:active, .accordion-button:not(.collapsed){
+    background-color: #4CAF50 !important;
+}
+
+.accordion-item{
+    border-color: #4CAF50 !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+}
