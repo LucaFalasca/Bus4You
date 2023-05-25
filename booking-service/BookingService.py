@@ -64,18 +64,22 @@ def prepare_for_alg():
     dizionario_precedenze = {}
 
     #Nel primo Step preparariamo il dizionario biettivo tra l'id della fermata nel Database e l'Algoritmo
-    contatore = 1
+    contatore = 0
     query = "MATCH (f:Fermata) RETURN id(f) AS id_fermata"
     result = session.run(query)
     for record in result:
         id_fermata = record["id_fermata"]
         dizionario_fermate[id_fermata] = contatore # aggiungere una nuova voce al dizionario con l'ID come chiave e il valore auto-incrementato come valore
+        dizionario_precedenze[str(contatore)] = []
         contatore += 1
 
+
+
+
     # stampare il dizionario risultante
-    print("Dizionario Fermate: ")
-    print(dizionario_fermate)
-    print("********************")
+    #print("Dizionario Fermate: ")
+    #print(dizionario_fermate)
+    #print("********************")
 
 
     #Nel secondo step ci prepariamo la nostra matrice di distanze
@@ -83,7 +87,7 @@ def prepare_for_alg():
     for i in range(len(dizionario_fermate)):
         matrice.append([])
         for j in range(len(dizionario_fermate)):
-            matrice[i].append(0.0)
+            matrice[i].append(0)
 
     #Ora andiamo a inserire tutte le distanze nella matrice
     result = session.run("MATCH (a)-[r:DISTANCE_TO]->(b) RETURN id(a) AS nodeA_id, id(b) AS nodeB_id, r.distance AS distance")
@@ -91,21 +95,21 @@ def prepare_for_alg():
         nodeA_id = record["nodeA_id"]
         nodeB_id = record["nodeB_id"]
         distance = record["distance"]
-        matrice[dizionario_fermate[nodeA_id]-1][dizionario_fermate[nodeB_id]-1] = distance
-        matrice[dizionario_fermate[nodeB_id]-1][dizionario_fermate[nodeA_id]-1] = distance
-    print("Matrice distanze: ")
-    print(matrice)
-    print("********************")
+        matrice[dizionario_fermate[nodeA_id]-1][dizionario_fermate[nodeB_id]-1] = int(distance)
+        matrice[dizionario_fermate[nodeB_id]-1][dizionario_fermate[nodeA_id]-1] = int(distance)
+    #print("Matrice distanze: ")
+    #print(matrice)
+    #print("********************")
 
     #Ora prepariamo il dizionario delle precedenze
     result = session.run("MATCH (a:Fermata)-[r:TRAVEL]->(b:Fermata) RETURN id(a) AS nodeA_id, id(b) AS nodeB_id")
     for record in result:
         nodeA_id = record["nodeA_id"]
         nodeB_id = record["nodeB_id"]
-        dizionario_precedenze[dizionario_fermate[nodeA_id]] = dizionario_fermate[nodeB_id]
-    print("Dizionario precedenze: ")
-    print(dizionario_precedenze)
-    print("********************")
+        dizionario_precedenze[str(dizionario_fermate[nodeA_id])].append(dizionario_fermate[nodeB_id])
+    #print("Dizionario precedenze: ")
+    #print(dizionario_precedenze)
+    #print("********************")
 
     session.close()
     return dizionario_fermate, matrice, dizionario_precedenze
@@ -177,21 +181,6 @@ def generate_fermate(sizeUsers):
         insert_booking(random.choice(nomi), fermata1[0], fermata2[0], giorno, ora_di_arrivo, tempo_impiegato, fermata1[1][0], fermata1[1][1], fermata2[1][0], fermata2[1][1])
 
 
-
-if __name__ == "__main__":
-
-
-    driver = setUpDriver()
-    db = "neo4j"
-
-
-    session = driver.session(database=db)
-    generate_fermate(10) #Attenzione questa funzione crea nodi ogni volta che viene invocata, cancellare i volumi o commentarla per non ritrovarsi con grafo di 100 fermate
-    make_connections()
-    prepare_for_alg()
-
-
-
 class Node:
 
     def __init__(self, starting_point, ending_point, data, arrival_time, travel_time):
@@ -247,31 +236,43 @@ def try_make_route_from_node(node):
     nodes_list = take_nodes_from_bd(7)
     nodes_list.append(node)
     dist_matrix = calculate_dist_matrix(nodes_list)
+    print("************")
+    print(dist_matrix)
+    print("*********")
     pred_hash = calculate_pred_hash(nodes_list)
 
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
         print(pred_hash)
         result = proxy.calculate_route(dist_matrix, pred_hash)
         return result
-        
+
+
+def try_make_route_from_node_2():
+    alg_setup = prepare_for_alg()
+
+    dist_matrix = alg_setup[1]
+    pred_hash = alg_setup[2]
+
+    with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
+        print(pred_hash)
+        result = proxy.calculate_route(dist_matrix, pred_hash)
+        return result
 
 
      
     
 
 if __name__ == "__main__":
-    
-    print(try_make_route_from_node(Node("14", "15", "11/05/2023", "15:30", "00:15")))
-    '''
-    uri = "neo4j://neo4jDb:7687"
-    auth=basic_auth("neo4j", "123456789")
-    service = Neo4jMicroservice(uri, auth)
-    service.insert_person("Luca")
-    service.insert_stop("Tor Vergata (Medicina)", "13:45", "11/05/2023")
-    service.insert_startStop("Luca", "Tor Vergata (Medicina)", "13:45", "11/05/2023")
-    service.insert_endStop("Luca", "Anagnina", "14:00", "11/05/2023")
-    service.insert_booking("Stefan", "Anagnina", "Tor Vergata", "12/05/2023", "14:00", "00:15")
+    driver = setUpDriver()
+    db = "neo4j"
+    session = driver.session(database=db)
 
+    #print(try_make_route_from_node(Node("14", "15", "11/05/2023", "15:30", "00:15")))
+    #print("||||||||||||||||||||||")
+
+    generate_fermate(10)
+    make_connections()
+    print(try_make_route_from_node_2())
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")

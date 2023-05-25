@@ -42,7 +42,6 @@ def create_travel(tx, nameStartStop, nameEndStop, hourStart, hourEnd, date, time
     )
 
 def create_distances(tx):
-    print("ciaooooo")
     return tx.run(
         "MATCH (a:Fermata), (b:Fermata)"
         "WHERE id(a) < id(b)"
