@@ -84,5 +84,51 @@ def generate_dist_matrix(size, max_val):
     return dist_matrix
 
 
+@api.route('/api/load_user_routes', methods=['GET'])
+def load_user_routes():
+    mail = request.args.get('mail')
+    token = request.args.get('token')
+    # TODO check token e retrieve delle route vere dal db
+    user_routes = [{"startStop": "Alessandrino (MC)",
+                   "endStop": "Sorbona",
+                   "startHour": "10:00",
+                   "endHour": "10:30",
+                   "date": "24/05/2023",
+                   "cost": "1.50€",
+                   "stops": [
+                       {"name": "Alessandrino (MC)", "pos": "xy"},
+                       {"name": "Romanisti/Giaquinto", "pos": "xy"},
+                       {"name": "Torre Maura", "pos": "xy"},
+                       {"name": "Sorbona", "pos": "xy"}]},
+
+                  {"startStop": "Sorbona",
+                   "endStop": "Romanisti/Giaquinto",
+                   "startHour": "17:00",
+                   "endHour": "17:38",
+                   "date": "24/05/2023",
+                   "cost": "1.00€",
+                   "stops": [
+                       {"name": "Sorbona", "pos": "xy"},
+                       {"name": "Torre Maura", "pos": "xy"},
+                       {"name": "Romanisti/Torre Spaccata", "pos": "xy"},
+                       {"name": "Casilina/Eriche", "pos": "xy"},
+                       {"name": "Romanisti/Giaquinto", "pos": "xy"}]},
+
+                  {"startStop": "Sium (MC[had])",
+                   "endStop": "Chaddopia",
+                   "startHour": "17:60",
+                   "endHour": "18:00",
+                   "date": "30/02/2345",
+                   "cost": "0.99€",
+                   "stops": [
+                       {"name": "Sium (MC[had])", "pos": "xy"},
+                       {"name": "Anor Londo", "pos": "xy"},
+                       {"name": "Raftel", "pos": "xy"},
+                       {"name": "Zanarkand", "pos": "xy"},
+                       {"name": "Sparta", "pos": "xy"},
+                       {"name": "Chaddopia", "pos": "xy"}]}]
+    return json.dumps(user_routes)
+
+
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
