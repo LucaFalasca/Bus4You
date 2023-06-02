@@ -1,3 +1,9 @@
 .idea/
-loginServicePack/loginService/protos/out
+login-service/loginService/protos/login_service_ss_pb2.py
+login-service/loginService/protos/login_service_ss_pb2.pyi
+login-service/loginService/protos/login_service_ss_pb2_grpc.py
+gateway-api/gatewayApi/protos/gateway_api_ss_pb2.py
+gateway-api/gatewayApi/protos/gateway_api_ss_pb2.pyi
+gateway-api/gatewayApi/protos/gateway_api_ss_pb2_grpc.py
 neo4j/
+userDb.mwb.bak
