@@ -10,16 +10,16 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 def index():
     return render_template('login.html')
 
+
 @app.route('/signUpForm')
 def signUpPage():
     return render_template('signUp.html')
+
 
 @app.route('/login', methods=['POST'])
 def login():
     mail = request.form.get('txtMail')
     pwd = request.form.get('txtPwd')
-    print(mail)
-    print(pwd)
     if mail == '' or pwd == '':
         flash('Login failed some required fields are empty')
         return render_template("login.html")
@@ -51,15 +51,13 @@ def signUp():
     surname = request.form.get('txtSurname')
     mail = request.form.get('txtMail')
     pwd = request.form.get('txtPwd')
-    print(name)
-    print(surname)
-    print(mail)
-    print(pwd)
-    if name == '' or surname == '' or mail == '' or pwd == '':
+    birthdate = request.form.get('txtDate')
+    username = mail.split('@')[0]
+    if name == '' or surname == '' or mail == '' or pwd == '' or birthdate == '':
         flash('Signup failed some required fields are empty')
         return render_template("signUp.html")
     else:
-        gateway_sign_up_url = 'http://localhost:50052/api/sign-up?name=' + name + '&surname=' + surname + '&usr=' + mail + '&pwd=' + pwd
+        gateway_sign_up_url = 'http://localhost:50052/api/sign-up?name=' + name + '&surname=' + surname + '&mail=' + mail + '&pwd=' + pwd + '&usr=' + username + '&birthdate=' + birthdate
         response = requests.get(gateway_sign_up_url).json()
         if response['message'] == 'Sign up successful':
             flash('Sign Up successful now you can access with your credentials', category='info')
@@ -94,7 +92,7 @@ def request_route():
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])
 def load_user_routes_page():
     print('loadUserRoutesPage')
-    session['logged'] = True #TODO remove this lines is only for testing
+    session['logged'] = True  # TODO remove this lines is only for testing
     session['usr'] = 'test'
     session['mail'] = 'test@gmail.com'
     session['token'] = 'test'
@@ -110,9 +108,6 @@ def load_user_routes_page():
     else:
         flash('You have to be signed in to access this page')
         return render_template("login.html")
-
-
-
 
 
 if __name__ == '__main__':

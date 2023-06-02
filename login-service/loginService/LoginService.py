@@ -37,7 +37,7 @@ class LoginService(protos.login_service_ss_pb2_grpc.LoginServicer):
     def RpcSignUp(self, request, context):
         usr_db = UserDbDao()
         conn = usr_db.connect()
-        sign_up_ret = usr_db.sign_up(conn, request.name, request.surname, request.username, request.password)
+        sign_up_ret = usr_db.sign_up(conn, request.name, request.surname, request.mail, request.password, request.birthdate, request.username)
         conn.close()
         if sign_up_ret == 0:
             print("Sign up successful")

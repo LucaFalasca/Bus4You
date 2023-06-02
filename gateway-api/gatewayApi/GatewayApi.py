@@ -32,12 +32,14 @@ def signUp():
     res = {}
     name = request.args.get('name')
     surname = request.args.get('surname')
-    username = request.args.get('usr')
+    mail = request.args.get('mail')
     password = request.args.get('pwd')
+    birthdate = request.args.get('birthdate')
+    username= request.args.get('usr')
     channel = grpc.insecure_channel(
         'login-service:50051')  # Insert the name of the service as IP if using docker network
     stub = protos.login_service_cs_pb2_grpc.LoginStub(channel)
-    sign_up_request = protos.login_service_cs_pb2.SignUpCredentials(name=name, surname=surname, username=username, password=password)
+    sign_up_request = protos.login_service_cs_pb2.SignUpCredentials(name=name, surname=surname, mail=mail, password=password, birthdate=birthdate, username=username)
     response = stub.RpcSignUp(sign_up_request)
     res['message'] = response.message
     res['token'] = response.token

@@ -18,7 +18,9 @@ message LoginResponse {
 message SignUpCredentials {
   string name = 1;
   string surname= 2;
-  string username = 3;
+  string mail = 3;
   string password = 4;
+  string birthdate = 5;
+  string username = 6;
 }
 

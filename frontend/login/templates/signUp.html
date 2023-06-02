@@ -35,7 +35,12 @@
                   <input class="form-control" type="password" id="txtPwdConf" name="txtPwdConf" placeholder=" Confirm Password*" required>
                 </div>
 
-                <br>
+                <div class="col-md-12">
+                    <input class="form-control" type="date" id="txtDate" name="txtDate" required>
+                    <script>document.getElementById("txtDate").max = new Date().toISOString().split("T")[0];</script>
+                </div>
+
+                  <br>
 
                 <div class="form-button mt-3">
                   <button id="btnSignUp" name="btnSignUp" type="submit" class="btn btn-primary">Sign Up</button>
