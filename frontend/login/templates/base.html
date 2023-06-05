@@ -11,12 +11,16 @@
 <body>
     <div id="navbar-div">
         <ul id="navbar-ul">
-            <li id="navbar-li"><button id="navbar-button" onclick="">Sign Out</button></li>
+            <form action="/logout">
+                <li id="navbar-li"><button id="navbar-button" type="submit">Sign Out</button></li>
+            </form>
             <li id="navbar-li"><button id="navbar-button" onclick="">Account</button></li>
             <form action="/loadUserRoutesPage">
                 <li id="navbar-li"><button id="navbar-button" type="submit">My Routes</button></li>
             </form>
-            <li id="navbar-li"><button id="navbar-button" onclick="">Request Route</button></li>
+            <form action="/requestRoutePage">
+                <li id="navbar-li"><button id="navbar-button" type="submit">Request Route</button></li>
+            </form>
         </ul>
     </div>
 <script src="../static/bootstrap-italia/js/bootstrap-italia.bundle.min.js"></script>

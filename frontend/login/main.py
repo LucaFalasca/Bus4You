@@ -15,6 +15,10 @@ def index():
 def signUpPage():
     return render_template('signUp.html')
 
+@app.route('/requestRoutePage')
+def selectRouteFromMapPage():
+    return render_template('select_route_from_map.html')
+
 
 @app.route('/login', methods=['POST'])
 def login():
