@@ -1,1 +1,0 @@
-python -m grpc_tools.protoc --proto_path=.\gatewayApi --python_out=.\gatewayApi --pyi_out=.\gatewayApi --grpc_python_out=.\gatewayApi .\gatewayApi\protos\login_service_cs.proto

@@ -1,51 +1,47 @@
 import hashlib
-from concurrent import futures
-
-import grpc
-
-import protos.login_service_ss_pb2
-import protos.login_service_ss_pb2_grpc
 from dao.user_db.UserDbDao import UserDbDao
+import xmlrpc.server
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    protos.login_service_ss_pb2_grpc.add_LoginServicer_to_server(LoginService(), server)
-    # server.add_insecure_port('localhost:50051')
-    server.add_insecure_port('[::]:50051')  # For docker
-    server.start()
-    server.wait_for_termination()
+    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
+    print("Listening on port 8000...")
+
+    server.register_function(rpc_login, "rpc_login")
+    server.register_function(rpc_sign_up, "rpc_sign_up")
+    server.serve_forever()
 
 
-class LoginService(protos.login_service_ss_pb2_grpc.LoginServicer):
-    def RpcLogin(self, request, context):
-        usr_db = UserDbDao()
-        conn = usr_db.connect()
-        log_ret = usr_db.login_query(conn, request.username, request.password)
-        conn.close()
-        if log_ret == 0:
-            print("Login successful")
-            token = hashlib.md5((request.username+request.password).encode('utf-8')).hexdigest()
-            return protos.login_service_ss_pb2.LoginResponse(message="Login successful", token=token)
-        elif log_ret == 1:
-            print("Login failed")
-            return protos.login_service_ss_pb2.LoginResponse(message="Login failed")
-        else:
-            print("Connection with db failed")
-            return protos.login_service_ss_pb2.LoginResponse(message="Connection with db failed")
+def rpc_login(mail, password):
+    usr_db = UserDbDao()
+    conn = usr_db.connect()
+    log_ret = usr_db.login_query(conn, mail, password)
+    conn.close()
+    if log_ret == 0:
+        print("Login successful")
+        token = hashlib.md5((mail + password).encode('utf-8')).hexdigest()
+        res = {"message": "Login successful", "token": token}
+        return res
+    else:
+        res = {"message": "Login failed"}
+        print("Login failed")
+        return res
 
-    def RpcSignUp(self, request, context):
-        usr_db = UserDbDao()
-        conn = usr_db.connect()
-        sign_up_ret = usr_db.sign_up(conn, request.name, request.surname, request.mail, request.password, request.birthdate, request.username)
-        conn.close()
-        if sign_up_ret == 0:
-            print("Sign up successful")
-            token = hashlib.md5((request.username + request.password).encode('utf-8')).hexdigest()
-            return protos.login_service_ss_pb2.LoginResponse(message="Sign up successful", token=token)
-        else:
-            print("Sign up failed")
-            return protos.login_service_ss_pb2.LoginResponse(message="Sign up failed")
+
+def rpc_sign_up(name, surname, mail, password, birthdate, username):
+    usr_db = UserDbDao()
+    conn = usr_db.connect()
+    sign_up_ret = usr_db.sign_up(conn, name, surname, mail, password, birthdate, username)
+    conn.close()
+    if sign_up_ret == 0:
+        print("Sign up successful")
+        token = hashlib.md5((mail + password).encode('utf-8')).hexdigest()
+        res = {"message": "Sign Up successful", "token": token}
+        return res
+    else:
+        print("Sign up failed")
+        res = {"message": "Sign Up failed"}
+        return res
 
 
 if __name__ == "__main__":

@@ -63,7 +63,7 @@ def signUp():
     else:
         gateway_sign_up_url = 'http://localhost:50052/api/sign-up?name=' + name + '&surname=' + surname + '&mail=' + mail + '&pwd=' + pwd + '&usr=' + username + '&birthdate=' + birthdate
         response = requests.get(gateway_sign_up_url).json()
-        if response['message'] == 'Sign up successful':
+        if response['message'] == 'Sign Up successful':
             flash('Sign Up successful now you can access with your credentials', category='info')
             return render_template("login.html")
         else:

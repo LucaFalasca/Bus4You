@@ -1,50 +1,31 @@
-import grpc
 from flask import Flask, json, request
 import xmlrpc.client
-
 import random
 import time
-
-import protos.login_service_cs_pb2
-import protos.login_service_cs_pb2_grpc
 
 api = Flask(__name__)
 
 
 @api.route('/api/login', methods=['GET'])
 def login():
-    res = {}
-    username = request.args.get('usr')
+    mail = request.args.get('usr')
     password = request.args.get('pwd')
-    channel = grpc.insecure_channel(
-        'login-service:50051')  # Insert the name of the service as IP if using docker network
-    stub = protos.login_service_cs_pb2_grpc.LoginStub(channel)
-    login_request = protos.login_service_cs_pb2.LoginCredentials(username=username, password=password)
-    response = stub.RpcLogin(login_request)
-    res['message'] = response.message
-    res['token'] = response.token
-    print("LoginService login client received: " + response.message + " Token: " + response.token)
-    return json.dumps(res)
+    with xmlrpc.client.ServerProxy("http://login-service:8000/") as proxy:
+        result = proxy.rpc_login(mail, password)
+        return json.dumps(result)
 
 
 @api.route('/api/sign-up', methods=['GET'])
 def signUp():
-    res = {}
     name = request.args.get('name')
     surname = request.args.get('surname')
     mail = request.args.get('mail')
     password = request.args.get('pwd')
     birthdate = request.args.get('birthdate')
-    username= request.args.get('usr')
-    channel = grpc.insecure_channel(
-        'login-service:50051')  # Insert the name of the service as IP if using docker network
-    stub = protos.login_service_cs_pb2_grpc.LoginStub(channel)
-    sign_up_request = protos.login_service_cs_pb2.SignUpCredentials(name=name, surname=surname, mail=mail, password=password, birthdate=birthdate, username=username)
-    response = stub.RpcSignUp(sign_up_request)
-    res['message'] = response.message
-    res['token'] = response.token
-    print("LoginService sign up client received: " + response.message + " Token: " + response.token)
-    return json.dumps(res)
+    username = request.args.get('usr')
+    with xmlrpc.client.ServerProxy("http://login-service:8000/") as proxy:
+        result = proxy.rpc_sign_up(name, surname, mail, password, birthdate, username)
+        return json.dumps(result)
 
 @api.route('/api/request-route', methods=['GET'])
 def request_route():
