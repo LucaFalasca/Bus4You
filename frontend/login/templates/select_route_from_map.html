@@ -1,8 +1,6 @@
-<style>
-    #map { height: 80% }
-</style>
-<html>
-<head>
+{% extends 'base.html' %}
+
+{% block stylesheets%}
     <title>GatewayAPI - Select route from map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
@@ -12,48 +10,61 @@
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
     crossorigin=""></script>
     <input type="hidden" id="response" value= "{{ ok }}">
-</head>
-<body>
-    <br>
+     <link rel="stylesheet" type="text/css" href="../static/css/select_route_from_map.css">
+{% endblock %}
+
+{% block body %}
+
+<br>
     <form action="/select-route-from-map" method="GET">
-        <!-- campo per l'inserimento dell'username -->
-        <input type="text" id="username" name="user" placeholder={{ session['usr'] }}><br>
-        
-        <!-- campo per l'inserimento del punto di partenza -->
-        <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
-        <button type="button" id="start_point" onclick="set_starting_coord()">Select Start Point</button><br>
-        
-        <!-- campo per l'inserimento del punto di arrivo -->
-        <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
-        <button type="button" id="end_point" onclick="set_ending_coord()">Select End Point</button><br>
-        
-        <!-- campo per l'inserimento della data -->
-        Date <input type="date" id="date" name="date" placeholder="Date"><br>
-        
-        <!-- campo per l'inserimento dell'ora di arrivo -->
-        Arrival time <input type="time" id="arrival_time" name="arrival_time" placeholder="Ending time"><br>
-        
-        <!-- campo per l'inserimento del tempo di percorrenza massimo -->
-        Maximum travel time <input type="time" id="travel_time" name="travel_time"><br>
-        
-        <!-- pulsante di submit del form -->
-        <input type="submit" value="Submit"><br>
-    </form>
-    
-    
+        <div id="divForm">
+            <div id="divForm1">
+                <!-- campo per l'inserimento dell'username -->
+                <input type="text" id="username" name="user" placeholder={{ session['usr'] }}><br>
+
+                <!-- campo per l'inserimento del punto di partenza -->
+                <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                <br>
+                <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select Start Point</button><br>
+
+                <!-- campo per l'inserimento del punto di arrivo -->
+                <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                    <br>
+                <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select End Point</button><br>
+            </div>
+            <div id="divForm2">
+                <!-- campo per l'inserimento della data -->
+
+                <input type="date" id="date" name="date" placeholder="Date">Date<br>
+
+                <!-- campo per l'inserimento dell'ora di arrivo -->
+
+                <input type="time" id="arrival_time" name="arrival_time" placeholder="Ending time">Arrival time<br>
+
+                <!-- campo per l'inserimento del tempo di percorrenza massimo -->
+
+                <input type="time" id="travel_time" name="travel_time">Maximum travel time <br>
+            </div>
+        </div>
+    <!-- pulsante di submit del form -->
+    <input type="submit" value="Submit"><br>
+</form>
+
+
+
     <div id="map"></div>
-    
+
     <script>
-        
+
         var map = L.map('map').setView([41.85578716505089, 12.62212090183184], 17);
-        
-        
+
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-        
-        
+
+
         var startingPoint;
         var endingPoint;
         var popup = L.popup();
@@ -82,7 +93,7 @@
                     .openOn(map);
                 }
             }
-            
+
         }
 
         map.on('click', onMapClick);
@@ -99,6 +110,5 @@
     echo(sessionStorage.getItem("response"))
     </script>
     {{ response }}
-    
-</body>
-</html>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+#map {
+    height: 80%;
+    margin-left: 20px;
+    margin-right: 20px; !important;
+    margin-bottom: 20px; !important;
+    border-radius: 5px;
+}
+
+input[type=text] {
+    border-radius: 12px !important;
+    width: 30%;
+    margin-bottom:10px;
+}
+
+input[type=date] {
+    border-radius: 12px !important;
+    width: 30%;
+    margin-bottom:10px;
+    margin-right: 20px;
+}
+
+input[type=time] {
+    border-radius: 12px !important;
+    width: 30%;
+    margin-bottom:10px;
+    margin-right: 20px;
+}
+
+input[type=submit] {
+    padding: 6px;
+    border-radius: 12px !important;
+    margin-top: 10px; !important;
+    margin-bottom: 20px; !important;
+    border-color: #4CAF50; !important;
+    color: white; !important;
+    outline: none; !important;
+    border-style: solid; !important;
+    margin-left: 175px; !important;
+}
+
+#btn_start_point, #btn_end_point{
+    padding: 6px;
+    border-radius: 12px !important;
+    margin-bottom: 10px; !important;
+    margin-left: 20px; !important;
+    border-color: #4CAF50; !important;
+    color: white; !important;
+    outline: none; !important;
+    border-style: solid; !important;
+}
+
+#divForm{
+    padding-left: 20px;
+}
