@@ -3,24 +3,25 @@
     margin-left: 20px;
     margin-right: 20px; !important;
     margin-bottom: 20px; !important;
-    border-radius: 5px;
+    border-radius: 7px;
 }
 
 input[type=text] {
-    border-radius: 12px !important;
+    border-radius: 7px !important;
     width: 30%;
     margin-bottom:10px;
 }
 
 input[type=date] {
-    border-radius: 12px !important;
+    border-radius: 7px !important;
     width: 30%;
     margin-bottom:10px;
     margin-right: 20px;
+    margin-top: 20px;
 }
 
 input[type=time] {
-    border-radius: 12px !important;
+    border-radius: 7px !important;
     width: 30%;
     margin-bottom:10px;
     margin-right: 20px;
@@ -28,7 +29,7 @@ input[type=time] {
 
 input[type=submit] {
     padding: 6px;
-    border-radius: 12px !important;
+    border-radius: 7px !important;
     margin-top: 10px; !important;
     margin-bottom: 20px; !important;
     border-color: #4CAF50; !important;
@@ -40,7 +41,7 @@ input[type=submit] {
 
 #btn_start_point, #btn_end_point{
     padding: 6px;
-    border-radius: 12px !important;
+    border-radius: 7px !important;
     margin-bottom: 10px; !important;
     margin-left: 20px; !important;
     border-color: #4CAF50; !important;
