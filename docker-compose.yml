@@ -71,6 +71,8 @@ services:
   make-root-service:
     build: ./make-root-service
     container_name: make-root-service
+    volumes:
+        - ./make-root-service:/app
 
 
 

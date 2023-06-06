@@ -243,7 +243,7 @@ def try_make_route_from_node(node):
 
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
         print(pred_hash)
-        result = proxy.calculate_route(dist_matrix, pred_hash)
+        result = proxy.calculate_route(dist_matrix, pred_hash, [], {})
         return result
 
 
@@ -255,7 +255,7 @@ def try_make_route_from_node_2():
 
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
         print(pred_hash)
-        result = proxy.calculate_route(dist_matrix, pred_hash)
+        result = proxy.calculate_route(dist_matrix, pred_hash, [], {})
         return result
 
 

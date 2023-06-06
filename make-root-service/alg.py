@@ -36,21 +36,21 @@ def two_opt(route, dist_matrix, prec_hash, travel_time_matrix, node_limit):
                 
                 new_route_string = [str(i) for i in new_route]
                 final_route , new_distance, new_n_tardy, new_tardy_mean, _, _, _ = alg2.compact(new_route_string, dist_matrix, node_limit)
-                print("CurrentRoute: " + str(best_route) + " - newRoute: " + str(new_route))
-                print("CurrentDistance: " + str(best_distance) + " - newDistance: " + str(new_distance))
-                print("CurrentTard: " + str(best_n_tardy) + " - newTard: " + str(new_n_tardy))
-                print("CurrentTardMean: " + str(best_tardy_mean) + " - newTardMean: " + str(new_tardy_mean))
+                #print("CurrentRoute: " + str(best_route) + " - newRoute: " + str(new_route))
+                #print("CurrentDistance: " + str(best_distance) + " - newDistance: " + str(new_distance))
+                #print("CurrentTard: " + str(best_n_tardy) + " - newTard: " + str(new_n_tardy))
+                #print("CurrentTardMean: " + str(best_tardy_mean) + " - newTardMean: " + str(new_tardy_mean))
                 if new_n_tardy < best_n_tardy or new_n_tardy == best_n_tardy and new_tardy_mean < best_tardy_mean:
                     best_n_tardy = new_n_tardy
                     best_tardy_mean = new_tardy_mean
                     best_route = new_route
                     best_distance = new_distance
                     improvement = True
-                    print("Improvement")
+                    #print("Improvement")
                 else:
                     alternative_route.append(new_route)
         route = best_route
-    return best_route, final_route, best_distance, best_n_tardy, best_tardy_mean, alternative_route
+    return final_route, best_distance, best_n_tardy, best_tardy_mean, alternative_route
 
 def tardy_mean(route, dist_matrix, pred_hash, travel_time_matrix):
     sum = 0
@@ -113,7 +113,7 @@ def two_opt_multistart(route, dist_matrix, prec_hash, travel_time_matrix, node_l
             min = result[1]
             resultMin = result
     '''
-    return result
+    return result[:-1]
 
 # only for throuble shooting
 def generate_dist_matrix(size, max_val):
@@ -136,13 +136,13 @@ def remove_duplicates(nodes):
 def topological_sort(graph):
     # Inizializza il conteggio delle dipendenze per ogni nodo del grafo
     in_degree = {node: 0 for node in graph}
-    print(in_degree)
+    #print(in_degree)
     # Calcola il conteggio delle dipendenze per ogni nodo del grafo
     for node in graph:
         for neighbor in graph[node]:
-            print(graph[node])
+            #print(graph[node])
             in_degree[str(neighbor)] += 1
-    print(in_degree)
+    #print(in_degree)
 
     # Inizializza la coda di lavoro con i nodi senza dipendenze
     queue = deque([node for node in in_degree if in_degree[node] == 0])
@@ -152,7 +152,7 @@ def topological_sort(graph):
 
     # Ripeti finché la coda non è vuota
     while queue:
-        print(queue)
+        #print(queue)
         # Prende un nodo dalla coda
         node = queue.popleft()
 
@@ -177,7 +177,7 @@ def calculate_route(dist_matrix, prec_hash, travel_time_matrix, node_limit):
     node_list = list(map(int, prec_hash.keys()))
     remove_duplicates(node_list)
     route = topological_sort(prec_hash)
-    print(route)
+    #print(route)
     return two_opt_multistart(route, dist_matrix, prec_hash, travel_time_matrix, node_limit, 1)
 
 
@@ -199,6 +199,7 @@ if __name__ == "__main__":
     result = calculate_route(dist_matrix, prec_hash, None, node_limit_min)
     if result == None:
         print("No route found")
+    '''
     else:
         route = result[0]
         print(route)
@@ -208,6 +209,7 @@ if __name__ == "__main__":
                 subroute = route[route.index(int(k)):route.index(int(v)) + 1]
                 print(subroute)
                 print("distance: " + str(route_distance(subroute, dist_matrix)))
+    '''
     
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")

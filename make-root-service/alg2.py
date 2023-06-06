@@ -75,14 +75,21 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 			nodes[uncompacted_route[i]] = node_limit[uncompacted_route[i]][1]
 	
 	'''
-	print("limiti nodi: " + str(node_limit))
-	print("uncompacted_route: " + str(uncompacted_route))
-			
-	n = list(node_limit.keys())[0]
-	if(node_limit[n][0] is None):
-		nodes[n] = node_limit[n][1]
-	elif(node_limit[n][1] is None):
-		nodes[n] = node_limit[n][0]
+	#print("limiti nodi: " + str(node_limit))
+	#print("uncompacted_route: " + str(uncompacted_route))
+	
+	n = uncompacted_route[0]
+
+	if(len(node_limit) != 0):
+		n = list(node_limit.keys())[0]
+		if(node_limit[n][0] is None):
+			nodes[n] = node_limit[n][1]
+		elif(node_limit[n][1] is None):
+			nodes[n] = node_limit[n][0]
+	else:
+		nodes[n] = 0
+		
+	#print(n, uncompacted_route.index(n))
 	
 	for i in range(uncompacted_route.index(n) + 1, len(uncompacted_route)):
 		new_time = nodes[uncompacted_route[i - 1]] + dist_matrix[int(uncompacted_route[i - 1])][int(uncompacted_route[i])]
@@ -95,7 +102,7 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 		
 
 	route = order_by_time(nodes)
-	print(route)
+	#print(route)
 
 	right_time_shift_possible = {k : 0 for k in node_limit}
 
@@ -131,29 +138,30 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 
 	
 
-	print("time_shift: " + str(time_shift))
-	print("right_time_shift_possible: " + str(right_time_shift_possible))
-	print("left_time_shift_possible: " + str(left_time_shift_possible))
+	#print("time_shift: " + str(time_shift))
+	#print("right_time_shift_possible: " + str(right_time_shift_possible))
+	#print("left_time_shift_possible: " + str(left_time_shift_possible))
 
-	needed_shift = max(0, max(time_shift.values())) + min(0, min(time_shift.values()))
+	if(time_shift != {}):
+		needed_shift = max(0, max(time_shift.values())) + min(0, min(time_shift.values()))
 
-	print("needed_shift: " + str(needed_shift))
+		print("needed_shift: " + str(needed_shift))
 
-	shift = 0
-	if(needed_shift > 0):
-		shift = min(needed_shift, min(right_time_shift_possible.values()))
-		print("shift: " + str(shift))
-		for k in nodes:
-			nodes[k] += shift
-	elif(needed_shift < 0):
-		shift = max(needed_shift, -min(left_time_shift_possible.values()))
-		print("shift: " + str(shift))
-		for k in nodes:
-			nodes[k] += shift
+		shift = 0
+		if(needed_shift > 0):
+			shift = min(needed_shift, min(right_time_shift_possible.values()))
+			print("shift: " + str(shift))
+			for k in nodes:
+				nodes[k] += shift
+		elif(needed_shift < 0):
+			shift = max(needed_shift, -min(left_time_shift_possible.values()))
+			print("shift: " + str(shift))
+			for k in nodes:
+				nodes[k] += shift
 
-	if(needed_shift < 15 and needed_shift > -15 and shift == 0):
-		for k in nodes:
-			nodes[k] += needed_shift/2
+		if(needed_shift < 15 and needed_shift > -15 and shift == 0):
+			for k in nodes:
+				nodes[k] += needed_shift/2
 	'''
 	# controlla se ci sono ritardi o idle
 	for i in range(len(route) - 1):
@@ -188,7 +196,7 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 	
 
 	route = order_by_time(nodes)
-	print(route)
+	#print(route)
 
 	travel_time = nodes[route[-1][0]] - nodes[route[0][0]]
 	acceptable_deviances = []
@@ -205,8 +213,14 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 				unacceptable_deviances.append(nodes[k] - ub)
 			else:
 				acceptable_deviances.append(ub - nodes[k])
-	mean_acceptable_deviance = round(sum(acceptable_deviances) / len(node_limit), 2)
-	mean_unacceptable_deviance = round(sum(unacceptable_deviances) / len(node_limit), 2)
+	if(len(node_limit) != 0):
+		mean_acceptable_deviance = round(sum(acceptable_deviances) / len(node_limit), 2)
+		mean_unacceptable_deviance = round(sum(unacceptable_deviances) / len(node_limit), 2)
+	else:
+		mean_acceptable_deviance = 0
+		mean_unacceptable_deviance = 0
+
+
 	if acceptable_deviances == []:
 		max_acceptable_deviances = 0
 	else:
@@ -234,5 +248,5 @@ if __name__ == "__main__":
 	node_limit_min = {k : (convert_time_to_minutes(v[0]), convert_time_to_minutes(v[1])) for k, v in node_limit.items()}
 
 	
-	print(compact(['0', '1', '2', '4', '3', '5'], dist_matrix, node_limit_min))
+	print(compact(['0', '1', '2', '4', '3', '5'], dist_matrix, {}))
 	
