@@ -173,13 +173,20 @@ def topological_sort(graph):
     else:
         return None
 
-def calculate_route(dist_matrix, prec_hash, travel_time_matrix, node_limit):
+def calculate_route(dist_matrix, prec_hash, travel_time_matrix, node_limit, user_ruotes):
     node_list = list(map(int, prec_hash.keys()))
     remove_duplicates(node_list)
     route = topological_sort(prec_hash)
-    #print(route)
-    return two_opt_multistart(route, dist_matrix, prec_hash, travel_time_matrix, node_limit, 1)
-
+    result = two_opt_multistart(route, dist_matrix, prec_hash, travel_time_matrix, node_limit, 1)
+    if result == None:
+        return None
+    else:
+        final_ruote = result[0]
+        user_travel_time = {}
+        ruote_dict = {tup[0]:tup[1] for tup in final_ruote}
+        for user in user_routes:
+            user_travel_time[user] = float(ruote_dict[user_routes[user][1]]) - float(ruote_dict[user_routes[user][0]])
+        return result, user_travel_time
 
 if __name__ == "__main__":
     node_limit = {'1': (None, datetime.time(13, 55)),
@@ -192,13 +199,17 @@ if __name__ == "__main__":
 					[30, 20, 20, 0, 10, 10],
 					[20, 10, 10, 10, 0, 10],
 					[30, 20, 20, 10, 10, 0]]
-                    
+    user_routes = {"Giovanni": ('0', '1'),
+                    "Marco": ('2', '3'),
+                    "Luca": ('4', '5')}
 
     node_limit_min = {k : (alg2.convert_time_to_minutes(v[0]), alg2.convert_time_to_minutes(v[1])) for k, v in node_limit.items()}
     
-    result = calculate_route(dist_matrix, prec_hash, None, node_limit_min)
+    result = calculate_route(dist_matrix, prec_hash, None, node_limit_min, user_routes)
     if result == None:
         print("No route found")
+    else:
+        print(result)
     '''
     else:
         route = result[0]
