@@ -7,3 +7,16 @@
 /gateway-api/gatewayApi/protos/login_service_cs_pb2_grpc.py
 neo4j/
 /userDb.mwb.bak
+.venv/Scripts/python.exe
+booking-service/__pycache__/neo4J_dao.cpython-311.pyc
+frontend/__pycache__/__init__.cpython-311.pyc
+frontend/login/__pycache__/__init__.cpython-311.pyc
+frontend/login/entity/__pycache__/__init__.cpython-311.pyc
+frontend/login/entity/__pycache__/stop.cpython-311.pyc
+frontend/login/entity/__pycache__/user_route.cpython-311.pyc
+frontend/login/utils/__pycache__/__init__.cpython-311.pyc
+frontend/login/utils/__pycache__/json_parser.cpython-311.pyc
+make-root-service/__pycache__/alg.cpython-38.pyc
+make-root-service/__pycache__/alg.cpython-39.pyc
+make-root-service/__pycache__/alg2.cpython-38.pyc
+make-root-service/__pycache__/alg2.cpython-39.pyc
