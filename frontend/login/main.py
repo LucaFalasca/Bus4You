@@ -35,7 +35,7 @@ def login():
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
             session['token'] = response['token']
-            return render_template("select_route_from_map.html")
+            return request_route()
         else:
             flash('Login failed incorrect mail or password', category='info')
             return render_template("login.html")
@@ -83,14 +83,16 @@ def request_route():
     print(date)
     print(arrival_time)
     print(travel_time)
+    gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()
     if starting_point == None or ending_point == '' or date == '' or arrival_time == '' or travel_time == '':
-        return render_template("select_route_from_map.html")
+        return render_template("select_route_from_map.html", bus_stops = bus_stops)
     else:
         gateway_request_route_url = 'http://localhost:50052/api/route_from_map?starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
-        return render_template("select_route_from_map.html", response=response)
+        return render_template("select_route_from_map.html", bus_stops = bus_stops, response=response)
 
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])

@@ -8,21 +8,20 @@
 
 input[type=text] {
     border-radius: 7px !important;
-    width: 30%;
+    width: 100%;
     margin-bottom:10px;
 }
 
 input[type=date] {
     border-radius: 7px !important;
-    width: 30%;
+    width: 100%;
     margin-bottom:10px;
     margin-right: 20px;
-    margin-top: 20px;
 }
 
 input[type=time] {
     border-radius: 7px !important;
-    width: 30%;
+    width: 100%;
     margin-bottom:10px;
     margin-right: 20px;
 }
@@ -30,13 +29,13 @@ input[type=time] {
 input[type=submit] {
     padding: 6px;
     border-radius: 7px !important;
-    margin-top: 10px; !important;
-    margin-bottom: 20px; !important;
     border-color: #4CAF50; !important;
-    color: white; !important;
+    margin-top: 5px;
+    margin-bottom: 10px; !important;
+    margin-right: 20px; !important;
+    color: black; !important;
     outline: none; !important;
     border-style: solid; !important;
-    margin-left: 175px; !important;
 }
 
 #btn_start_point, #btn_end_point{
@@ -45,11 +44,19 @@ input[type=submit] {
     margin-bottom: 10px; !important;
     margin-left: 20px; !important;
     border-color: #4CAF50; !important;
-    color: white; !important;
+    color: black; !important;
     outline: none; !important;
     border-style: solid; !important;
 }
 
 #divForm{
     padding-left: 20px;
+}
+
+label{
+    color: white;
+}
+
+.leaflet-marker-icon .leaflet-marker-icon:focus {
+    outline-style: none;
 }

@@ -112,6 +112,18 @@ def load_user_routes():
                        {"name": "Chaddopia", "pos": "xy"}]}]
     return json.dumps(user_routes)
 
+@api.route('/api/get_bus_stops', methods=['GET'])
+def get_bus_stops():
+    bus_stops = [{"name": "Cambridge",
+                "lat" : "41.853757",
+                "lang": "12.623366"},
+                {"name": "Cambridge/Resid. Universitaria",
+                "lat" : "41.854332",
+                "lang": "12.626703"},
+                {"name": "Heidelberg",
+                "lat" : "41.856089",
+                "lang": "12.629353"}]
+    return json.dumps(bus_stops)
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)

@@ -28,10 +28,10 @@ html, body {
 
 #navbar-button{
     text-align: center;
-    width: 200px;
+    width: 150px;
     background-color: #1c3c4f;
     color: white;
-    padding: 16px 32px;
+    padding: 8px 8px;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
