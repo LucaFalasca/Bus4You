@@ -45,6 +45,14 @@ services:
       retries: 20
       start_period: 3s
 
+  db-service:
+    build: ./db-service
+    container_name: db-service
+    volumes:
+      - ./db-service:/app
+    depends_on:
+      mysqlDb:
+        condition: service_healthy
 
   booking_service:
     build: ./booking-service
