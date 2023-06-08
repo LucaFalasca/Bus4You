@@ -29,11 +29,12 @@ services:
       - "7474:7474"
       - "7687:7687"
     
-    #volumes:
-    #  - ./neo4j/data:/data
+    volumes:
+      - ./neo4j/data:/data
+      - ./plugins:/plugins
+    
 
-
-     # Passes the following environment variables to the container
+      # Passes the following environment variables to the container
     environment:
       NEO4J_AUTH : "neo4j/123456789"
 
@@ -44,14 +45,15 @@ services:
       retries: 20
       start_period: 3s
 
+
   booking_service:
-      build: ./booking-service
-      container_name: booking_service
-      volumes:
-        - ./booking-service:/app
-      depends_on:
-        neo4jDb:
-          condition: service_healthy
+    build: ./booking-service
+    container_name: booking_service
+    volumes:
+      - ./booking-service:/app
+    depends_on:
+      neo4jDb:
+        condition: service_healthy
 
   gateway-api:
     build: ./gateway-api
@@ -72,8 +74,7 @@ services:
     build: ./make-root-service
     container_name: make-root-service
     volumes:
-        - ./make-root-service:/app
-
+      - ./make-root-service:/app
 
 
 #networks:
