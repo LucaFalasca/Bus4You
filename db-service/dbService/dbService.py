@@ -1,3 +1,4 @@
+from flask import json
 import xmlrpc.server
 from dao.DbDao import DbDao
 
@@ -16,7 +17,7 @@ def get_stops():
     conn = usr_db.connect()
     stop_list = usr_db.stop_query(conn)
     conn.close()
-    return {"stops": stop_list}
+    return json.dumps(stop_list)
 
 
 def get_user_routes(mail):
@@ -24,7 +25,7 @@ def get_user_routes(mail):
     conn = usr_db.connect()
     routes_list = usr_db.user_routes_query(conn, mail)
     conn.close()
-    return {"routes": routes_list}
+    return json.dumps(routes_list)
 
 
 if __name__ == "__main__":

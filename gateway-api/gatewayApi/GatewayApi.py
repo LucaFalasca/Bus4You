@@ -27,6 +27,7 @@ def signUp():
         result = proxy.rpc_sign_up(name, surname, mail, password, birthdate, username)
         return json.dumps(result)
 
+
 @api.route('/api/request-route', methods=['GET'])
 def request_route():
     starting_point = request.args.get('starting_point')
@@ -37,6 +38,7 @@ def request_route():
     with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
         result = proxy.two_opt_multistart(dist_matrix, pred_hash)
         return json.dumps(result)
+
 
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
@@ -50,8 +52,8 @@ def route_from_map():
     with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
         result = proxy.insert_booking(user, starting_point, ending_point, date, arrival_time, travel_time)
         return json.dumps(result)
-        
-        
+
+
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())
     dist_matrix = []
@@ -73,57 +75,56 @@ def load_user_routes():
     token = request.args.get('token')
     # TODO check token e retrieve delle route vere dal db
     user_routes = [{"startStop": "Alessandrino (MC)",
-                   "endStop": "Sorbona",
-                   "startHour": "10:00",
-                   "endHour": "10:30",
-                   "date": "24/05/2023",
-                   "cost": "1.50€",
-                   "stops": [
-                       {"name": "Alessandrino (MC)", "pos": "xy"},
-                       {"name": "Romanisti/Giaquinto", "pos": "xy"},
-                       {"name": "Torre Maura", "pos": "xy"},
-                       {"name": "Sorbona", "pos": "xy"}]},
+                    "endStop": "Sorbona",
+                    "startHour": "10:00",
+                    "endHour": "10:30",
+                    "date": "24/05/2023",
+                    "cost": "1.50€",
+                    "stops": [
+                        {"name": "Alessandrino (MC)", "pos": "xy"},
+                        {"name": "Romanisti/Giaquinto", "pos": "xy"},
+                        {"name": "Torre Maura", "pos": "xy"},
+                        {"name": "Sorbona", "pos": "xy"}]},
 
-                  {"startStop": "Sorbona",
-                   "endStop": "Romanisti/Giaquinto",
-                   "startHour": "17:00",
-                   "endHour": "17:38",
-                   "date": "24/05/2023",
-                   "cost": "1.00€",
-                   "stops": [
-                       {"name": "Sorbona", "pos": "xy"},
-                       {"name": "Torre Maura", "pos": "xy"},
-                       {"name": "Romanisti/Torre Spaccata", "pos": "xy"},
-                       {"name": "Casilina/Eriche", "pos": "xy"},
-                       {"name": "Romanisti/Giaquinto", "pos": "xy"}]},
+                   {"startStop": "Sorbona",
+                    "endStop": "Romanisti/Giaquinto",
+                    "startHour": "17:00",
+                    "endHour": "17:38",
+                    "date": "24/05/2023",
+                    "cost": "1.00€",
+                    "stops": [
+                        {"name": "Sorbona", "pos": "xy"},
+                        {"name": "Torre Maura", "pos": "xy"},
+                        {"name": "Romanisti/Torre Spaccata", "pos": "xy"},
+                        {"name": "Casilina/Eriche", "pos": "xy"},
+                        {"name": "Romanisti/Giaquinto", "pos": "xy"}]},
 
-                  {"startStop": "Sium (MC[had])",
-                   "endStop": "Chaddopia",
-                   "startHour": "17:60",
-                   "endHour": "18:00",
-                   "date": "30/02/2345",
-                   "cost": "0.99€",
-                   "stops": [
-                       {"name": "Sium (MC[had])", "pos": "xy"},
-                       {"name": "Anor Londo", "pos": "xy"},
-                       {"name": "Raftel", "pos": "xy"},
-                       {"name": "Zanarkand", "pos": "xy"},
-                       {"name": "Sparta", "pos": "xy"},
-                       {"name": "Chaddopia", "pos": "xy"}]}]
+                   {"startStop": "Sium (MC[had])",
+                    "endStop": "Chaddopia",
+                    "startHour": "17:60",
+                    "endHour": "18:00",
+                    "date": "30/02/2345",
+                    "cost": "0.99€",
+                    "stops": [
+                        {"name": "Sium (MC[had])", "pos": "xy"},
+                        {"name": "Anor Londo", "pos": "xy"},
+                        {"name": "Raftel", "pos": "xy"},
+                        {"name": "Zanarkand", "pos": "xy"},
+                        {"name": "Sparta", "pos": "xy"},
+                        {"name": "Chaddopia", "pos": "xy"}]}]
     return json.dumps(user_routes)
+
 
 @api.route('/api/get_bus_stops', methods=['GET'])
 def get_bus_stops():
-    bus_stops = [{"name": "Cambridge",
-                "lat" : "41.853757",
-                "lang": "12.623366"},
-                {"name": "Cambridge/Resid. Universitaria",
-                "lat" : "41.854332",
-                "lang": "12.626703"},
-                {"name": "Heidelberg",
-                "lat" : "41.856089",
-                "lang": "12.629353"}]
-    return json.dumps(bus_stops)
+    ret = []
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        bus_stops = json.loads(proxy.get_stops())
+    for elem in bus_stops:
+        stop={"name": elem[0], "lat": elem[1], "lang": elem[2]}
+        ret.append(stop)
+    return json.dumps(ret)
+
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)

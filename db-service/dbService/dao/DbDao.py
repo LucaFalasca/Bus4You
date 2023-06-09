@@ -40,7 +40,7 @@ class DbDao:
             curs.close()
             for elem in res:
                 ret.append([elem[0], elem[1], elem[2]])
-            print(ret)
+            return ret
         else:
             print("Connection with db failed")
             return -1
