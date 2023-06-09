@@ -11,22 +11,21 @@
             <div id="divAcc{{ user_routes.index(route) }}" class="accordion-item">
                 <h2 class="accordion-header" id="head{{ user_routes.index(route) }}">
                   <button id="btnAcc{{ user_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ user_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ user_routes.index(route) }}">
-                   {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getDate() }} - Partenza: {{ route.getStartHour() }} - Arrivo: {{ route.getEndHour() }}
+                   {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
                   </button>
                 </h2>
                 <div id="acc{{ user_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="head{{ user_routes.index(route) }}">
                   <div class="accordion-body">
-                      Data: {{ route.getDate() }} <br><br>
-                      Partenza: {{ route.getStartHour() }} <br>
-                      Arrivo: {{ route.getEndHour() }} <br><br>
-                      Percorso: <br>
-                      {% for stop in route.getStops() %}
-                          {% if route.getStops().index(stop) == 0 %}
-                            {{ stop.getName() }}
-                          {% else %}
-                            -> {{ stop.getName() }}
-                          {% endif %}
-                      {% endfor %}
+                      Data: {{ route.getItPropStart()[0:10]}} <br>
+                      Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                      Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                      Fermata Partenza: {{ route.getStartStop() }} <br>
+                      Fermata Arrivo: {{ route.getEndStop() }} <br>
+                      Costo: {{ route.getItCost() }}<br>
+                      Stato Itinerario: {{ route.getItStatus() }}<br>
+                      Stato Percorso: {{ route.getRouteStatus() }}<br>
+                      Percorso Passato: {{ route.isPast() }}<br>
+                      Scadenza Percorso: {{ route.getRouteExpire() }}<br>
                   </div>
                 </div>
             </div>
