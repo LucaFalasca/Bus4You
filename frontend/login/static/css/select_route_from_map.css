@@ -1,0 +1,62 @@
+#map {
+    height: 80%;
+    margin-left: 20px;
+    margin-right: 20px; !important;
+    margin-bottom: 20px; !important;
+    border-radius: 7px;
+}
+
+input[type=text] {
+    border-radius: 7px !important;
+    width: 100%;
+    margin-bottom:10px;
+}
+
+input[type=date] {
+    border-radius: 7px !important;
+    width: 100%;
+    margin-bottom:10px;
+    margin-right: 20px;
+}
+
+input[type=time] {
+    border-radius: 7px !important;
+    width: 100%;
+    margin-bottom:10px;
+    margin-right: 20px;
+}
+
+input[type=submit] {
+    padding: 6px;
+    border-radius: 7px !important;
+    border-color: #4CAF50; !important;
+    margin-top: 5px;
+    margin-bottom: 10px; !important;
+    margin-right: 20px; !important;
+    color: black; !important;
+    outline: none; !important;
+    border-style: solid; !important;
+}
+
+#btn_start_point, #btn_end_point{
+    padding: 6px;
+    border-radius: 7px !important;
+    margin-bottom: 10px; !important;
+    margin-left: 20px; !important;
+    border-color: #4CAF50; !important;
+    color: black; !important;
+    outline: none; !important;
+    border-style: solid; !important;
+}
+
+#divForm{
+    padding-left: 20px;
+}
+
+label{
+    color: white;
+}
+
+.leaflet-marker-icon .leaflet-marker-icon:focus {
+    outline-style: none;
+}

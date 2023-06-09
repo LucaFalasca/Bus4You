@@ -1,5 +1,7 @@
+import csv
 from lib2to3.pgen2 import driver
 import datetime
+
 
 
 def stampa_matrice(matrice):
@@ -31,6 +33,26 @@ def print_node_info(label):
             print(str(record["node_id"]) + " | " + record["name"] + " | " + data_prenotazione.strftime("%Y-%m-%d") + " | " + ora_datetime.strftime("%H:%M:%S") + " | " + "("+str(position.longitude)+","+str(position.latitude)+")")
     session.close()
 
+def readStops():
+    fermate = []
+
+    # Apri il file di testo
+    with open('stops.txt', 'r') as file:
+    # Leggi il contenuto del file riga per riga
+        lines = file.readlines()
+
+    # Itera su ogni riga del file di testo
+    for line in lines:
+    # Divide la riga in una lista di valori usando il separatore ","
+        values = line.strip().split(",")
+        print(values)
+    # Crea una tupla con le informazioni sulla fermata e aggiungila alla lista di fermate
+        fermata = (values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10])
+        fermate.append(fermata)
+
+    # Stampa la lista di fermate
+    print(fermate)
+
 
 """
     url = "https://www.snap4city.org/superservicemap/api/v1/shortestpath?source=43.7767%3B11.2477&destination=43.7687%3B11.2620&routeType=car&startDatetime=2017-01-13T12%3A34%3A00&format=json"
@@ -57,3 +79,5 @@ def print_node_info(label):
             for item in data:
                 prendi_chiavi_albero(attributo, item, path)
 """
+
+readStops()

@@ -9,132 +9,18 @@ import xmlrpc.server
 from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import  WGS84Point
 from neo4J_dao import create_person, create_stop, create_startStop, create_endStop, create_travel, create_distances
+from Neo4jDAO import *
+from utils import *
 
 
-#La funzione Prepara il drive di collegamento da cui si possono creare sessiono per accederci.
-#NOTA I driver sono molto dispendiosi in risorse, farne UNO solo.
-def setUpDriver():
-    uri = "neo4j://neo4jDb:7687"
-    auth=basic_auth("neo4j", "123456789")
-    driver = GraphDatabase.driver(uri, auth=auth, encrypted=False)
-    driver.verify_connectivity()
-    return driver
+#Usare questa funzione per generare un insieme di prenotazioni con dati realistici
+def generate_stops(sizeUsers):
 
-
-#Lista di funzioni eseguibili esternamente
-def insert_person(session, username):
-    session.execute_write(create_person, username)
-
-def insert_stop(session, name, hour, date, posX, posY):
-    session.execute_write(create_stop, name, hour, date, posX, posY)
-
-def insert_start_stop(session, user, stop, hour, date, position):
-    session.execute_write(create_startStop, user, stop, hour, date, position)
-
-def insert_end_stop(session, user, stop, hour, date, position):
-    session.execute_write(create_endStop, user, stop, hour, date, position)
-
-def insert_travel(session, starting_point, ending_point, start_time, arrival_time, day, travel_time):
-    session.execute_write(create_travel, starting_point, ending_point, start_time, arrival_time, day, travel_time)
-
-def insert_connection():
-    session.execute_write(create_distances)
-
-def insert_booking(user , starting_point , ending_point , data , arrival_time , travel_time, posX1, posY1, posX2, posY2):
-    session = driver.session(database=db)
-    pointStart = WGS84Point((posX1, posY1))
-    pointEnd = WGS84Point((posX2, posY2))
-    start_time = (datetime.datetime.combine(datetime.date.today(), arrival_time) - travel_time).time()
-    insert_start_stop(session, user, starting_point, start_time, data, pointStart)
-    insert_end_stop(session, user, ending_point, arrival_time, data, pointEnd)
-    insert_travel(session, starting_point, ending_point, start_time, arrival_time, data, travel_time)
-    session.close()
-    return "ok" #Usa questo per verificare se legge la funzione
-
-
-#La seguente funzione restituisce una terna di tre volori necessari per l'algoritmo
-#1) Un dizionaro dove per chiave ha l'id effettivo della fermata del grafo e per valore il suo id nella matrice delle distanze e precedenza
-#2) La matrice delle distanze (al momento spaziali)
-#3) Il dizionario delle precedenze
-#NOTA LA FUNZIONE NECESSITA DI ESSERE INVOCATA DOPO AVER COSTRUITO I NODI DI COLLEGAMENTO (make_connection)
-def prepare_for_alg():
-    session = driver.session(database=db)
-    dizionario_fermate = {}
-    matrice = []
-    dizionario_precedenze = {}
-
-    #Nel primo Step preparariamo il dizionario biettivo tra l'id della fermata nel Database e l'Algoritmo
-    contatore = 0
-    query = "MATCH (f:Fermata) RETURN id(f) AS id_fermata"
-    result = session.run(query)
-    for record in result:
-        id_fermata = record["id_fermata"]
-        dizionario_fermate[id_fermata] = contatore # aggiungere una nuova voce al dizionario con l'ID come chiave e il valore auto-incrementato come valore
-        dizionario_precedenze[str(contatore)] = []
-        contatore += 1
-
-
-
-
-    # stampare il dizionario risultante
-    #print("Dizionario Fermate: ")
-    #print(dizionario_fermate)
-    #print("********************")
-
-
-    #Nel secondo step ci prepariamo la nostra matrice di distanze
-    #Qui costruiamo la nostra matrice e inseriamo distanza 0 tra un nodo con stesso
-    for i in range(len(dizionario_fermate)):
-        matrice.append([])
-        for j in range(len(dizionario_fermate)):
-            matrice[i].append(0)
-
-    #Ora andiamo a inserire tutte le distanze nella matrice
-    result = session.run("MATCH (a)-[r:DISTANCE_TO]->(b) RETURN id(a) AS nodeA_id, id(b) AS nodeB_id, r.distance AS distance")
-    for record in result:
-        nodeA_id = record["nodeA_id"]
-        nodeB_id = record["nodeB_id"]
-        distance = record["distance"]
-        matrice[dizionario_fermate[nodeA_id]-1][dizionario_fermate[nodeB_id]-1] = int(distance)
-        matrice[dizionario_fermate[nodeB_id]-1][dizionario_fermate[nodeA_id]-1] = int(distance)
-    #print("Matrice distanze: ")
-    #print(matrice)
-    #print("********************")
-
-    #Ora prepariamo il dizionario delle precedenze
-    result = session.run("MATCH (a:Fermata)-[r:TRAVEL]->(b:Fermata) RETURN id(a) AS nodeA_id, id(b) AS nodeB_id")
-    for record in result:
-        nodeA_id = record["nodeA_id"]
-        nodeB_id = record["nodeB_id"]
-        dizionario_precedenze[str(dizionario_fermate[nodeA_id])].append(dizionario_fermate[nodeB_id])
-    #print("Dizionario precedenze: ")
-    #print(dizionario_precedenze)
-    #print("********************")
-
-    session.close()
-    return dizionario_fermate, matrice, dizionario_precedenze
-
-
-
-
-
-#Make Connection ha come compito quello di cercare tra i nodi del grafo quelli compatibili spazialmente
-#E' una funziona del tutto autonoma è invocabile da altri microdervizi in qualunque momento
-#Puo essere eseguita piu volte non crea doppie connessioni
-#Al momento attuale crea un grafo ompleto con tutti i nodi
-#
-def make_connections():
-    insert_connection() #inizialmente si calcola tutte le conessione e inserisce l arco di compatibilità tra due nodi solo se minore di un certo dato (il dato non è ancora stato inserito)
-
-
-#Questa simulazioni simula una generazio di fermate con dati realistici
-def generate_fermate(sizeUsers):
-
-    nomi = ["Marco", "Giulia", "Matteo", "Francesca", "Luca", "Chiara", "Alessandro", "Valentina", "Davide", "Sara",
+    users = ["Marco", "Giulia", "Matteo", "Francesca", "Luca", "Chiara", "Alessandro", "Valentina", "Davide", "Sara",
             "Simone", "Martina", "Lorenzo", "Elisa", "Giacomo", "Federica", "Andrea", "Alice", "Giovanni", "Beatrice",
             "Nicola", "Elena", "Riccardo", "Cristina", "Stefano", "Maria", "Antonio", "Laura", "Filippo", "Caterina"]
 
-    fermate = [
+    stops = [
         ["Termini", (41.9014, 12.5005)],
         ["Piazza Venezia", (41.8954, 12.4823)],
         ["Colosseo", (41.8902, 12.4923)],
@@ -167,119 +53,58 @@ def generate_fermate(sizeUsers):
         ["Porta Pia", (41.9082, 12.4989)]
     ]
 
-    giorno = datetime.date(2023, 5, 18)
-    ora_di_arrivo = datetime.time(13, 30, 0)
-
-    tempo_impiegato = datetime.timedelta(minutes=15)  # la durata da aggiungere (15 min)
+    day = datetime.date(2023, 5, 18)
+    hour_end = datetime.time(13, 30, 0)
 
 
     random.seed(time.time())
     for i in range(sizeUsers):
 
-        fermata1 = random.choice(fermate)
-        fermata2 = random.choice(fermate)
-        insert_booking(random.choice(nomi), fermata1[0], fermata2[0], giorno, ora_di_arrivo, tempo_impiegato, fermata1[1][0], fermata1[1][1], fermata2[1][0], fermata2[1][1])
+        stop1 = random.choice(stops)
+        stop2 = random.choice(stops)
+        create_booking(random.choice(users), stop1[0], stop2[0], day, hour_end, stop1[1][0], stop1[1][1], stop2[1][0], stop2[1][1])
 
 
-class Node:
 
-    def __init__(self, starting_point, ending_point, data, arrival_time, travel_time):
-        self.starting_point = starting_point
-        self.ending_point = ending_point
-        self.data = data
-        self.arrival_time = arrival_time
-        self.travel_time = travel_time
+def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
+                   position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
 
-def take_nodes_from_bd(number_of_nodes):
-    #TODO
-    return [Node("0", "1", "11/05/2023", "13:45", "00:15"),
-            Node("2", "3", "11/05/2023", "14:00", "00:40"),
-            Node("4", "5", "11/05/2023", "14:15", "00:40"),
-            Node("6", "7", "11/05/2023", "14:30", "00:40"),
-            Node("8", "10", "11/05/2023", "14:45", "00:40"),
-            Node("10", "11", "11/05/2023", "15:00", "00:15"),
-            Node("10", "13", "11/05/2023", "15:15", "00:15")]
+    position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
+    position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
 
 
-def calculate_dist_matrix(nodes_list):
-    #TODO
-    return generate_dist_matrix(len(nodes_list) * 2, 10)
-
-# only for throuble shooting
-def generate_dist_matrix(size, max_val):
-    random.seed(time.time())
-    dist_matrix = []
-    for i in range(size):
-        row = []
-        for j in range(size):
-            if i == j:
-                row.append(0)
-            else:
-                val = random.randint(1, max_val)
-                row.append(val)
-        dist_matrix.append(row)
-    return dist_matrix
-
-def calculate_pred_hash(nodes_list):
-    nodes_list = list(nodes_list)
-    pred_hash = {}
-    for n in nodes_list:
-        if(n.starting_point in pred_hash):
-            pred_hash[n.starting_point].append(int(n.ending_point))
-        else:
-            pred_hash[n.starting_point] = [(int(n.ending_point))]
-        if(n.ending_point not in pred_hash):
-            pred_hash[n.ending_point] = []
-    return pred_hash
-
-def try_make_route_from_node(node):
-    nodes_list = take_nodes_from_bd(7)
-    nodes_list.append(node)
-    dist_matrix = calculate_dist_matrix(nodes_list)
-    print("************")
-    print(dist_matrix)
-    print("*********")
-    pred_hash = calculate_pred_hash(nodes_list)
-
-    with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
-        print(pred_hash)
-        result = proxy.calculate_route(dist_matrix, pred_hash)
-        return result
-
-
-def try_make_route_from_node_2():
-    alg_setup = prepare_for_alg()
-
-    dist_matrix = alg_setup[1]
-    pred_hash = alg_setup[2]
-
-    with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
-        print(pred_hash)
-        result = proxy.calculate_route(dist_matrix, pred_hash)
-        return result
+    #get ID's, and create if not exists
+    user_id = dao.create_user(username)
+    stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
+    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop,hour_end)
+    booking_id = dao.create_booking(username, name_start_stop, name_end_stop, date, hour_end,
+                                    position_start_stop, position_end_stop)
+    dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
 
      
     
 
 if __name__ == "__main__":
-    driver = setUpDriver()
-    db = "neo4j"
-    session = driver.session(database=db)
 
-    #print(try_make_route_from_node(Node("14", "15", "11/05/2023", "15:30", "00:15")))
-    #print("||||||||||||||||||||||")
 
-    generate_fermate(10)
-    make_connections()
-    print(try_make_route_from_node_2())
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    create_booking("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
+                41.9014, 12.5005, 41.8954, 12.4823)
+
+    create_booking("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
+                   41.8902, 12.4923, 41.9248, 12.4455)
+    #generate_stops(10)
+
+
+    dao.close()
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
 
-    server.register_function(insert_booking, "insert_booking")
+    #server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
-    session.close()
+    #session.close()
 
 
 

@@ -2,9 +2,9 @@ import mysql.connector
 from mysql.connector import Error
 
 
-class UserDbDao:
+class DbDao:
     def __init__(self):
-        self.db_ip = 'mysqlDb' # For docker if the db is deployed in a container
+        self.db_ip = 'mysqlDb'  # For docker if the db is deployed in a container
         #self.db_ip = 'host.docker.internal'  # For docker if the db is deployed in the docker container host
         #self.db_ip = 'localhost'
         self.db_name = 'b4y_user_db'
@@ -27,39 +27,45 @@ class UserDbDao:
             return None
 
     @staticmethod
-    def login_query(conn, mail, password):
-        print("Sono nella funzione login_query della dao")
+    def stop_query(conn):
+        ret = []
         res = None
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            args = (mail, password)
-            curs.callproc('login', args)
+            curs.callproc('get_stops')
             conn.commit()
             for result in curs.stored_results():
                 res = result.fetchall()
             curs.close()
-            # Check result
-            if res[0][0] == 1:
-                print("Login successful")
-                return 0
-            else:
-                print("Login failed")
-                return 1
+            for elem in res:
+                ret.append([elem[0], elem[1], elem[2]])
+            return ret
         else:
             print("Connection with db failed")
             return -1
 
     @staticmethod
-    def sign_up(conn, name, surname, mail, password, birthdate, username): #Birthdate in format YYYY-MM-DD
+    def user_routes_query(conn, usr):
+        ret = []
+        res = None
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            args = (name, surname, mail, password, username, birthdate)
-            curs.callproc('sign_up', args)
+            curs.callproc('get_user_routes', (usr,))
             conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
             curs.close()
-            return 0
+            print(len(res))
+            for elem in res:
+                '''
+                costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
+                stato percorso, scadenza, nome fermata partenza, nome fermata arrivo
+                '''
+                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8]])
+            print(ret)
+            return ret
         else:
             print("Connection with db failed")
             return -1
