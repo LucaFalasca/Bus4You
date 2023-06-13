@@ -79,5 +79,3 @@ def readStops():
             for item in data:
                 prendi_chiavi_albero(attributo, item, path)
 """
-
-readStops()

@@ -83,6 +83,67 @@ class Neo4jDAO:
             "RETURN *"
         )
 
+    def search_for_compatibility_type_1(self, booking_id):
+        with self.driver.session() as session:
+            result = session.run(
+                "MATCH (b:Booking)-[:START_STOP]->(s:Stop) "
+                "WHERE id(b) = $booking_id "
+                "WITH s, b "
+                "MATCH (other_stop:Stop)<-[:END_STOP]-(other_booking:Booking) "
+                "WHERE id(other_booking) <> $booking_id AND b.date = other_booking.date "
+                "WITH s, other_stop, point.distance(s.position, other_stop.position) AS distance, b, other_booking "
+                "WHERE distance < 2500 "
+                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 1}]->(other_booking) ",
+                booking_id=booking_id
+            )
+            summary = result.consume()
+            created = summary.counters.relationships_created
+            if created > 0:
+                return True
+            else:
+                return False
+
+    def search_for_compatibility_type_2(self, booking_id):
+        with self.driver.session() as session:
+            result = session.run(
+                "MATCH (b:Booking)-[:END_STOP]->(s:Stop) "
+                "WHERE id(b) = $booking_id "
+                "WITH s, b "
+                "MATCH (other_stop:Stop)<-[:START_STOP]-(other_booking:Booking) "
+                "WHERE id(other_booking) <> $booking_id AND b.date = other_booking.date "
+                "WITH s, other_stop, point.distance(s.position, other_stop.position) AS distance, b, other_booking "
+                "WHERE distance < 2500 "
+                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 2}]->(other_booking) ",
+                booking_id=booking_id
+            )
+            summary = result.consume()
+            created = summary.counters.relationships_created
+            if created > 0:
+                return True
+            else:
+                return False
+
+    def search_for_compatibility_type_3(self, booking_id):
+        with self.driver.session() as session:
+            result = session.run(
+                "MATCH (b:Booking)-[:START_STOP]->(s:Stop) "
+                "WHERE id(b) = $booking_id "
+                "WITH s, b "
+                "MATCH (other_stop:Stop)<-[:START_STOP]-(other_booking:Booking) "
+                "WHERE id(other_booking) <> $booking_id AND b.date = other_booking.date "
+                "WITH s, other_stop, point.distance(s.position, other_stop.position) AS distance, b, other_booking "
+                "WHERE distance < 2500 "
+                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 3}]->(other_booking) ",
+                booking_id=booking_id
+            )
+            summary = result.consume()
+            created = summary.counters.relationships_created
+            if created > 0:
+                return True
+            else:
+                return False
+
+
 
     '''def get_person_by_name(self, name):
         with self.driver.session() as session:
