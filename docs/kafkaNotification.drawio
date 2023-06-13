@@ -1,0 +1,140 @@
+<mxfile host="app.diagrams.net" modified="2023-06-12T19:47:52.665Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="atjU_bL08kN5VI_E-BT0" version="21.3.8" type="device">
+  <diagram name="Pagina-1" id="stYwKZ27TBcMmIK6K67p">
+    <mxGraphModel dx="1795" dy="1831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-6" value="Topics" style="swimlane;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="720" height="280" as="geometry">
+            <mxRectangle x="40" y="200" width="80" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-28" value="Confirmed Routes" style="swimlane;whiteSpace=wrap;html=1;gradientColor=none;swimlaneFillColor=none;rounded=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-6">
+          <mxGeometry x="40" y="40" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-29" value="P1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-28">
+          <mxGeometry x="40" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-30" value="P2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-28">
+          <mxGeometry x="40" y="100" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-31" value="Pn" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-28">
+          <mxGeometry x="40" y="160" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-33" value="Prepared Routes" style="swimlane;whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-6">
+          <mxGeometry x="270" y="40" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-34" value="P1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-33">
+          <mxGeometry x="40" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-35" value="P2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-33">
+          <mxGeometry x="40" y="100" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-36" value="Pn" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-33">
+          <mxGeometry x="40" y="160" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-37" value="Rejected Routes" style="swimlane;whiteSpace=wrap;html=1;rounded=1;shadow=0;glass=0;swimlaneLine=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-6">
+          <mxGeometry x="500" y="40" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-38" value="P1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-37">
+          <mxGeometry x="40" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-39" value="P2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-37">
+          <mxGeometry x="40" y="100" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-40" value="Pn" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="iD6E4QD8br_hEMRfRmoo-37">
+          <mxGeometry x="40" y="160" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-24" value="Topic utilizzato per la notifica della conferma di un percorso, cioè di un percorso che ha raggiunto la soglia di conferme da parte degli utenti necessaria per poter partire, ed è certo che parta, il notify service invierà agli utenti che hanno confermato la partecipazione al concorso una mail per informarli, fornendo un eventuale riepilogo sulla sua prenotazione, il payment service provvederà ad un eventuale cashback per gli utenti che hanno confermato la partecipazione al percorso." style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-330" y="200" width="280" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-26" value="Topic utilizzato per la notifica dello scarto di un percorso, cioè di un percorso che arrivato all&#39;expiration time non ha raggiunto la soglia di conferme di utenti necessarie alla conferma del percorso e pertanto viene scartato. In questo caso il notify service provvederà ad informare gli utenti tramite mail(sia che avessero confermato che non) ed il payment service provvederà ad effettuare il rimborso agli utenti che avevano confermato la loro partecipazione e pagato" style="shape=note;size=20;whiteSpace=wrap;html=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="880" y="220" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-27" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-37" target="iD6E4QD8br_hEMRfRmoo-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="738" y="390" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-41" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=280;entryDy=105;entryPerimeter=0;dashed=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-28" target="iD6E4QD8br_hEMRfRmoo-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-42" value="Topic utilizzato per la notifica di un percorso appena generato. In questo caso il notify service provvederà ad informare tramite mailgli utenti le cui prenotazioni sono coinvolte in tale percorso che il percorso è pronto, gli utenti potranno poi confermare o meno tale prenotazione" style="shape=note;size=20;whiteSpace=wrap;html=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="880" y="440" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-43" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-33" target="iD6E4QD8br_hEMRfRmoo-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-44" value="Notify Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="-30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-46" value="Payment Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="-30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-45" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-28" target="iD6E4QD8br_hEMRfRmoo-44">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="169.70588235294122" y="79.99999999999989" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-47" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.584;entryY=0.982;entryDx=0;entryDy=0;entryPerimeter=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-33" target="iD6E4QD8br_hEMRfRmoo-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-48" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-37" target="iD6E4QD8br_hEMRfRmoo-44">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="110" />
+              <mxPoint x="260" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-49" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-28" target="iD6E4QD8br_hEMRfRmoo-46">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="215" y="90" />
+              <mxPoint x="470" y="90" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-50" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-33" target="iD6E4QD8br_hEMRfRmoo-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-51" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-37" target="iD6E4QD8br_hEMRfRmoo-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-58" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-52" target="iD6E4QD8br_hEMRfRmoo-33">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-52" value="Booking Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-57" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-53" target="iD6E4QD8br_hEMRfRmoo-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-53" value="Check Route Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-55" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;jumpStyle=none;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="iD6E4QD8br_hEMRfRmoo-37">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="530" />
+              <mxPoint x="630" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-56" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;jumpStyle=arc;" edge="1" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="iD6E4QD8br_hEMRfRmoo-28">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="530" />
+              <mxPoint x="170" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-54" value="Route DB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
