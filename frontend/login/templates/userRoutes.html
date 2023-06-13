@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
     {% block stylesheets%}
-            <link rel="stylesheet" type="text/css" href="../static/css/userRoutes.css">
+         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+        <link rel="stylesheet" type="text/css" href="../static/css/userRoutes.css">
     {% endblock %}
 
 
@@ -15,20 +21,47 @@
                   </button>
                 </h2>
                 <div id="acc{{ user_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="head{{ user_routes.index(route) }}">
-                  <div class="accordion-body">
-                      Data: {{ route.getItPropStart()[0:10]}} <br>
-                      Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                      Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
-                      Fermata Partenza: {{ route.getStartStop() }} <br>
-                      Fermata Arrivo: {{ route.getEndStop() }} <br>
-                      Costo: {{ route.getItCost() }}<br>
-                      Stato Itinerario: {{ route.getItStatus() }}<br>
-                      Stato Percorso: {{ route.getRouteStatus() }}<br>
-                      Percorso Passato: {{ route.isPast() }}<br>
-                      Scadenza Percorso: {{ route.getRouteExpire() }}<br>
-                  </div>
+                    <div class="accordion-body">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-sm-6">
+                                Data: {{ route.getItPropStart()[0:10]}} <br>
+                                Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                Fermata Partenza: {{ route.getStartStop() }} <br>
+                                Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                Costo: {{ route.getItCost() }}<br>
+                                Stato Itinerario: {{ route.getItStatus() }}<br>
+                                Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                Percorso Passato: {{ route.isPast() }}<br>
+                                Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="map" id="map{{ user_routes.index(route) }}"></div>
+                                <script>
+                                    var map{{ user_routes.index(route) }} = L.map('map{{ user_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        maxZoom: 19,
+                                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                    }).addTo(map{{ user_routes.index(route) }});
+
+                                    var myCollapsible = document.getElementById('acc{{ user_routes.index(route) }}')
+                                    myCollapsible.addEventListener('shown.bs.collapse', function () {
+                                      map{{ user_routes.index(route) }}.invalidateSize();
+                                    })
+
+                                </script>
+                            </div>
+                          </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         {% endfor %}
         </div>
     {% endblock %}
+
+
