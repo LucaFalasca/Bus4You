@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash
+from flask import Flask, render_template, request, session, flash, json
 import requests
 from frontend.login.utils.json_parser import parse_user_routes_json
 
@@ -105,7 +105,15 @@ def load_user_routes_page():
         gateway_load_user_routes_url = 'http://localhost:50052/api/load_user_routes?mail=' + mail
         response = requests.get(gateway_load_user_routes_url).json()
         user_routes = parse_user_routes_json(response)
-        return render_template("userRoutes.html", user_routes=user_routes)
+        present_routes = []
+        past_routes = []
+        for elem in user_routes:
+            if elem.isPast() == 1 or elem.getItStatus() == 'rejected':
+                past_routes.append(elem)
+            else:
+                present_routes.append(elem)
+
+        return render_template("userRoutes.html", past_routes=past_routes, present_routes=present_routes)
 
     else:
         flash('You have to be signed in to access this page')

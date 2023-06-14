@@ -1,18 +1,33 @@
 .accordion{
-    padding-top: 50px !important;
+    width: 100% !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
+#accAttive{
+    padding-top: 30px !important;
     padding-left: 20px !important;
     width: 80% !important;
     border-radius: 12px !important;
     border: transparent !important;
 }
 
+#accPast{
+    padding-top: 20px !important;
+    padding-left: 20px !important;
+    padding-bottom: 30px !important;
+    width: 80% !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
 .accordion-collapse{
-    color: #6b5e5e !important;
+    color: white !important;
     border-radius: 12px !important;
 }
 
 .accordion-button{
-    color: #312626 !important;
+    color: white !important;
     border-radius: 12px !important;
     border: transparent !important;
 }
@@ -22,15 +37,111 @@
     background-color: #4CAF50 !important;
 }
 
+button[id^="btnAccConf"]:hover, button[id^="btnAccConf"]:active, button[id^="btnAccConf"]:not(.collapsed){
+    background-color: #4CAF50 !important;
+}
+
+
+button[id^="btnAccRej"]:hover, button[id^="btnAccRej"]:active, button[id^="btnAccRej"]:not(.collapsed){
+    background-color: red !important;
+}
+
+
+button[id^="btnAccPend"]:hover, button[id^="btnAccPend"]:active, button[id^="btnAccPend"]:not(.collapsed){
+    background-color: orange !important;
+}
+
+#btnAttive, #btnPast{
+    font-size: 28px !important;
+    height: 70px !important;
+    background-color: #152733 !important;
+    width : 40% !important;
+}
+
 .accordion-item{
     border-color: #4CAF50 !important;
-    border-radius: 12px !important;
+    border-radius: 15px !important;
     outline: none !important;
     border-style: solid !important;
+    border-width: 2px !important;
+    background-color: #312626;
+}
+
+div[id^="divAccRej"] {
+    border-color: red !important;
+}
+
+div[id^="divAccConf"] {
+    border-color: #4CAF50 !important;
+}
+
+div[id^="divAccPend"] {
+    border-color: orange !important;
+}
+
+#accItmPast, #accItmAttive{
+    border-color: #152733 !important;
+    border-radius: 15px !important;
+    outline: none !important;
+    border-style: none !important;
+    background-color: #152733;
 }
 
 .map {
     height: 100%;
     border-radius: 7px;
     border: 1px solid #000000;
+}
+
+#headingAttive, #headingPast{
+    font-size: 20px !important;
+}
+
+#btnConfirm{
+    text-align: center;
+    width: 150px;
+    background-color: #4a9b4d;
+    color: white;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4CAF50;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+}
+
+#btnReject{
+text-align: center;
+    width: 150px;
+    background-color: red;
+    color: white;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #d01414;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+}
+
+#btnConfirm:hover{
+    background-color: #3e7e3f;
+    border-color: #3e7e3f;
+}
+
+#btnReject:hover{
+    background-color: #D01414FF;
+    border-color: #D01414FF;
 }

@@ -63,7 +63,7 @@ class DbDao:
                 costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
                 stato percorso, scadenza, nome fermata partenza, nome fermata arrivo
                 '''
-                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8]])
+                ret.append([elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8], elem[9]])
             print(ret)
             return ret
         else:

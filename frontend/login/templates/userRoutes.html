@@ -10,57 +10,372 @@
         <link rel="stylesheet" type="text/css" href="../static/css/userRoutes.css">
     {% endblock %}
 
-
+<!--TODO ho preparato le due liste diverse presenti e passati, fare che vengono creati due accordion diversi e dove e' presente
+        il percorso è pending e la richiesta è pending mettere il bottone per confermare/declinare-->
     {% block body %}
-        <div id="divAccordion" class="accordion accordion-background-hover accordion-background-active">
-        {% for route in user_routes %}
-            <div id="divAcc{{ user_routes.index(route) }}" class="accordion-item">
-                <h2 class="accordion-header" id="head{{ user_routes.index(route) }}">
-                  <button id="btnAcc{{ user_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ user_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ user_routes.index(route) }}">
-                   {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
-                  </button>
-                </h2>
-                <div id="acc{{ user_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccordion" role="region" aria-labelledby="head{{ user_routes.index(route) }}">
-                    <div class="accordion-body">
-                        <div class="container">
-                          <div class="row">
-                            <div class="col-sm-6">
-                                Data: {{ route.getItPropStart()[0:10]}} <br>
-                                Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
-                                Fermata Partenza: {{ route.getStartStop() }} <br>
-                                Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                Costo: {{ route.getItCost() }}<br>
-                                Stato Itinerario: {{ route.getItStatus() }}<br>
-                                Stato Percorso: {{ route.getRouteStatus() }}<br>
-                                Percorso Passato: {{ route.isPast() }}<br>
-                                Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+        <div class="accordion" id="accAttive">
+          <div id="accItmAttive" class="accordion-item">
+            <h1 class="accordion-header " id="headingAttive">
+              <button id="btnAttive" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAttive" aria-expanded="true" aria-controls="collapseAttive">
+                PRENOTAZIONI ATTIVE
+              </button>
+            </h1>
+            <div id="collapseAttive" class="accordion-collapse collapse show" data-bs-parent="#accAttive" role="region" aria-labelledby="headingAttive">
+              <div class="accordion-body">
+                <div id="divAccordionPresent" class="accordion accordion-background-hover accordion-background-active">
+                    {% for route in present_routes %}
+                        {% if route.getRouteStatus()=='confirmed' and route.getItStatus()=='confirmed' %}
+                        <div id="divAccConf{{ present_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ present_routes.index(route) }}">
+                          <button id="btnAccConf{{ present_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ present_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ present_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccConf" role="region" aria-labelledby="head{{ present_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map{{ present_routes.index(route) }}"></div>
+                                        <script>
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map{{ present_routes.index(route) }});
+
+                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
+                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
+                                              map{{ present_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+
                             </div>
-                            <div class="col-sm-6">
-                                <div class="map" id="map{{ user_routes.index(route) }}"></div>
-                                <script>
-                                    var map{{ user_routes.index(route) }} = L.map('map{{ user_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
-
-
-                                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                        maxZoom: 19,
-                                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                                    }).addTo(map{{ user_routes.index(route) }});
-
-                                    var myCollapsible = document.getElementById('acc{{ user_routes.index(route) }}')
-                                    myCollapsible.addEventListener('shown.bs.collapse', function () {
-                                      map{{ user_routes.index(route) }}.invalidateSize();
-                                    })
-
-                                </script>
-                            </div>
-                          </div>
                         </div>
-
                     </div>
+                    {% elif route.getRouteStatus()=='confirmed' and route.getItStatus()=='pending'%}
+                        <div id="divAccPend{{ present_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ present_routes.index(route) }}">
+                          <button id="btnAccPend{{ present_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ present_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ present_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccPend" role="region" aria-labelledby="head{{ present_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map{{ present_routes.index(route) }}"></div>
+                                        <script>
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map{{ present_routes.index(route) }});
+
+                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
+                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
+                                              map{{ present_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            {% elif route.getRouteStatus()=='pending' and route.getItStatus()=='pending'%}
+                        <div id="divAccPend{{ present_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ present_routes.index(route) }}">
+                          <button id="btnAccPend{{ present_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ present_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ present_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccPend" role="region" aria-labelledby="head{{ present_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                        <button id="btnConfirm">Confirm Book</button>
+                                        <button id="btnReject">Reject Book</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map{{ present_routes.index(route) }}"></div>
+                                        <script>
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map{{ present_routes.index(route) }});
+
+                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
+                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
+                                              map{{ present_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                        <div id="divAccRej{{ present_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ present_routes.index(route) }}">
+                          <button id="btnAccRej{{ present_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ present_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ present_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccRej" role="region" aria-labelledby="head{{ present_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map{{ present_routes.index(route) }}"></div>
+                                        <script>
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map{{ present_routes.index(route) }});
+
+                                            var myCollapsible = document.getElementById('acc{{present_routes.index(route) }}')
+                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
+                                              map{{present_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
+              </div>
             </div>
-        {% endfor %}
+          </div>
+        </div>
+
+        <div class="accordion" id="accPast">
+          <div id="accItmPast" class="accordion-item">
+            <h1 class="accordion-header " id="headingPast">
+              <button id="btnPast" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePast" aria-expanded="true" aria-controls="collapsePast">
+                PRENOTAZIONI PASSATE
+              </button>
+            </h1>
+            <div id="collapsePast" class="accordion-collapse collapse" data-bs-parent="#accPast" role="region" aria-labelledby="headingPast">
+              <div class="accordion-body">
+                <div id="divAccordionPast" class="accordion accordion-background-hover accordion-background-active">
+                {% for route in past_routes %}
+                    {% if route.getRouteStatus()=='confirmed' and route.getItStatus()=='confirmed' %}
+                        <div id="divAccConf{{ past_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ past_routes.index(route) }}">
+                          <button id="btnAccConf{{ past_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ past_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccConf" role="region" aria-labelledby="head{{ past_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
+                                        <script>
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map_past{{ past_routes.index(route) }});
+
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
+                                            myCollapsible_past.addEventListener('shown.bs.collapse', function () {
+                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% elif route.getRouteStatus()=='confirmed' and route.getItStatus()=='pending'%}
+                        <div id="divAccPend{{ past_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ past_routes.index(route) }}">
+                          <button id="btnAccPend{{ past_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ past_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccPend" role="region" aria-labelledby="head{{ past_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
+                                        <script>
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map_past{{ past_routes.index(route) }});
+
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
+                                            myCollapsible_past.addEventListener('shown.bs.collapse', function () {
+                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                        <div id="divAccRej{{ past_routes.index(route) }}" class="accordion-item">
+                        <h2 class="accordion-header" id="head{{ past_routes.index(route) }}">
+                          <button id="btnAccRej{{ past_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ past_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
+                           {{ route.getStartStop() }} -> {{ route.getEndStop() }} - Data: {{ route.getItPropStart()[0:10] }} - Partenza: {{ route.getItPropStart()[11:] }} - Arrivo: {{ route.getItPropEnd()[11:]}}
+                          </button>
+                        </h2>
+                        <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse" data-bs-parent="#divAccRej" role="region" aria-labelledby="head{{ past_routes.index(route) }}">
+                            <div class="accordion-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                        Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                        Costo: {{ route.getItCost() }}<br>
+                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                        Percorso Passato: {{ route.isPast() }}<br>
+                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
+                                        <script>
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map_past{{ past_routes.index(route) }});
+
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
+                                            myCollapsible_past.addEventListener('shown.bs.collapse', function () {
+                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+                                            })
+
+                                        </script>
+                                    </div>
+                                  </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
     {% endblock %}
 
