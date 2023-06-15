@@ -9,6 +9,8 @@ import xmlrpc.server
 from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import  WGS84Point
 from Neo4jDAO import *
+from NodeToAlg import *
+from Node import *
 from utils import *
 
 
@@ -91,7 +93,6 @@ def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
 
 
 
-
 def some_calls():
     # Esempio 1
     create_booking("Alice", "Termini", "Piazza Venezia", datetime.date(2023, 7, 23), datetime.time(10, 15),
@@ -132,8 +133,10 @@ def some_calls():
     # Esempio 10
     create_booking("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23), datetime.time(14, 45),
                    41.9271, 12.4997, 41.8532, 12.5636)
-     
-    
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -146,6 +149,13 @@ if __name__ == "__main__":
     create_booking("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
                    41.8902, 12.4923, 41.9248, 12.4455)
     some_calls()
+
+    toAlg = NodeToAlg(dao)
+    print_node_list(toAlg.take_nodes_from_bd(18))
+    print(str(dao.get_distances(16,17)))
+
+
+
 
 
     dao.close()
