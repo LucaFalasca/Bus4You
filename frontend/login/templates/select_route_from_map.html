@@ -176,6 +176,20 @@
         function set_ending_coord(){
             point = "end";
         }
+
+        map.on('zoomend', function() {
+            // Controlla lo zoom corrente della mappa
+            var currentZoom = map.getZoom();
+            console.log(currentZoom)
+            if (currentZoom < 16) {
+                console.log("AO")
+                map.removeLayer(markersLayer)
+            } else {
+                map.addLayer(markersLayer)
+            }
+
+        });
+
     if(document.getElementById("response").value == "True")
         alert("Your request has been successfully sent!")
     echo(sessionStorage.getItem("response"))

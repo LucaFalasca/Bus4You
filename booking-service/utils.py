@@ -53,6 +53,16 @@ def readStops():
     # Stampa la lista di fermate
     print(fermate)
 
+def print_node_list(node_list):
+    for node in node_list:
+        print("Starting point:", node.starting_point)
+        print("Ending point:", node.ending_point)
+        print("Data:", node.data)
+        print("Arrival time:", node.arrival_time)
+        print("Booking:", node.booking)
+        print("Travel time:", node.travel_time)
+        print("-------------------------------")
+
 
 """
     url = "https://www.snap4city.org/superservicemap/api/v1/shortestpath?source=43.7767%3B11.2477&destination=43.7687%3B11.2620&routeType=car&startDatetime=2017-01-13T12%3A34%3A00&format=json"
@@ -79,5 +89,3 @@ def readStops():
             for item in data:
                 prendi_chiavi_albero(attributo, item, path)
 """
-
-readStops()

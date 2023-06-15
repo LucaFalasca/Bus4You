@@ -20,3 +20,9 @@ make-root-service/__pycache__/alg.cpython-38.pyc
 make-root-service/__pycache__/alg.cpython-39.pyc
 make-root-service/__pycache__/alg2.cpython-38.pyc
 make-root-service/__pycache__/alg2.cpython-39.pyc
+.venv/
+booking-service/__pycache__/Neo4jDAO.cpython-311.pyc
+booking-service/__pycache__/utils.cpython-311.pyc
+db-service/dbService/dao/__pycache__/DbDao.cpython-311.pyc
+make-root-service/__pycache__/alg.cpython-311.pyc
+make-root-service/__pycache__/alg2.cpython-311.pyc

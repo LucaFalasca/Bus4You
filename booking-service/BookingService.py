@@ -8,13 +8,14 @@ import xmlrpc.server
 
 from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import  WGS84Point
-from neo4J_dao import create_person, create_stop, create_startStop, create_endStop, create_travel, create_distances
 from Neo4jDAO import *
+from NodeToAlg import *
+from Node import *
 from utils import *
 
 
 #Usare questa funzione per generare un insieme di prenotazioni con dati realistici
-def generate_stops(sizeUsers):
+'''def generate_stops(sizeUsers):
 
     users = ["Marco", "Giulia", "Matteo", "Francesca", "Luca", "Chiara", "Alessandro", "Valentina", "Davide", "Sara",
             "Simone", "Martina", "Lorenzo", "Elisa", "Giacomo", "Federica", "Andrea", "Alice", "Giovanni", "Beatrice",
@@ -63,7 +64,7 @@ def generate_stops(sizeUsers):
         stop1 = random.choice(stops)
         stop2 = random.choice(stops)
         create_booking(random.choice(users), stop1[0], stop2[0], day, hour_end, stop1[1][0], stop1[1][1], stop2[1][0], stop2[1][1])
-
+'''
 
 
 def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
@@ -82,19 +83,79 @@ def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
 
-     
-    
+    if dao.search_for_compatibility_type_1(booking_id):
+        return
+    if dao.search_for_compatibility_type_2(booking_id):
+        return
+    if dao.search_for_compatibility_type_3(booking_id):
+        return
+
+
+
+
+def some_calls():
+    # Esempio 1
+    create_booking("Alice", "Termini", "Piazza Venezia", datetime.date(2023, 7, 23), datetime.time(10, 15),
+                   41.9014, 12.5005, 41.8954, 12.4823)
+
+    # Esempio 2
+    create_booking("Bob", "Colosseo", "San Giovanni", datetime.date(2023, 7, 23), datetime.time(8, 30),
+                   41.8902, 12.4924, 41.8743, 12.5110)
+
+    # Esempio 3
+    create_booking("Charlie", "Villa Borghese", "Piazza del Popolo", datetime.date(2023, 7, 23), datetime.time(17, 45),
+                   41.9142, 12.4921, 41.9098, 12.4767)
+
+    # Esempio 4
+    create_booking("Dave", "Ostia Antica", "Fiumicino Airport", datetime.date(2023, 7, 23), datetime.time(14, 0),
+                   41.7553, 12.2922, 41.7966, 12.2366)
+
+    # Esempio 5
+    create_booking("Eve", "Castel Sant'Angelo", "Ponte Milvio", datetime.date(2023, 7, 23), datetime.time(12, 30),
+                   41.9028, 12.4669, 41.9311, 12.4719)
+
+    # Esempio 6
+    create_booking("Frank", "Cinecittà", "Villa Ada", datetime.date(2023, 7, 23), datetime.time(9, 45),
+                   41.8513, 12.5731, 41.9321, 12.5028)
+
+    # Esempio 7
+    create_booking("Gina", "Villa d'Este", "Tivoli", datetime.date(2023, 7, 23), datetime.time(16, 20),
+                   41.9624, 12.7949, 41.9679, 12.8006)
+
+    # Esempio 8
+    create_booking("Harry", "Terme di Caracalla", "Aventino", datetime.date(2023, 7, 23), datetime.time(18, 0),
+                   41.8799, 12.4925, 41.8824, 12.4761)
+
+    # Esempio 9
+    create_booking("Ian", "Villa Adriana", "Villa d'Este", datetime.date(2023, 7, 23), datetime.time(11, 15),
+                   41.9387, 12.7971, 41.9624, 12.7949)
+
+    # Esempio 10
+    create_booking("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23), datetime.time(14, 45),
+                   41.9271, 12.4997, 41.8532, 12.5636)
+
+
+
+
 
 if __name__ == "__main__":
 
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+
     create_booking("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
                 41.9014, 12.5005, 41.8954, 12.4823)
 
     create_booking("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
                    41.8902, 12.4923, 41.9248, 12.4455)
-    #generate_stops(10)
+    some_calls()
+
+    toAlg = NodeToAlg(dao)
+    print_node_list(toAlg.take_nodes_from_bd(18))
+    print(str(dao.get_distances(16,17)))
+
+
+
 
 
     dao.close()

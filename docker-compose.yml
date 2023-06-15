@@ -1,6 +1,5 @@
 version: "3.9"
 services:
-
   mysqlDb:
     image: mysql:latest
     container_name: mysqlDb
@@ -28,15 +27,16 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
-    
+
     volumes:
       - ./neo4j/data:/data
       - ./plugins:/plugins
-    
+
 
       # Passes the following environment variables to the container
     environment:
       NEO4J_AUTH : "neo4j/123456789"
+      NEO4J_PLUGINS: '["apoc"]'
 
     healthcheck:
       test: wget http://localhost:7474 || exit 1
@@ -83,7 +83,6 @@ services:
     container_name: make-root-service
     volumes:
       - ./make-root-service:/app
-
 
 #networks:
   #backend-net:

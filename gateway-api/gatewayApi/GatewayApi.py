@@ -72,9 +72,15 @@ def generate_dist_matrix(size, max_val):
 @api.route('/api/load_user_routes', methods=['GET'])
 def load_user_routes():
     mail = request.args.get('mail')
-    token = request.args.get('token')
-    # TODO check token e retrieve delle route vere dal db
-    user_routes = [{"startStop": "Alessandrino (MC)",
+    ret = []
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        user_routes = json.loads(proxy.get_user_routes(mail))
+    for route in user_routes:
+        ret.append({"it_cost": route[0], "it_prop_start": route[1], "it_prop_end": route[2], "it_status": route[3],
+                    "route_past": route[4], "route_status": route[5], "route_expire": route[6], "start_stop": route[7],
+                    "end_stop": route[8]})
+
+    '''user_routes = [{"startStop": "Alessandrino (MC)",
                     "endStop": "Sorbona",
                     "startHour": "10:00",
                     "endHour": "10:30",
@@ -111,8 +117,8 @@ def load_user_routes():
                         {"name": "Raftel", "pos": "xy"},
                         {"name": "Zanarkand", "pos": "xy"},
                         {"name": "Sparta", "pos": "xy"},
-                        {"name": "Chaddopia", "pos": "xy"}]}]
-    return json.dumps(user_routes)
+                        {"name": "Chaddopia", "pos": "xy"}]}]'''
+    return json.dumps(ret)
 
 
 @api.route('/api/get_bus_stops', methods=['GET'])

@@ -1,0 +1,86 @@
+<mxfile host="Electron" modified="2023-06-13T14:38:48.354Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="zhLxWW5ISnItAwGR5cX4" version="21.3.7" type="device">
+  <diagram name="Pagina-1" id="stYwKZ27TBcMmIK6K67p">
+    <mxGraphModel dx="940" dy="1871" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-24" value="Coda utilizzata per la notifica della conferma di un percorso, cioè di un percorso che ha raggiunto la soglia di conferme da parte degli utenti necessaria per poter partire, ed è certo che parta, il notify service invierà agli utenti che hanno confermato la partecipazione al concorso una mail per informarli, fornendo un eventuale riepilogo sulla sua prenotazione, il payment service provvederà ad un eventuale cashback per gli utenti che hanno confermato la partecipazione al percorso e pagato." style="shape=note;size=20;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="580" y="-120" width="280" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-26" value="Coda utilizzata per la notifica dello scarto di un percorso, cioè di un percorso che arrivato all&#39;expiration time non ha raggiunto la soglia di conferme di utenti necessarie alla conferma del percorso e pertanto viene scartato. In questo caso il notify service provvederà ad informare gli utenti tramite mail(sia che avessero confermato che non) ed il payment service provvederà ad effettuare il rimborso agli utenti che avevano confermato la loro partecipazione e pagato" style="shape=note;size=20;whiteSpace=wrap;html=1;shadow=0;" parent="1" vertex="1">
+          <mxGeometry x="80" y="-120" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-42" value="Coda utilizzata per la notifica di un percorso appena generato. In questo caso il notify service provvederà ad informare tramite mail gli utenti le cui prenotazioni sono coinvolte in tale percorso che il percorso è pronto, gli utenti potranno poi confermare o meno tale prenotazione" style="shape=note;size=20;whiteSpace=wrap;html=1;shadow=0;" parent="1" vertex="1">
+          <mxGeometry x="570" y="680" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-44" value="Notify Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="890" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-46" value="Payment Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="880" y="265" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="iD6E4QD8br_hEMRfRmoo-52" target="vy_8Fx7_NNmFk5ca2vom-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-52" value="Booking Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="460" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-53" value="Check Route Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=none;" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="vy_8Fx7_NNmFk5ca2vom-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-28" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="vy_8Fx7_NNmFk5ca2vom-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-29" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="vy_8Fx7_NNmFk5ca2vom-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iD6E4QD8br_hEMRfRmoo-54" value="Route DB" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-19" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-2" target="iD6E4QD8br_hEMRfRmoo-44" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-24" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-2" target="iD6E4QD8br_hEMRfRmoo-46" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-30" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-2" target="iD6E4QD8br_hEMRfRmoo-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-2" value="Confirmed Routes" style="strokeWidth=2;shape=mxgraph.flowchart.direct_data;whiteSpace=wrap;align=center;fontSize=14;verticalAlign=middle;labelPosition=center;verticalLabelPosition=middle;html=1;spacingRight=20;" parent="1" vertex="1">
+          <mxGeometry x="440" y="260" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-20" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-5" target="iD6E4QD8br_hEMRfRmoo-44" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-23" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;jumpStyle=arc;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-5" target="iD6E4QD8br_hEMRfRmoo-46" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-32" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.08;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-5" target="iD6E4QD8br_hEMRfRmoo-26" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-5" value="Rejected Routes" style="strokeWidth=2;shape=mxgraph.flowchart.direct_data;whiteSpace=wrap;align=center;fontSize=14;verticalAlign=middle;labelPosition=center;verticalLabelPosition=middle;html=1;spacingRight=20;" parent="1" vertex="1">
+          <mxGeometry x="440" y="360" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-21" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-6" target="iD6E4QD8br_hEMRfRmoo-44" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-31" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;dashed=1;" parent="1" source="vy_8Fx7_NNmFk5ca2vom-6" target="iD6E4QD8br_hEMRfRmoo-42" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-6" value="Prepared Routes" style="strokeWidth=2;shape=mxgraph.flowchart.direct_data;whiteSpace=wrap;align=center;fontSize=14;verticalAlign=middle;labelPosition=center;verticalLabelPosition=middle;html=1;spacingRight=20;" parent="1" vertex="1">
+          <mxGeometry x="440" y="460" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vy_8Fx7_NNmFk5ca2vom-34" value="Le code in realtà devono essere replicate perchè ci sono servizi diversi che devono consumare lo stesso contenuto, a meno che non sia configurabile un numero di consumi superiore ad 1, questo invece non è un problema per istanze dello stesso servizio consumatore perchè basta che un istanza consumi, poi quale non importa" style="shape=note;size=20;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="960" y="-40" width="280" height="190" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
