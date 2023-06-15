@@ -45,6 +45,12 @@ services:
       retries: 20
       start_period: 3s
 
+  notify-service:
+    build: ./notify-service
+    container_name: notify-service
+    volumes:
+      - ./notify-service:/app
+
   db-service:
     build: ./db-service
     container_name: db-service
