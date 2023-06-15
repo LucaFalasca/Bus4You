@@ -382,5 +382,13 @@ DELIMITER ;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_stops_rect` (in x DECIMAL(8, 6), in y DECIMAL(8, 6), in height DECIMAL(8, 6), in width DECIMAL(8, 6))
+BEGIN
+SELECT *
+FROM b4y_user_db.fermata as fermata
+WHERE fermata.lat < x AND fermata.lat > x - height
+AND fermata.lon > y AND fermata.lon < y + width;
+END ;;
+DELIMITER ;
 -- Dump completed on 2023-06-13 18:44:38

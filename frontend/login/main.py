@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, json
+from flask import Flask, render_template, request, session, flash, json, jsonify
 import requests
 from frontend.login.utils.json_parser import parse_user_routes_json
 
@@ -93,6 +93,21 @@ def request_route():
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
         return render_template("select_route_from_map.html", bus_stops = bus_stops, response=response)
+
+
+@app.route('/_get_stops_rect', methods=['GET'])
+def get_stops_rect():
+    x = request.args.get('x')
+    y = request.args.get('y')
+    height = request.args.get('height')
+    width = request.args.get('width')
+    gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
+    print("AOO")
+    print(gateway_get_bus_stops_url)
+    print(requests.get(gateway_get_bus_stops_url))
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    return jsonify(result = bus_stops)
+    
 
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])

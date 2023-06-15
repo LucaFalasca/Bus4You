@@ -124,9 +124,10 @@
         var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
 
         var bus_stops = {{ bus_stops | tojson }};
+        console.log(bus_stops)
 
         var markersLayer = L.featureGroup().addTo(map);
-
+        /*
         bus_stops.forEach(function(bus_stop) {
             var marker = L.marker([bus_stop["lat"], bus_stop["lang"]], {
                 icon: busStopIconBlue,
@@ -138,6 +139,8 @@
             //marker.on('click', onMarkerClick);
             marker.addTo(markersLayer)
         });
+        */
+        setMarkers()
 
         markersLayer.on("click", markerOnClick);
 
@@ -189,6 +192,52 @@
             }
 
         });
+        var ao = '5';
+
+        map.on('dragend', function() {
+            var currentZoom = map.getZoom();
+            if (currentZoom >= 16) {
+                setMarkers()
+            }
+        });
+
+    function setMarkers(){
+        var bounds = map.getBounds();
+        var offset = (bounds.getNorth() - bounds.getSouth()) / 6
+        // Calcola l'altezza e la larghezza della zona visualizzata
+        var height =  (bounds.getNorth() - bounds.getSouth()) + 2 * offset;
+        var width =  (bounds.getEast() - bounds.getWest()) + 2 * offset;
+
+        // Calcola le coordinate dell'angolo nord-ovest
+        var ne = bounds.getNorthWest()
+
+        var x = ne.lat + offset;
+        var y = ne.lng - offset;
+
+        console.log("x: " + x + " y: " + y + " height: " + height + " width: " + width)
+        var url = "/_get_stops_rect?x=" + x +"&y=" + y + "&height=" + height + "&width=" + width
+        //local_bus_stops = {{ url_for("get_stops_rect", x = ao, y = y, height = height, width = width)|tojson }};
+
+        console.log("ciao")
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // data is a parsed JSON object
+                console.log("ciao2")
+                console.log(data.result)
+                markersLayer.clearLayers();
+                data.result.forEach(function(bus_stop) {
+                    var marker = L.marker([bus_stop["lat"], bus_stop["lang"]], {
+                        icon: busStopIconBlue,
+                        title: "(" + bus_stop["lat"] + "," + bus_stop["lang"] + ")"
+                    }).addTo(map);
+                    marker.bindTooltip(bus_stop["name"], {
+                        offset: L.point(0, -50)
+                    });
+                    marker.addTo(markersLayer)
+                });
+        })
+    }
 
     if(document.getElementById("response").value == "True")
         alert("Your request has been successfully sent!")

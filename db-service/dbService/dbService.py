@@ -9,6 +9,7 @@ def serve():
 
     server.register_function(get_stops, "get_stops")
     server.register_function(get_user_routes, "get_user_routes")
+    server.register_function(get_stops_rect, "get_stops_rect")
     server.serve_forever()
 
 
@@ -16,6 +17,13 @@ def get_stops():
     usr_db = DbDao()
     conn = usr_db.connect()
     stop_list = usr_db.stop_query(conn)
+    conn.close()
+    return json.dumps(stop_list)
+
+def get_stops_rect(x, y, height, width):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    stop_list = usr_db.stop_query_rect(conn, x, y, height, width)
     conn.close()
     return json.dumps(stop_list)
 
