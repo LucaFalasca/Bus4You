@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-06-13T14:38:48.354Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="zhLxWW5ISnItAwGR5cX4" version="21.3.7" type="device">
+<mxfile host="Electron" modified="2023-06-18T11:40:46.002Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.4.0 Chrome/112.0.5615.204 Electron/24.5.1 Safari/537.36" etag="WqZLAdVX2JSzjNjdntu5" version="21.4.0" type="device">
   <diagram name="Pagina-1" id="stYwKZ27TBcMmIK6K67p">
-    <mxGraphModel dx="940" dy="1871" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="954" dy="1886" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -24,9 +24,6 @@
         </mxCell>
         <mxCell id="iD6E4QD8br_hEMRfRmoo-52" value="Booking Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="80" y="460" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="iD6E4QD8br_hEMRfRmoo-53" value="Check Route Service" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="80" y="360" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="vy_8Fx7_NNmFk5ca2vom-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=none;" parent="1" source="iD6E4QD8br_hEMRfRmoo-54" target="vy_8Fx7_NNmFk5ca2vom-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
