@@ -391,4 +391,25 @@ WHERE fermata.lat < x AND fermata.lat > x - height
 AND fermata.lon > y AND fermata.lon < y + width;
 END ;;
 DELIMITER ;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_prepared_route_info`(in id bigint)
+BEGIN
+SELECT scadenza, costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente, fermata_lat_partenza,
+fermata_lon_partenza, fp.nome as nome_partenza, fa.nome as nome_arrivo
+FROM b4y_user_db.percorso as p
+join
+b4y_user_db.itinerario_proposto as i
+on p.id=i.percorso
+join
+b4y_user_db.fermata as fp
+on
+i.fermata_lat_partenza=fp.lat and i.fermata_lon_partenza=fp.lon
+join
+b4y_user_db.fermata as fa
+on
+i.fermata_lat_arrivo=fa.lat and i.fermata_lon_arrivo=fa.lon
+where p.id=id and i.percorso=id and p.stato='pending' and i.stato='pending';
+END ;;
+DELIMITER;
 -- Dump completed on 2023-06-13 18:44:38
