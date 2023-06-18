@@ -1,3 +1,5 @@
+import json
+
 import pika
 import xmlrpc.server
 
@@ -162,7 +164,20 @@ def publish_message_on_queue(message_json, queue, channel):
     print("Sent message on queue: " + queue)
 
 
+def test_rabbitMq(channel):
+    message = [
+        {"route_expiration": "2023-07-07 00:00:00", "mail": "matteo.conti.977@gmail.com", "it_cost": "5.00",
+         "it_distance": "12.00", "it_departure_time": "2023-07-08 10:30:00",
+         "it_arrival_time": "2023-07-08 11:00:00", "it_departure_stop": "Chaddopia",
+         "it_arrival_stop": "Siummopia"}
+    ]
+    publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
+
 if __name__ == "__main__":
+    # create queues for rabbitMq the channel has to be passed as parameter to publish function
+    queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
+    #test_rabbitMq(queue_channel)
+
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
 
     create_booking("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
@@ -177,9 +192,6 @@ if __name__ == "__main__":
     print(str(dao.get_distances(16, 17)))
 
     dao.close()
-
-    # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    queue_channel, queue_connection = init_rabbit_mq_queues() #queue_connection va ammmazzata quando non serve piu
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")

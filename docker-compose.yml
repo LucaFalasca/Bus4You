@@ -71,8 +71,8 @@ services:
     depends_on:
       rabbitMq:
         condition: service_healthy
-      #booking_service:
-        #condition: service_started
+      booking_service:
+        condition: service_started
 
   db-service:
     build: ./db-service
