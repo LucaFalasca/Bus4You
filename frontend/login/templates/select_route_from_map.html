@@ -186,9 +186,11 @@
             console.log(currentZoom)
             if (currentZoom < 16) {
                 console.log("AO")
-                map.removeLayer(markersLayer)
+                markersLayer.clearLayers();
+                startingPoint.addTo(markersLayer);
+                endingPoint.addTo(markersLayer);
             } else {
-                map.addLayer(markersLayer)
+                setMarkers();
             }
 
         });
@@ -197,7 +199,7 @@
         map.on('dragend', function() {
             var currentZoom = map.getZoom();
             if (currentZoom >= 16) {
-                setMarkers()
+                setMarkers();
             }
         });
 
@@ -218,12 +220,10 @@
         var url = "/_get_stops_rect?x=" + x +"&y=" + y + "&height=" + height + "&width=" + width
         //local_bus_stops = {{ url_for("get_stops_rect", x = ao, y = y, height = height, width = width)|tojson }};
 
-        console.log("ciao")
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 // data is a parsed JSON object
-                console.log("ciao2")
                 console.log(data.result)
                 markersLayer.clearLayers();
                 data.result.forEach(function(bus_stop) {
@@ -231,10 +231,16 @@
                         icon: busStopIconBlue,
                         title: "(" + bus_stop["lat"] + "," + bus_stop["lang"] + ")"
                     }).addTo(map);
+                    if(startingPoint != null && marker.getLatLng().toString() == startingPoint.getLatLng().toString()){
+                        marker.setIcon(busStopIconGreen);
+                    }
+                    else if(endingPoint != null && marker.getLatLng().toString() == endingPoint.getLatLng().toString()){
+                        marker.setIcon(busStopIconRed);
+                    }
                     marker.bindTooltip(bus_stop["name"], {
                         offset: L.point(0, -50)
                     });
-                    marker.addTo(markersLayer)
+                    marker.addTo(markersLayer);
                 });
         })
     }
