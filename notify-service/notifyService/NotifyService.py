@@ -20,9 +20,10 @@ from googleapiclient.discovery import build
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 our_email = 'bus4you-notification@bus4you-389820.iam.gserviceaccount.com'
 OBJECT = 'Bus4You Notification - Il tuo itinerario è pronto!'
-BODY = "%s Il tuo itinerario è pronto! Puoi visualizzarlo nella sezione MyRoutes dell'app Bus4You, puoi scegliere " \
-       "se confermarlo o meno entro il %s alle %s.\n" \
-       "Riepilogo prenotazione:\n\n" \
+BODY = "%s Il tuo itinerario è pronto!\n" \
+       "Puoi visualizzarlo nella sezione MyRoutes dell'app Bus4You,\n" \
+       "puoi scegliere se confermarlo o meno entro il %s alle %s.\n\n" \
+       "Riepilogo prenotazione:\n" \
        "-Partenza: %s\n" \
        "-Arrivo: %s\n" \
        "-Distanza: %s Km\n" \
