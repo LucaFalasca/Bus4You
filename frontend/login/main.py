@@ -73,6 +73,8 @@ def signUp():
 
 @app.route('/select-route-from-map', methods=['GET'])
 def request_route():
+    usr = session['usr']
+    mail = session['mail']
     starting_point = request.args.get('starting_point')
     ending_point = request.args.get('ending_point')
     date = request.args.get('date')
@@ -88,7 +90,7 @@ def request_route():
     if starting_point == None or ending_point == '' or date == '' or arrival_time == '' or travel_time == '':
         return render_template("select_route_from_map.html", bus_stops = bus_stops)
     else:
-        gateway_request_route_url = 'http://localhost:50052/api/route_from_map?starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
+        gateway_request_route_url = 'http://localhost:50052/api/route_from_map?user='+mail+'&starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
