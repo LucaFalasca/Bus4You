@@ -173,6 +173,9 @@ def test_rabbitMq(channel):
     ]
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
+def insert_booking(user, starting_point, ending_point, date, start_or_finish, time):
+    return "ciao"
+
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
@@ -195,6 +198,6 @@ if __name__ == "__main__":
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
-    # server.register_function(insert_booking, "insert_booking")
+    server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
     # session.close()

@@ -78,19 +78,23 @@ def request_route():
     starting_point = request.args.get('starting_point')
     ending_point = request.args.get('ending_point')
     date = request.args.get('date')
-    arrival_time = request.args.get('arrival_time')
-    travel_time = request.args.get('travel_time')
+    start_or_finish_raw = request.args.get('start-finish')
+    if(start_or_finish_raw == 'on'):
+        start_or_finish = 'start'
+    else:
+        start_or_finish = 'finish'
+    time = request.args.get('time')
     print(starting_point)
     print(ending_point)
     print(date)
-    print(arrival_time)
-    print(travel_time)
+    print(start_or_finish)
+    print(time)
     gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
-    if starting_point == None or ending_point == '' or date == '' or arrival_time == '' or travel_time == '':
+    if starting_point == None or ending_point == '' or date == '' or start_or_finish == '' or time == '':
         return render_template("select_route_from_map.html", bus_stops = bus_stops)
     else:
-        gateway_request_route_url = 'http://localhost:50052/api/route_from_map?user='+mail+'&starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
+        gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user='+mail+'&starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
