@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
     toAlg = NodeToAlg(dao)
     print_node_list(toAlg.take_nodes_from_bd(18))
-    print(str(dao.get_distances(16, 17)))
+    #print(str(dao.get_distances(16, 17)))
 
     dao.close()
 
