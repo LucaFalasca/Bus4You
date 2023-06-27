@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, json, jsonify
+from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
 import requests
 from frontend.login.utils.json_parser import parse_user_routes_json
 
@@ -8,7 +8,7 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('login.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/signUpForm')
@@ -35,7 +35,7 @@ def login():
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
             session['token'] = response['token']
-            return request_route()
+            return redirect(url_for('request_route'))
         else:
             flash('Login failed incorrect mail or password', category='info')
             return render_template("login.html")
