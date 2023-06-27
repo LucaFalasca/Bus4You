@@ -8,7 +8,7 @@ app.secret_key = '1234 bianchi legge questo e si sente male'
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect(url_for('login'))
+    return render_template('login.html')
 
 
 @app.route('/signUpForm')
