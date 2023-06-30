@@ -46,6 +46,25 @@ class DbDao:
             return -1
 
     @staticmethod
+    def stop_query_rect(conn, x, y, height, width):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            curs.callproc('get_stops_rect', (x, y, height, width))
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1], elem[2]])
+            return ret
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
     def user_routes_query(conn, usr):
         ret = []
         res = None

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, json
+from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
 import requests
 from frontend.login.utils.json_parser import parse_user_routes_json
 
@@ -14,10 +14,6 @@ def index():
 @app.route('/signUpForm')
 def signUpPage():
     return render_template('signUp.html')
-
-@app.route('/requestRoutePage')
-def selectRouteFromMapPage():
-    return render_template('select_route_from_map.html')
 
 
 @app.route('/login', methods=['POST'])
@@ -35,7 +31,7 @@ def login():
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
             session['token'] = response['token']
-            return request_route()
+            return redirect(url_for('request_route'))
         else:
             flash('Login failed incorrect mail or password', category='info')
             return render_template("login.html")
@@ -73,26 +69,47 @@ def signUp():
 
 @app.route('/select-route-from-map', methods=['GET'])
 def request_route():
+    usr = session['usr']
+    mail = session['mail']
     starting_point = request.args.get('starting_point')
     ending_point = request.args.get('ending_point')
     date = request.args.get('date')
-    arrival_time = request.args.get('arrival_time')
-    travel_time = request.args.get('travel_time')
+    start_or_finish_raw = request.args.get('start-finish')
+    if(start_or_finish_raw == 'on'):
+        start_or_finish = 'start'
+    else:
+        start_or_finish = 'finish'
+    time = request.args.get('time')
     print(starting_point)
     print(ending_point)
     print(date)
-    print(arrival_time)
-    print(travel_time)
+    print(start_or_finish)
+    print(time)
     gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
-    if starting_point == None or ending_point == '' or date == '' or arrival_time == '' or travel_time == '':
+    if starting_point == None or ending_point == '' or date == '' or start_or_finish == '' or time == '':
         return render_template("select_route_from_map.html", bus_stops = bus_stops)
     else:
-        gateway_request_route_url = 'http://localhost:50052/api/route_from_map?starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&arrival_time=' + arrival_time + '&travel_time=' + travel_time
+        gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user='+mail+'&starting_point=' + starting_point + '&ending_point=' + ending_point + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
         return render_template("select_route_from_map.html", bus_stops = bus_stops, response=response)
+
+
+@app.route('/_get_stops_rect', methods=['GET'])
+def get_stops_rect():
+    x = request.args.get('x')
+    y = request.args.get('y')
+    height = request.args.get('height')
+    width = request.args.get('width')
+    gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
+    print("AOO")
+    print(gateway_get_bus_stops_url)
+    print(requests.get(gateway_get_bus_stops_url))
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    return jsonify(result = bus_stops)
+    
 
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])

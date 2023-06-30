@@ -1,20 +1,16 @@
-import datetime
-import time
-
-import random
-import requests
 import json
+
+import pika
 import xmlrpc.server
 
 from neo4j import GraphDatabase, basic_auth
-from neo4j._spatial import  WGS84Point
+from neo4j._spatial import WGS84Point
 from Neo4jDAO import *
 from NodeToAlg import *
 from Node import *
 from utils import *
 
-
-#Usare questa funzione per generare un insieme di prenotazioni con dati realistici
+# Usare questa funzione per generare un insieme di prenotazioni con dati realistici
 '''def generate_stops(sizeUsers):
 
     users = ["Marco", "Giulia", "Matteo", "Francesca", "Luca", "Chiara", "Alessandro", "Valentina", "Davide", "Sara",
@@ -69,19 +65,16 @@ from utils import *
 
 def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
                    position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
-
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
 
-
-    #get ID's, and create if not exists
+    # get ID's, and create if not exists
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
-    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop,hour_end)
+    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop, hour_end)
     booking_id = dao.create_booking(username, name_start_stop, name_end_stop, date, hour_end,
                                     position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
-
 
     if dao.search_for_compatibility_type_1(booking_id):
         return
@@ -89,8 +82,6 @@ def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
         return
     if dao.search_for_compatibility_type_3(booking_id):
         return
-
-
 
 
 def some_calls():
@@ -131,20 +122,69 @@ def some_calls():
                    41.9387, 12.7971, 41.9624, 12.7949)
 
     # Esempio 10
-    create_booking("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23), datetime.time(14, 45),
+    create_booking("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23),
+                   datetime.time(14, 45),
                    41.9271, 12.4997, 41.8532, 12.5636)
 
 
+'''Funzione per inizializzare le code di rabbitMq e ricevere l'handler per la comunicazione, per aggiungere una coda
+basta aggiungere un'altra queue declare con il nome della coda che si vuole creare che deve essere univoco, ricordare
+che se si hanno più consumer per lo stesso messaggio occorre creare una coda per consumer, sulla quale poi si pubblicheranno
+gli stessi messaggi'''
+def init_rabbit_mq_queues():
+    connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitMq'))
+    channel = connection.channel()
+    channel.queue_declare(queue='preparedRoutes1', durable=True)
+    return channel
 
 
+'''Funzione per pubblicare su una coda di rabbit_mq, necessita del channel ricevuto tramite la init, la coda su cui 
+si vuole pubblicare e il messaggio da pubblicare, il messaggio deve essere un json array che rappresenta il percorso
+in particolare per ogni itinerario si ha un json nell'array fatto come segue:
+{"route_expiration": scadenza_percorso, "mail": mail_utente, "it_cost": costo_itinerario_in_euro, 
+"it_distance": distanza_itinerario_in_km, "it_departure_time": datetime_partenza_itinerario, 
+"it_arrival_time": datetime_arrivo_itinerario, "it_departure_stop": nome_fermata_partenza_itinerario, 
+"it_arrival_stop": nome_fermata_arrivo_itinerario}
+ad esempio un istanza di tale json array pul essere la seguente:
+message=[{"route_expiration": "2023-07-07 00:00:00", "mail": "matteo.conti.977@gmail.com", "it_cost": "5.00",
+"it_distance": "12.00", "it_departure_time": "2023-07-08 10:30:00",
+"it_arrival_time": "2023-07-08 11:00:00", "it_departure_stop": "Chaddopia",
+"it_arrival_stop": "Siummopia"},
+{"route_expiration": "2023-07-07 00:00:00", "mail": "lucafalasca08@gmail.com", "it_cost": "3.50",
+  "it_distance": "4.00", "it_departure_time": "2023-07-08 10:30:00",
+  "it_arrival_time": "2023-07-08 11:00:00", "it_departure_stop": "Sorbona",
+  "it_arrival_stop": "Subaugusta (MA)"}] 
+notare che il parametro messagge_json va passato come json.dumps(message)
+'''
+def publish_message_on_queue(message_json, queue, channel):
+    channel.basic_publish(exchange='',
+                          routing_key=queue,
+                          body=message_json.encode('utf-8'),
+                          properties=pika.BasicProperties(delivery_mode=2))
+    print("Sent message on queue: " + queue)
+
+
+def test_rabbitMq(channel):
+    message = [
+        {"route_expiration": "2023-07-07 00:00:00", "mail": "matteo.conti.977@gmail.com", "it_cost": "5.00",
+         "it_distance": "12.00", "it_departure_time": "2023-07-08 10:30:00",
+         "it_arrival_time": "2023-07-08 11:00:00", "it_departure_stop": "Chaddopia",
+         "it_arrival_stop": "Siummopia"}
+    ]
+    publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
+
+def insert_booking(user, starting_point, ending_point, date, start_or_finish, time):
+    return "ciao"
 
 if __name__ == "__main__":
-
+    # create queues for rabbitMq the channel has to be passed as parameter to publish function
+    queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
+    #test_rabbitMq(queue_channel)
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
 
     create_booking("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
-                41.9014, 12.5005, 41.8954, 12.4823)
+                   41.9014, 12.5005, 41.8954, 12.4823)
 
     create_booking("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
                    41.8902, 12.4923, 41.9248, 12.4455)
@@ -152,20 +192,12 @@ if __name__ == "__main__":
 
     toAlg = NodeToAlg(dao)
     print_node_list(toAlg.take_nodes_from_bd(18))
-    print(str(dao.get_distances(16,17)))
-
-
-
-
+    #print(str(dao.get_distances(16, 17)))
 
     dao.close()
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
-
-    #server.register_function(insert_booking, "insert_booking")
+    server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
-    #session.close()
-
-
-
+    # session.close()

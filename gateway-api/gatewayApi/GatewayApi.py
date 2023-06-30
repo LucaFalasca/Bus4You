@@ -42,15 +42,19 @@ def request_route():
 
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
+    print("Ciao come va?")
     user = request.args.get('user')
     starting_point = request.args.get('starting_point')
     ending_point = request.args.get('ending_point')
     date = request.args.get('date')
-    arrival_time = request.args.get('arrival_time')
-    travel_time = request.args.get('travel_time')
-    print(user, starting_point, ending_point, date, arrival_time, travel_time)
+    start_or_finish = request.args.get('start-finish')
+    print("SOF" + start_or_finish)
+    time = request.args.get('time')
+    print(user, starting_point, ending_point, date, start_or_finish, time)
     with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
-        result = proxy.insert_booking(user, starting_point, ending_point, date, arrival_time, travel_time)
+        print("PROXY")
+        result = proxy.insert_booking(user, starting_point, ending_point, date, start_or_finish, time)
+        print(result)
         return json.dumps(result)
 
 
@@ -126,6 +130,20 @@ def get_bus_stops():
     ret = []
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         bus_stops = json.loads(proxy.get_stops())
+    for elem in bus_stops:
+        stop={"name": elem[0], "lat": elem[1], "lang": elem[2]}
+        ret.append(stop)
+    return json.dumps(ret)
+
+@api.route('/api/get_bus_stops_rect', methods=['GET'])
+def get_bus_stops_rect():
+    ret = []
+    x = request.args.get('x')
+    y = request.args.get('y')
+    height = request.args.get('height')
+    width = request.args.get('width')
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        bus_stops = json.loads(proxy.get_stops_rect(x, y, height, width))
     for elem in bus_stops:
         stop={"name": elem[0], "lat": elem[1], "lang": elem[2]}
         ret.append(stop)
