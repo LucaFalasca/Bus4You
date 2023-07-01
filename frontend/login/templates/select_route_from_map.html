@@ -32,6 +32,8 @@
                   <div class="col-9">
                       <!-- campo per l'inserimento del punto di partenza -->
                       <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                      <input type="hidden" id="start_lat" name="start_lat">
+                      <input type="hidden" id="start_lng" name="start_lng">
                   </div>
                   <div class="col-3">
                       <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select </button>
@@ -46,6 +48,8 @@
                   <div class="col-9">
                       <!-- campo per l'inserimento del punto di arrivo -->
                       <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                      <input type="hidden" id="end_lat" name="end_lat">
+                      <input type="hidden" id="end_lng" name="end_lng">
                   </div>
                   <div class="col-3">
                       <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select</button>
@@ -150,8 +154,13 @@
                     var clickedMarker = e.layer;
                     clickedMarker.setIcon(busStopIconGreen);
                     startingPoint = clickedMarker
-                    bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var lat = clickedMarker.getLatLng().lat;
+                    var lng = clickedMarker.getLatLng().lng;
                     document.getElementById("starting_point").value = bus_stop_name;
+                    document.getElementById("start_lat").value = lat;
+                    document.getElementById("start_lng").value = lng;
+
                 }
                 else if (point == "end"){
                     if (endingPoint != null)
@@ -160,7 +169,11 @@
                     endingPoint = clickedMarker
                     clickedMarker.setIcon(busStopIconRed);
                     bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var lat = clickedMarker.getLatLng().lat;
+                    var lng = clickedMarker.getLatLng().lng;
                     document.getElementById("ending_point").value = bus_stop_name;
+                    document.getElementById("end_lat").value = lat;
+                    document.getElementById("end_lng").value = lng;
                 }
             }
         }

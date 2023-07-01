@@ -173,8 +173,10 @@ def test_rabbitMq(channel):
     ]
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
-def insert_booking(user, starting_point, ending_point, date, start_or_finish, time):
-    return "ciao"
+def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish, time):
+    s = "user: " + user + " starting_point: " + starting_point + " start_lat: " + str(start_lat) + " start_lng: " + str(start_lng) + " ending_point: " + ending_point + " end_lat: " + str(end_lat) + " end_lng: " + str(end_lng) + " date: " + str(date) + " start_or_finish: " + start_or_finish + " time: " + str(time)
+    print(s)
+    return s
 
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
