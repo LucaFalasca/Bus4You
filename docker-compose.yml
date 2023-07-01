@@ -29,8 +29,10 @@ services:
       MYSQL_DATABASE: 'b4y_userDb'
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
+      interval: 3s
+      timeout: 30s
       retries: 10
+      start_period: 3s
 
   neo4jDb:
     # Docker image to be used
@@ -114,7 +116,18 @@ services:
     container_name: make-root-service
     volumes:
       - ./make-root-service:/app
+    depends_on:
+      rabbitMq:
+        condition: service_healthy
+      node-selector-service:
+        condition: service_started
 
+  node-selector-service:
+    build: ./node-selector-service
+    container_name: node-selector-service
+    depends_on:
+      rabbitMq:
+        condition: service_healthy
 
   ors-app:
     container_name: ors-app
