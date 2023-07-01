@@ -115,6 +115,11 @@ services:
     volumes:
       - ./make-root-service:/app
 
+  node-selector-service:
+    build: ./node-selector-service
+    container_name: node-selector-service
+    volumes:
+      - ./node-selector-service:/app
 
   ors-app:
     container_name: ors-app
