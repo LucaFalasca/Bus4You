@@ -14,3 +14,8 @@ notify-service/notifyService/credentials/credentials.json
 notify-service/notifyService/credentials/token.pickle
 plugins/apoc.jar
 rabbitMq/
+ors/conf/
+ors/elevation_cache/
+ors/graphs/
+ors/logs/
+ors/centro-latest.osm.pbf
