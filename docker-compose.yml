@@ -156,6 +156,8 @@ services:
       - VROOM_ROUTER=ors
     ports:
       - "3000:3000"
+    depends_on:
+      - ors-app
 #networks:
   #backend-net:
     #name: backend-net

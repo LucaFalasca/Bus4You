@@ -29,4 +29,3 @@ routingServers:
     driving-car:
       host: 'ors-app'
       port: '8080'
-      path: '/ors'
