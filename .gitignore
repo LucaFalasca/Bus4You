@@ -19,3 +19,4 @@ ors/elevation_cache/
 ors/graphs/
 ors/logs/
 ors/centro-latest.osm.pbf
+vroom/conf/access.log

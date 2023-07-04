@@ -28,7 +28,7 @@ def test_vroom():
       "amount": [1],
       "pickup": {
         "id": 4,
-        "service": 300,
+        "service_after": [300],
         "location": [12.627504,41.837339]
       },
       "delivery": {
@@ -46,21 +46,134 @@ def test_vroom():
 
     return data
 
-def test_opt():
+class shipment:
+    def __init__(self, amount, id_pickup, pickup, id_delivery, delivery, time_window):
+        self.amount = amount
+        self.id_pickup = id_pickup
+        self.pickup = pickup
+        self.id_delivery = id_delivery
+        self.delivery = delivery 
+        self.time_window = time_window
 
-    body = {"jobs":[{"id":1,"service":300,"amount":[1],"location":[1.98465,48.70329],"skills":[1],"time_windows":[[32400,36000]]},{"id":2,"service":300,"amount":[1],"location":[2.03655,48.61128],"skills":[1]},{"id":3,"service":300,"amount":[1],"location":[2.39719,49.07611],"skills":[2]},{"id":4,"service":300,"amount":[1],"location":[2.41808,49.22619],"skills":[2]},{"id":5,"service":300,"amount":[1],"location":[2.28325,48.5958],"skills":[14]},{"id":6,"service":300,"amount":[1],"location":[2.89357,48.90736],"skills":[14]}],"vehicles":[{"id":1,"profile":"driving-car","start":[2.35044,48.71764],"end":[2.35044,48.71764],"capacity":[4],"skills":[1,14],"time_window":[28800,43200]},{"id":2,"profile":"driving-car","start":[2.35044,48.71764],"end":[2.35044,48.71764],"capacity":[4],"skills":[2,14],"time_window":[28800,43200]}]}
+def make_route(bus_start_position, shipments):
+    url = 'http://vroom:3000/'
+    body = {}
+    body['vehicles'] = [{'id': 0, "capacity": [8], "profile": "driving-car", 'start': bus_start_position}]
+    body['shipments'] = []
 
-    headers = {
-        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-        'Authorization': 'your-api-key',
-        'Content-Type': 'application/json; charset=utf-8'
-    }
-    call = requests.post('https://api.openrouteservice.org/optimization', json=body, headers=headers)
+    for shipment in shipments:
+        s = {}
+        s["amount"] = [shipment.amount]
+        pickup = {}
+        pickup["id"] = shipment.id_pickup
+        if(shipment.time_window[0] != None):
+            #pickup["service_at"] = [shipment.time_window[0]]
+            pickup["time_windows"] = [[shipment.time_window[0], shipment.time_window[1]]]
+        pickup["location"] = shipment.pickup
+        s["pickup"] = pickup
+        delivery = {}
+        delivery["id"] = shipment.id_delivery
+        if(shipment.time_window[1] != None):
+            #delivery["service_at"] = [shipment.time_window[1]]
+            delivery["time_windows"] = [[shipment.time_window[0], shipment.time_window[1]]]
+        delivery["location"] = shipment.delivery
+        s["delivery"] = delivery
+        body['shipments'].append(s)
 
-    print(call.status_code, call.reason)
-    print(call.text)
+    body['options'] = {'g': True}
+
+    print(body)
+
+    data = requests.post(url, json = body).json()
+
+    print(data)
+
+    return data
+
+def make_route_plan(bus_start_position, shipments):
+    url = 'http://vroom:3000/'
+    body = {}
+    body['vehicles'] = [{'id': 0, "capacity": [8], "profile": "driving-car", 'start': bus_start_position}]
+    body['shipments'] = []
+
+    body["steps"] = [{
+          "type": "start"
+        },
+        {
+          "type": "pickup",
+          "id": 1
+        },
+        {
+          "type": "delivery",
+          "id": 1
+        },
+        {
+          "type": "pickup",
+          "id": 3
+        },
+        {
+          "type": "delivery",
+          "id": 3
+        },
+        {
+          "type": "pickup",
+          "id": 5
+        },
+        {
+          "type": "delivery",
+          "id": 5
+        },
+        {
+          "type": "end"
+        }]
+    
+
+    for shipment in shipments:
+        s = {}
+        s["amount"] = [shipment.amount]
+        pickup = {}
+        pickup["id"] = shipment.id_pickup
+        if(shipment.time_window[0] != None):
+            #pickup["service_at"] = [shipment.time_window[0]]
+            pickup["time_windows"] = [[shipment.time_window[0], shipment.time_window[1]]]
+        pickup["location"] = shipment.pickup
+        s["pickup"] = pickup
+        delivery = {}
+        delivery["id"] = shipment.id_delivery
+        if(shipment.time_window[1] != None):
+            #delivery["service_at"] = [shipment.time_window[1]]
+            delivery["time_windows"] = [[shipment.time_window[0], shipment.time_window[1]]]
+        delivery["location"] = shipment.delivery
+        s["delivery"] = delivery
+        body['shipments'].append(s)
+
+    body['options'] = {'g': True, 'c': True}
+
+    print(body)
+
+    data = requests.post(url, json = body).json()
+
+    print(data)
+
+    return data
 
 if __name__ == '__main__':
-    #getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
-    test_vroom()
+    getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
+    #test_vroom()
     #test_opt()
+
+    #s1 = shipment(1, 1, [12.627504,41.837339], 1, [12.427504,41.837339], [0, 1793])
+    #s2 = shipment(1, 3, [12.627504,41.737339], 3, [12.527504,41.737339], [None, None])
+    #s3 = shipment(1, 5, [12.627504,41.637339], 5, [12.527504,41.737339], [4355, 100000])
+    #r1 = make_route(s1.pickup, [s1, s2, s3])
+    #r2 = make_route(s2.pickup, [s1, s2, s3])
+    #r3 = make_route(s3.pickup, [s1, s2, s3])
+
+    #print("steps r1 " + str(r1["routes"][0]["steps"]))
+    #print("steps r2 " + str(r2["routes"][0]["steps"]))
+    #print("steps r3 " + str(r3["routes"][0]["steps"]))
+
+    #print("cost r1 " + str(r1["summary"]["cost"]))
+    #print("cost r2 " + str(r2["summary"]["cost"]))
+    #print("cost r3 " + str(r3["summary"]["cost"]))
+    #test_vroom()

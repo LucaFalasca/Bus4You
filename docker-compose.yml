@@ -120,6 +120,11 @@ services:
     container_name: node-selector-service
     volumes:
       - ./node-selector-service:/app
+    depends_on:
+      ors-app:
+        condition: service_started
+      vroom:
+        condition: service_started
 
   ors-app:
     container_name: ors-app
@@ -157,7 +162,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - ors-app
+      ors-app:
+        condition: service_started
 #networks:
   #backend-net:
     #name: backend-net
