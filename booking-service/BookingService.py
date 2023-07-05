@@ -10,6 +10,8 @@ from NodeToAlg import *
 from Node import *
 from utils import *
 
+PROPOSE_ROUTE_QUEUE = 'propose_route'
+
 # Usare questa funzione per generare un insieme di prenotazioni con dati realistici
 '''def generate_stops(sizeUsers):
 
@@ -198,11 +200,17 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
     print(s)
     return True
 
+def propose_route_callback(ch, method, properties, body):
+    print("Received prepared routes message: " + body.decode('utf-8'))
+
+
 if __name__ == "__main__":
+    
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     #test_rabbitMq(queue_channel)
 
+    '''
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
 
     create_booking_type_start("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
@@ -213,7 +221,7 @@ if __name__ == "__main__":
     some_calls()
 
     toAlg = NodeToAlg(dao)
-    print_node_list(toAlg.take_nodes_from_bd(18))
+    #print_node_list(toAlg.take_nodes_from_bd(18))
     #print(str(dao.get_distances(16, 17)))
 
     dao.close()
@@ -223,3 +231,16 @@ if __name__ == "__main__":
     server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
     # session.close()
+    '''
+
+    # Coda da consumer per ricevere i messaggi di makeRouteService
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
+    channel = connection.channel()
+    # Create a queue, if already exist nothing happens
+    channel.queue_declare(queue = PROPOSE_ROUTE_QUEUE, durable = True)
+    channel.basic_consume(queue = PROPOSE_ROUTE_QUEUE,
+                          auto_ack = True,
+                          on_message_callback = propose_route_callback)
+
+    print("Sto ascoltando")
+    channel.start_consuming()

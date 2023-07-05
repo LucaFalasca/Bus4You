@@ -42,6 +42,14 @@ def test_rabbitMq(channel):
     user_routes = {"Giovanni": ('0', '1'),
                    "Marco": ('2', '3'),
                    "Luca": ('4', '5')}
+    points_location = {'0' :[12.527504,41.837339],
+                        '1' :[12.627504,41.837339],
+                        '2' :[12.427504,41.837339],
+                        '3' :[12.527504,41.737339],
+                        '4' :[12.547504,41.737339],
+                        '5' :[12.327504,41.767339]}
+                       
+
 
     dist_matrix = OrsDao.getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.547504,41.737339], [12.327504,41.767339]])
     #message = [
@@ -52,6 +60,8 @@ def test_rabbitMq(channel):
     message["prec_hash"] = prec_hash
     message["dist_matrix"] = dist_matrix
     message["user_routes"] = user_routes
+    message["date"] = "05/07/2023"
+    message["points_location"] = points_location
     publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, channel)
 
 
