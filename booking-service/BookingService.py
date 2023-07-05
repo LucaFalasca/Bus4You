@@ -63,17 +63,37 @@ from utils import *
 '''
 
 
-def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
-                   position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
+def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+                            position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
 
     # get ID's, and create if not exists
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
-    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop, hour_end)
-    booking_id = dao.create_booking(username, name_start_stop, name_end_stop, date, hour_end,
-                                    position_start_stop, position_end_stop)
+    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
+    booking_id = dao.create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+                                             position_start_stop, position_end_stop)
+    dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
+
+    if dao.search_for_compatibility_type_1(booking_id):
+        return
+    if dao.search_for_compatibility_type_2(booking_id):
+        return
+    if dao.search_for_compatibility_type_3(booking_id):
+        return
+
+def create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+                            position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
+    position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
+    position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
+
+    # get ID's, and create if not exists
+    user_id = dao.create_user(username)
+    stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
+    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
+    booking_id = dao.create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+                                             position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
     if dao.search_for_compatibility_type_1(booking_id):
@@ -86,45 +106,45 @@ def create_booking(username, name_start_stop, name_end_stop, date, hour_end,
 
 def some_calls():
     # Esempio 1
-    create_booking("Alice", "Termini", "Piazza Venezia", datetime.date(2023, 7, 23), datetime.time(10, 15),
-                   41.9014, 12.5005, 41.8954, 12.4823)
+    create_booking_type_end("Alice", "Termini", "Piazza Venezia", datetime.date(2023, 7, 23), datetime.time(10, 15),
+                            41.9014, 12.5005, 41.8954, 12.4823)
 
     # Esempio 2
-    create_booking("Bob", "Colosseo", "San Giovanni", datetime.date(2023, 7, 23), datetime.time(8, 30),
-                   41.8902, 12.4924, 41.8743, 12.5110)
+    create_booking_type_start("Bob", "Colosseo", "San Giovanni", datetime.date(2023, 7, 23), datetime.time(8, 30),
+                            41.8902, 12.4924, 41.8743, 12.5110)
 
     # Esempio 3
-    create_booking("Charlie", "Villa Borghese", "Piazza del Popolo", datetime.date(2023, 7, 23), datetime.time(17, 45),
-                   41.9142, 12.4921, 41.9098, 12.4767)
+    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", datetime.date(2023, 7, 23), datetime.time(17, 45),
+                            41.9142, 12.4921, 41.9098, 12.4767)
 
     # Esempio 4
-    create_booking("Dave", "Ostia Antica", "Fiumicino Airport", datetime.date(2023, 7, 23), datetime.time(14, 0),
-                   41.7553, 12.2922, 41.7966, 12.2366)
+    create_booking_type_start("Dave", "Ostia Antica", "Fiumicino Airport", datetime.date(2023, 7, 23), datetime.time(14, 0),
+                            41.7553, 12.2922, 41.7966, 12.2366)
 
     # Esempio 5
-    create_booking("Eve", "Castel Sant'Angelo", "Ponte Milvio", datetime.date(2023, 7, 23), datetime.time(12, 30),
-                   41.9028, 12.4669, 41.9311, 12.4719)
+    create_booking_type_end("Eve", "Castel Sant'Angelo", "Ponte Milvio", datetime.date(2023, 7, 23), datetime.time(12, 30),
+                            41.9028, 12.4669, 41.9311, 12.4719)
 
     # Esempio 6
-    create_booking("Frank", "Cinecittà", "Villa Ada", datetime.date(2023, 7, 23), datetime.time(9, 45),
-                   41.8513, 12.5731, 41.9321, 12.5028)
+    create_booking_type_start("Frank", "Cinecittà", "Villa Ada", datetime.date(2023, 7, 23), datetime.time(9, 45),
+                            41.8513, 12.5731, 41.9321, 12.5028)
 
     # Esempio 7
-    create_booking("Gina", "Villa d'Este", "Tivoli", datetime.date(2023, 7, 23), datetime.time(16, 20),
-                   41.9624, 12.7949, 41.9679, 12.8006)
+    create_booking_type_end("Gina", "Villa d'Este", "Tivoli", datetime.date(2023, 7, 23), datetime.time(16, 20),
+                            41.9624, 12.7949, 41.9679, 12.8006)
 
     # Esempio 8
-    create_booking("Harry", "Terme di Caracalla", "Aventino", datetime.date(2023, 7, 23), datetime.time(18, 0),
-                   41.8799, 12.4925, 41.8824, 12.4761)
+    create_booking_type_start("Harry", "Terme di Caracalla", "Aventino", datetime.date(2023, 7, 23), datetime.time(18, 0),
+                            41.8799, 12.4925, 41.8824, 12.4761)
 
     # Esempio 9
-    create_booking("Ian", "Villa Adriana", "Villa d'Este", datetime.date(2023, 7, 23), datetime.time(11, 15),
-                   41.9387, 12.7971, 41.9624, 12.7949)
+    create_booking_type_end("Ian", "Villa Adriana", "Villa d'Este", datetime.date(2023, 7, 23), datetime.time(11, 15),
+                            41.9387, 12.7971, 41.9624, 12.7949)
 
     # Esempio 10
-    create_booking("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23),
-                   datetime.time(14, 45),
-                   41.9271, 12.4997, 41.8532, 12.5636)
+    create_booking_type_start("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23),
+                            datetime.time(14, 45),
+                            41.9271, 12.4997, 41.8532, 12.5636)
 
 
 '''Funzione per inizializzare le code di rabbitMq e ricevere l'handler per la comunicazione, per aggiungere una coda
@@ -185,11 +205,11 @@ if __name__ == "__main__":
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
 
-    create_booking("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
-                   41.9014, 12.5005, 41.8954, 12.4823)
+    create_booking_type_start("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
+                            41.9014, 12.5005, 41.8954, 12.4823)
 
-    create_booking("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
-                   41.8902, 12.4923, 41.9248, 12.4455)
+    create_booking_type_end("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
+                            41.8902, 12.4923, 41.9248, 12.4455)
     some_calls()
 
     toAlg = NodeToAlg(dao)
