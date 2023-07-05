@@ -23,6 +23,9 @@
             </form>
         </ul>
     </div>
+    {% for msg in get_flashed_messages() %}
+        <h4>{{ msg }}</h4>
+    {% endfor %}
 <script src="../static/bootstrap-italia/js/bootstrap-italia.bundle.min.js"></script>
 {% block body %}
 {% endblock %}

@@ -113,7 +113,7 @@ CREATE TABLE `itinerario_proposto` (
 
 LOCK TABLES `itinerario_proposto` WRITE;
 /*!40000 ALTER TABLE `itinerario_proposto` DISABLE KEYS */;
-INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817);
+INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',3,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',4,3,41.660835,12.411013,41.665523,12.404817),(6,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(7,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817),(8,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',4,1,41.660835,12.411013,41.665523,12.404817);
 /*!40000 ALTER TABLE `itinerario_proposto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -317,7 +317,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_routes`(in mail varchar(128))
 BEGIN
-SELECT p.id, i.costo, i.orario_partenza_proposto, i.orario_arrivo_proposto, i.stato, p. archiviato, p.stato, p.scadenza, f_start.nome, f_end.nome
+SELECT p.id, i.costo, i.orario_partenza_proposto, i.orario_arrivo_proposto, i.stato, p. archiviato, p.stato, p.scadenza, f_start.nome, f_end.nome, i.id
 FROM 
 b4y_user_db.itinerario_proposto as i join b4y_user_db.percorso as p on i.percorso=p.id
 join b4y_user_db.fermata as f_start on i.fermata_lat_partenza=f_start.lat and i.fermata_lon_partenza=f_start.lon 
@@ -411,5 +411,23 @@ on
 i.fermata_lat_arrivo=fa.lat and i.fermata_lon_arrivo=fa.lon
 where p.id=id and i.percorso=id and p.stato='pending' and i.stato='pending';
 END ;;
-DELIMITER;
+DELIMITER ;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `confirm_it`(in id BIGINT)
+BEGIN
+UPDATE b4y_user_db.itinerario_proposto
+SET itinerario_proposto.stato='confirmed'
+WHERE itinerario_proposto.id=id;
+END ;;
+DELIMITER ;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reject_it`(in id BIGINT)
+BEGIN
+UPDATE b4y_user_db.itinerario_proposto
+SET itinerario_proposto.stato='rejected'
+WHERE itinerario_proposto.id=id;
+END ;;
+DELIMITER ;
 -- Dump completed on 2023-06-13 18:44:38
