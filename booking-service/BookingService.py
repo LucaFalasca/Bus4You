@@ -209,16 +209,18 @@ if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     #test_rabbitMq(queue_channel)
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    some_calls()
 
     '''
-    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    
 
     create_booking_type_start("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
                             41.9014, 12.5005, 41.8954, 12.4823)
 
     create_booking_type_end("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
                             41.8902, 12.4923, 41.9248, 12.4455)
-    some_calls()
+    
 
     toAlg = NodeToAlg(dao)
     #print_node_list(toAlg.take_nodes_from_bd(18))
