@@ -14,7 +14,7 @@ def getMatrix(nodes):
 
     for i in range(n_nodes):
         for j in range(n_nodes):
-            matrix[i][j] = data['durations'][i][j]
+            matrix[i][j] = round(data['durations'][i][j] / 60, 2)
 
     print(matrix)
     return matrix
@@ -56,7 +56,7 @@ class shipment:
         self.time_window = time_window
 
 def make_route(bus_start_position, shipments):
-    url = 'http://vroom:3000/'
+    url = 'http://localhost:3000/'
     body = {}
     body['vehicles'] = [{'id': 0, "capacity": [8], "profile": "driving-car", 'start': bus_start_position}]
     body['shipments'] = []
@@ -158,22 +158,42 @@ def make_route_plan(bus_start_position, shipments):
     return data
 
 if __name__ == '__main__':
-    getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
+    #getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
     #test_vroom()
     #test_opt()
 
-    #s1 = shipment(1, 1, [12.627504,41.837339], 1, [12.427504,41.837339], [0, 1793])
-    #s2 = shipment(1, 3, [12.627504,41.737339], 3, [12.527504,41.737339], [None, None])
-    #s3 = shipment(1, 5, [12.627504,41.637339], 5, [12.527504,41.737339], [4355, 100000])
-    #r1 = make_route(s1.pickup, [s1, s2, s3])
-    #r2 = make_route(s2.pickup, [s1, s2, s3])
-    #r3 = make_route(s3.pickup, [s1, s2, s3])
+    s1 = shipment(1, 0, [12.527504,41.837339], 1, [12.627504,41.837339], [0, 2400])
+    s2 = shipment(1, 2, [12.427504,41.837339], 3, [12.527504,41.737339], [4800, 100000])
+    s3 = shipment(1, 4, [12.547504,41.737339], 5, [12.327504,41.767339], [4200, 100000])
+    r1 = make_route(s1.pickup, [s1, s2, s3])
+    r2 = make_route(s2.pickup, [s1, s2, s3])
+    r3 = make_route(s3.pickup, [s1, s2, s3])
 
-    #print("steps r1 " + str(r1["routes"][0]["steps"]))
-    #print("steps r2 " + str(r2["routes"][0]["steps"]))
-    #print("steps r3 " + str(r3["routes"][0]["steps"]))
+    print("\n\nsteps r1 ")
+    for step in r1["routes"][0]["steps"]:
+        if(step["type"] == "start" or step["type"] == "end"):
+            continue
+        print("job: " + str(step["job"]))
+        print("arrival: " + str(step["arrival"]/60))
+        print("waiting: " + str(step["waiting_time"]/60))
+    
+    print("\n\nsteps r2 ")
+    for step in r2["routes"][0]["steps"]:
+        if(step["type"] == "start" or step["type"] == "end"):
+            continue
+        print("job: " + str(step["job"]))
+        print("arrival: " + str(step["arrival"]/60))
+        print("waiting: " + str(step["waiting_time"]/60))
 
-    #print("cost r1 " + str(r1["summary"]["cost"]))
-    #print("cost r2 " + str(r2["summary"]["cost"]))
-    #print("cost r3 " + str(r3["summary"]["cost"]))
+    print("\n\nsteps r3 ")
+    for step in r3["routes"][0]["steps"]:
+        if(step["type"] == "start" or step["type"] == "end"):
+            continue
+        print("job: " + str(step["job"]))
+        print("arrival: " + str(step["arrival"]/60))
+        print("waiting: " + str(step["waiting_time"]/60))
+
+    print("cost r1 " + str(r1["summary"]["cost"]))
+    print("cost r2 " + str(r2["summary"]["cost"]))
+    print("cost r3 " + str(r3["summary"]["cost"]))
     #test_vroom()

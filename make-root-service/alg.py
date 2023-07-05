@@ -3,6 +3,7 @@ import random
 import time
 import xmlrpc.server
 from collections import deque
+import json
 
 import pika
 
@@ -174,6 +175,14 @@ def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
 def prepared_routes_callback(ch, method, properties, body):
     print("Received prepared routes message: " + body.decode('utf-8'))
     # INSERIRE IL CODICE PER GESTIRE IL MESSAGGIO RICEVUTO
+    message = json.loads(body.decode('utf-8'))
+    node_limit = message["node_limit"]
+    prec_hash = message["prec_hash"]
+    dist_matrix = message["dist_matrix"]
+    user_routes = message["user_routes"]
+    result = calculate_route(dist_matrix, prec_hash, node_limit, user_routes)
+    print("Result : " + str(result))
+
 
 
 if __name__ == "__main__":
@@ -185,6 +194,7 @@ if __name__ == "__main__":
                           auto_ack=True,
                           on_message_callback=prepared_routes_callback)
     channel.start_consuming()
+    print("AO")
 
     '''node_limit = {'1': (None, datetime.time(13, 55)),
                   '3': (datetime.time(14, 10), datetime.time(14, 40)),
@@ -209,9 +219,9 @@ if __name__ == "__main__":
         print("No route found")
     else:
         print(result)
-
+    '''
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
 
     server.register_function(calculate_route, "calculate_route")
-    server.serve_forever()'''
+    server.serve_forever()
