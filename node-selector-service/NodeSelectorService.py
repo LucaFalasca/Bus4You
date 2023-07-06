@@ -73,12 +73,16 @@ def get_booking_from_db():
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     return dao.get_all_bookings()
 
+def get_cluster_with_limits(booking_id , limit):
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    return dao.get_start_end_bookings_with_limit(booking_id, limit)
+
 
 
 if __name__ == "__main__":
     print("Hello World")
     #create queues for rabbitMq the channel has to be passed as parameter to publish function
-    #print(get_booking_from_db())
+    print(get_cluster_with_limits(15 , 5))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     test_rabbitMq(queue_channel)
     #while True:
