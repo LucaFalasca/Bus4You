@@ -32,33 +32,97 @@ def publish_message_on_queue(message_json, queue, channel):
     print("Sent message" + message_json + "on queue: " + queue)
 
 
-def test_rabbitMq(channel):
-    node_limit = {'1': (None, 40),
-                  '2': (80, None),
-                  '4': (70, None)}
-    prec_hash = {'0': ['1'], '1': [], '2': ['3'], '3': [], '4': ['5'], '5': []}
-    #dist_matrix = [[0, 20, 10, 30, 20, 30],
-    #               [20, 0, 10, 20, 10, 20],
-    #               [10, 10, 0, 20, 10, 20],
-    #               [30, 20, 20, 0, 10, 10],
-    #               [20, 10, 10, 10, 0, 10],
-    #               [30, 20, 20, 10, 10, 0]]
-    user_routes = {"Giovanni": ('0', '1'),
-                   "Marco": ('2', '3'),
-                   "Luca": ('4', '5')}
-    points_location = {'0' :[12.527504,41.837339],
-                        '1' :[12.627504,41.837339],
-                        '2' :[12.427504,41.837339],
-                        '3' :[12.527504,41.737339],
-                        '4' :[12.547504,41.737339],
-                        '5' :[12.327504,41.767339]}
+def send_nodes_for_computation(channel):
+    l = 0
+    while(l != 3):
+        nodes_4j = get_random_cluster_with_limits(3)
+        l = len(nodes_4j)
+    print(nodes_4j)
+
+    node_limit = {}
+    points_location = {}
+    prec_hash = {}
+    user_routes = {}
+
+    p = 1
+
+
+    c = 0
+
+    for itinerario in nodes_4j:
+        date = itinerario["date"]
+        coord_start = [itinerario["position_start_stop"][0], itinerario["position_start_stop"][1]]
+        print(coord_start)
+        if(itinerario["hour"][0] != None):
+            limit0 = itinerario["hour"][0].hour * 60 + itinerario["hour"][0].minute
+        else:
+            limit0 = None
+        if(itinerario["hour"][1] != None):
+            limit1 = itinerario["hour"][1].hour * 60 + itinerario["hour"][1].minute
+        else:
+            limit1 = None
+        limit = [limit0, limit1]
+
+        if(coord_start not in points_location.values()):
+            k_start = c
+            points_location[str(k_start)] = coord_start
+            c += 1
+            
+        else:
+            for key, value in points_location.items():
+                if(value == coord_start):
+                    k_start = key
+                    points_location[str(k_start)] = coord_start
+                    break
+
+        coord_end = [itinerario["position_end_stop"][0], itinerario["position_end_stop"][1]]
+        print(coord_end)
+        if(coord_end not in points_location.values()):
+            k_end = c
+            points_location[str(k_end)] = coord_end
+            c += 1
+        else:
+            for key, value in points_location.items():
+                if(value == coord_end):
+                    k_end = key
+                    points_location[str(k_end)] = coord_end
+                    break
+        if str(k_start) not in prec_hash.keys():
+            prec_hash[str(k_start)] = [str(k_end)]
+        else:
+            prec_hash[str(k_start)].append(str(k_end))
+        if str(k_end) not in prec_hash.keys():
+            prec_hash[str(k_end)] = []
+        
+        if(limit != None):
+            if(limit[0] != None):
+                if(str(k_start) not in node_limit.keys()):
+                    node_limit[str(k_start)] = [limit[0], None]
+                else:
+                    if node_limit[str(k_start)][0] == None:
+                        node_limit[str(k_start)][0] = limit[0]
+                    else:
+                        node_limit[str(k_start)][0] = min(node_limit[str(k_start)][0], limit[0])
+            if(limit[1] != None):
+                if(str(k_end) not in node_limit.keys()):
+                    node_limit[str(k_end)] = [None, limit[1]]
+                else:
+                    if node_limit[str(k_end)][1] == None:
+                        node_limit[str(k_end)][1] = limit[1]
+                    else:
+                        node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
+        
+        user_routes["persona" + str(p)] = (str(k_start), str(k_end))
+        p += 1
+            
+
+    print(points_location)
+    print(prec_hash)
+    print(node_limit)
+    print(user_routes)
                        
-
-
-    dist_matrix = OrsDao.getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.547504,41.737339], [12.327504,41.767339]])
-    #message = [
-    #    {"prova": "prova1"},
-    #]
+    input_ors = [q[::-1] for q in list(points_location.values())]
+    dist_matrix = OrsDao.getMatrix(input_ors)
     message = {}
     message["node_limit"] = node_limit
     message["prec_hash"] = prec_hash
@@ -88,8 +152,8 @@ def get_random_cluster_with_limits( limit):
 if __name__ == "__main__":
     print("Hello World")
     #create queues for rabbitMq the channel has to be passed as parameter to publish function
-    print(get_random_cluster_with_limits(5))
+    #print(get_random_cluster_with_limits(5))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    test_rabbitMq(queue_channel)
+    send_nodes_for_computation(queue_channel)
     #while True:
     #    pass

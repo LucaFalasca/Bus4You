@@ -134,6 +134,8 @@ services:
         condition: service_started
       rabbitMq:
         condition: service_healthy
+      neo4jDb:
+        condition: service_healthy
 
 
   ors-app:
