@@ -2,6 +2,10 @@ import json
 import pika
 import OrsDao
 import datetime
+from Neo4jDAO import *
+
+
+
 
 MAKE_ROUTE_STOP_DATA_QUEUE_1 = 'make_route_stop_data_1'
 
@@ -65,8 +69,26 @@ def test_rabbitMq(channel):
     publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, channel)
 
 
+def get_booking_from_db():
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    return dao.get_all_bookings()
+
+def get_cluster_with_limits(booking_id , limit):
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    return dao.get_start_end_bookings_with_limit(booking_id, limit)
+
+def get_random_cluster_with_limits( limit):
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    booking_id = dao.get_random_booking()
+    print(booking_id)
+    return dao.get_start_end_bookings_with_limit(booking_id, limit)
+
+
+
 if __name__ == "__main__":
-    # create queues for rabbitMq the channel has to be passed as parameter to publish function
+    print("Hello World")
+    #create queues for rabbitMq the channel has to be passed as parameter to publish function
+    print(get_random_cluster_with_limits(5))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     test_rabbitMq(queue_channel)
     #while True:

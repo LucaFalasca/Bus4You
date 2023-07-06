@@ -9,4 +9,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "./dbService/dbService.py"]
+CMD ["python3", "-u", "./dbService/dbService.py"]

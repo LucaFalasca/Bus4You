@@ -1,6 +1,7 @@
 class UserRoute:
-    def __init__(self, it_cost, it_prop_start, it_prop_end, it_status, route_past, routet_status,
+    def __init__(self, it_id, it_cost, it_prop_start, it_prop_end, it_status, route_past, routet_status,
                  route_expire, start_stop, end_stop):
+        self.it_id = it_id
         self.itCost = it_cost
         self.itPropStart = it_prop_start
         self.itPropEnd = it_prop_end
@@ -10,6 +11,9 @@ class UserRoute:
         self.routeExpire = route_expire
         self.startStop = start_stop
         self.endStop = end_stop
+
+    def getItId(self):
+        return self.it_id
 
     def getItCost(self):
         return self.itCost

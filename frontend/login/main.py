@@ -79,7 +79,7 @@ def request_route():
     end_lng = request.args.get('end_lng')
     date = request.args.get('date')
     start_or_finish_raw = request.args.get('start-finish')
-    if(start_or_finish_raw == 'on'):
+    if (start_or_finish_raw == 'on'):
         start_or_finish = 'start'
     else:
         start_or_finish = 'finish'
@@ -96,13 +96,13 @@ def request_route():
     gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
-        return render_template("select_route_from_map.html", bus_stops = bus_stops)
+        return render_template("select_route_from_map.html", bus_stops=bus_stops)
     else:
-        gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point+ '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
+        gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
-        return render_template("select_route_from_map.html", bus_stops = bus_stops, response=response)
+        return render_template("select_route_from_map.html", bus_stops=bus_stops, response=response)
 
 
 @app.route('/_get_stops_rect', methods=['GET'])
@@ -134,11 +134,10 @@ def get_path():
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])
 def load_user_routes_page():
-    print('loadUserRoutesPage')
     if session['logged']:
         usr = session['usr']
         mail = session['mail']
-        #token = session['token']
+        # token = session['token']
         gateway_load_user_routes_url = 'http://localhost:50052/api/load_user_routes?mail=' + mail
         response = requests.get(gateway_load_user_routes_url).json()
         user_routes = parse_user_routes_json(response)
@@ -155,6 +154,44 @@ def load_user_routes_page():
     else:
         flash('You have to be signed in to access this page')
         return render_template("login.html")
+
+
+@app.route('/reject_book', methods=['GET', 'POST'])
+def reject_book():
+    data = request.form
+    parsed_data = []
+    for elem in data.items():
+        parsed_data.append([elem[0], elem[1]])
+        #print("Key: \n\t" + elem[0])
+        #print("Value: \n\t" + elem[1])
+    it_id = str(parsed_data[0][1])
+    gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
+    response = requests.get(gateway_reject_book_url).json()
+    print(response)
+    if response['status'] == 'ok':
+        flash("Book rejected correctly", category='info')
+    elif response['status'] == 'error':
+        flash("Book rejection failed", category='info')
+    return redirect(url_for('load_user_routes_page'))
+
+
+@app.route('/confirm_book', methods=['GET', 'POST'])
+def confirm_book():
+    data = request.form
+    parsed_data = []
+    for elem in data.items():
+        parsed_data.append([elem[0], elem[1]])
+        #print("Key: \n\t" + elem[0])
+        #print("Value: \n\t" + elem[1])
+    it_id = parsed_data[0][1]
+    gateway_confirm_book_url = 'http://localhost:50052/api/confirm_it?it_id=' + it_id
+    response = requests.get(gateway_confirm_book_url).json()
+    print(response)
+    if response['status'] == 'ok':
+        flash("Book confirmed correctly", category='info')
+    elif response['status'] == 'error':
+        flash("Book confirmation failed", category='info')
+    return redirect(url_for('load_user_routes_page'))
 
 
 if __name__ == '__main__':

@@ -221,6 +221,61 @@ class Neo4jDAO:
         session.close()
         return bookings
 
+    def get_random_booking(self):
+        query = (
+            "MATCH (b:Booking) "
+            "WITH b, rand() AS r "
+            "ORDER BY r "
+            "LIMIT 1 "
+            "RETURN id(b) AS b_id"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query)
+
+            for record in result:
+                # Restituzione dell'id del nodo Booking selezionato casualmente
+                return record["b_id"]
+
+    def get_start_end_bookings_with_limit(self, booking_id, limit):
+        query = (
+            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
+            "WHERE id(b) = $booking_id "
+            "WITH collect(DISTINCT booking) as all_bookings, s1 "
+            "UNWIND all_bookings as booking "
+            "MATCH (booking)-[:END_STOP]->(s2:Stop) "
+            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, booking.position_start_stop AS position_start_stop, booking.type AS b_type "
+            "LIMIT $limit"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["b_id"],
+                    "date": date(record["b_day"].year, record["b_day"].month, record["b_day"].day),
+                    "id_s1": record["s1_id"],
+                    "id_s2": record["s2_id"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "type": record["b_type"]
+                }
+                if record["b_type"] == "start":
+                    booking["hour"] = (time(hour=record["b_hs"].hour, minute=record["b_hs"].minute), None)
+                else:
+                    booking["hour"] = (None, time(hour=record["b_he"].hour, minute=record["b_he"].minute))
+                bookings.append(booking)
+
+            # Consuma tutti i record prima di restituire il risultato
+            result.consume()
+
+        # Restituzione della lista di prenotazioni
+        return bookings
+
 
     def get_end_type_bookings(self):
 
