@@ -5,7 +5,7 @@ import xmlrpc.server
 
 from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import WGS84Point
-from Neo4jDAO import *
+from Neo4jDAO_BS import *
 from NodeToAlg import *
 from Node import *
 from utils import *
@@ -199,6 +199,9 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
     create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
+
+
+
 def propose_route_callback(ch, method, properties, body):
     print("Received prepared routes message: " + body.decode('utf-8'))
 
@@ -226,10 +229,10 @@ if __name__ == "__main__":
     #print(str(dao.get_distances(16, 17)))
 
     '''
+
     dao.close()
 
-    toAlg = NodeToAlg(dao)
-    #print_node_list(toAlg.take_nodes_from_bd(18))
+
     #print(str(dao.get_distances(16, 17)))
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
