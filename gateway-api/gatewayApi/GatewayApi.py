@@ -2,6 +2,7 @@ from flask import Flask, json, request
 import xmlrpc.client
 import random
 import time
+import requests
 
 api = Flask(__name__)
 
@@ -152,6 +153,21 @@ def get_bus_stops_rect():
         stop={"name": elem[0], "lat": elem[1], "lang": elem[2]}
         ret.append(stop)
     return json.dumps(ret)
+
+@api.route('/api/get_path', methods=['POST'])
+def get_path():
+    data = request.get_json()
+    print(data)
+    url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
+    body = {}
+    body['coordinates'] = data
+    print("CIAOO")
+    print(body)
+    result = requests.post(url, json=body).json()
+    coords = result["features"][0]["geometry"]["coordinates"]
+    print(coords)
+    coords_reversed = [coord[::-1] for coord in coords]
+    return coords_reversed
 
 
 if __name__ == '__main__':

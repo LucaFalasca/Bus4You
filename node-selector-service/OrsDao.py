@@ -19,6 +19,23 @@ def getMatrix(nodes):
     print(matrix)
     return matrix
 
+def getGeo(nodes):
+    url = 'http://localhost:8080/ors/v2/directions/driving-car/geojson'
+    body = {}
+    body['coordinates'] = nodes
+
+    headers = {
+        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    
+    data = requests.post(url, json = body, headers=headers)
+
+    print(data)
+    print(data.status_code, data.reason)
+    print(data.text)
+    return data
+
 def test_vroom():
     url = 'http://vroom:3000/'
     body = {}
@@ -162,6 +179,7 @@ if __name__ == '__main__':
     #test_vroom()
     #test_opt()
 
+    '''
     s1 = shipment(1, 0, [12.527504,41.837339], 1, [12.627504,41.837339], [0, 2400])
     s2 = shipment(1, 2, [12.427504,41.837339], 3, [12.527504,41.737339], [4800, 100000])
     s3 = shipment(1, 4, [12.547504,41.737339], 5, [12.327504,41.767339], [4200, 100000])
@@ -197,3 +215,5 @@ if __name__ == '__main__':
     print("cost r2 " + str(r2["summary"]["cost"]))
     print("cost r3 " + str(r3["summary"]["cost"]))
     #test_vroom()
+    '''
+    getGeo([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.557504,41.737339]])

@@ -58,6 +58,7 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
+
                                             var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
                                               map{{ present_routes.index(route) }}.invalidateSize();
@@ -153,6 +154,9 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
+
+
+
                                             var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
                                               map{{ present_routes.index(route) }}.invalidateSize();
@@ -199,10 +203,16 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
+
+
+
                                             var myCollapsible = document.getElementById('acc{{present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
                                               map{{present_routes.index(route) }}.invalidateSize();
                                             })
+
+
+
 
                                         </script>
                                     </div>
@@ -311,10 +321,27 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
+                                            console.log("sto qua")
+
                                             var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+                                                console.log("sto qua")
+                                                map_past{{ past_routes.index(route) }}.invalidateSize();
+
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify({data: 'Hello, world!'}),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data)
+                                                    })
                                             })
+
 
                                         </script>
                                     </div>
@@ -349,7 +376,8 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
                                         <script>
-                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -357,9 +385,51 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
+
                                             var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+
+
+                                                var data_in = [[12.527504,41.837339],[12.627504,41.837339]];
+
+                                                var busStopIcon = L.Icon.extend({
+                                                    options: {
+                                                        iconSize:     [60, 60],
+                                                        iconAnchor:   [30, 60]
+                                                    }
+                                                });
+                                                var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result, {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
+
+                                                        map_past{{ past_routes.index(route) }}.invalidateSize();
+
+                                                        map_past{{ past_routes.index(route) }}.fitBounds(path{{ past_routes.index(route) }}.getBounds());
+                                                    })
+
+                                                var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
+
+                                                data_in.forEach(function(bus_stop) {
+                                                    console.log("ao" + bus_stop)
+                                                    var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                        icon: busStopIconBlue,
+                                                        title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                    }).addTo(map_past{{ past_routes.index(route) }});
+                                                    marker.bindTooltip("name", {
+                                                        offset: L.point(0, -50)
+                                                    });
+                                                    marker.addTo(markersLayer);
+                                                });
+
                                             })
 
                                         </script>

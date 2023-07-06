@@ -117,6 +117,18 @@ def get_stops_rect():
     print(requests.get(gateway_get_bus_stops_url))
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
     return jsonify(result = bus_stops)
+
+@app.route('/_get_path', methods=['POST'])
+def get_path():
+    data = request.get_json()
+    print(data)
+
+    url = 'http://localhost:50052/api/get_path'
+    body = data
+
+    result = requests.post(url, json=body).json()
+    print(result)
+    return jsonify(result = result)
     
 
 
