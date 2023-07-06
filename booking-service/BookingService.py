@@ -196,8 +196,7 @@ def test_rabbitMq(channel):
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish, time):
-    s = "user: " + user + " starting_point: " + starting_point + " start_lat: " + str(start_lat) + " start_lng: " + str(start_lng) + " ending_point: " + ending_point + " end_lat: " + str(end_lat) + " end_lng: " + str(end_lng) + " date: " + str(date) + " start_or_finish: " + start_or_finish + " time: " + str(time)
-    print(s)
+    create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
 def propose_route_callback(ch, method, properties, body):
@@ -226,15 +225,21 @@ if __name__ == "__main__":
     #print_node_list(toAlg.take_nodes_from_bd(18))
     #print(str(dao.get_distances(16, 17)))
 
+    '''
     dao.close()
+
+    toAlg = NodeToAlg(dao)
+    #print_node_list(toAlg.take_nodes_from_bd(18))
+    #print(str(dao.get_distances(16, 17)))
 
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Listening on port 8000...")
     server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
     # session.close()
-    '''
 
+
+    '''
     # Coda da consumer per ricevere i messaggi di makeRouteService
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
     channel = connection.channel()
@@ -243,6 +248,7 @@ if __name__ == "__main__":
     channel.basic_consume(queue = PROPOSE_ROUTE_QUEUE,
                           auto_ack = True,
                           on_message_callback = propose_route_callback)
-
+    
     print("Sto ascoltando")
     channel.start_consuming()
+    '''
