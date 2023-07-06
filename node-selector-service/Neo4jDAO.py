@@ -221,7 +221,21 @@ class Neo4jDAO:
         session.close()
         return bookings
 
+    def get_random_booking(self):
+        query = (
+            "MATCH (b:Booking) "
+            "WITH b, rand() AS r "
+            "ORDER BY r "
+            "LIMIT 1 "
+            "RETURN id(b) AS b_id"
+        )
 
+        with self.driver.session() as session:
+            result = session.run(query)
+
+            for record in result:
+                # Restituzione dell'id del nodo Booking selezionato casualmente
+                return record["b_id"]
 
     def get_start_end_bookings_with_limit(self, booking_id, limit):
         query = (
