@@ -176,6 +176,15 @@ services:
     depends_on:
       ors-app:
         condition: service_started
+
+  ors-dao:
+    build: ./ors-dao
+    container_name: ors-dao
+    volumes:
+      - ./ors-dao:/app
+    depends_on:
+      ors-app:
+        condition: service_started
 #networks:
   #backend-net:
     #name: backend-net
