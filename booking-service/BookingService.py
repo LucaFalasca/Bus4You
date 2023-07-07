@@ -9,6 +9,7 @@ from Neo4jDAO_BS import *
 from NodeToAlg import *
 from Node import *
 from utils import *
+import threading
 
 PROPOSE_ROUTE_QUEUE = 'propose_route'
 
@@ -196,7 +197,6 @@ def test_rabbitMq(channel):
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish, time):
-    print("START_OR_FINISH" + start_or_finish)
     create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
@@ -204,46 +204,20 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
 
 
 def propose_route_callback(ch, method, properties, body):
-    print("Received prepared routes message: " + body.decode('utf-8'))
+    json_return = json.loads(body.decode('utf-8'))
+    print("Received prepared routes message: \n" + json.dumps(json_return, indent=2))
 
+def serverRPCThread():
+    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
+    print("Server RPC is ON on port 8000")
+    server.register_function(insert_booking, "insert_booking")
+    server.serve_forever()
 
-if __name__ == "__main__":
-    
+def rabbitMQThread():
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     #test_rabbitMq(queue_channel)
-    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    some_calls()
-
-    '''
     
-
-    create_booking_type_start("Stefan", "Termini", "Piazza Venezia", datetime.date(2023, 5, 18), datetime.time(13, 30, 0),
-                            41.9014, 12.5005, 41.8954, 12.4823)
-
-    create_booking_type_end("Luca", "Colosseo", "Monte Mario", datetime.date(2023, 5, 18), datetime.time(14, 30, 0),
-                            41.8902, 12.4923, 41.9248, 12.4455)
-    
-
-    toAlg = NodeToAlg(dao)
-    #print_node_list(toAlg.take_nodes_from_bd(18))
-    #print(str(dao.get_distances(16, 17)))
-
-    '''
-
-    dao.close()
-
-
-    #print(str(dao.get_distances(16, 17)))
-
-    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
-    print("Listening on port 8000...")
-    server.register_function(insert_booking, "insert_booking")
-    server.serve_forever()
-    # session.close()
-
-
-    '''
     # Coda da consumer per ricevere i messaggi di makeRouteService
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
     channel = connection.channel()
@@ -253,6 +227,22 @@ if __name__ == "__main__":
                           auto_ack = True,
                           on_message_callback = propose_route_callback)
     
-    print("Sto ascoltando")
+    print("I'm waiting for messages on queue [" + PROPOSE_ROUTE_QUEUE + "]...")
     channel.start_consuming()
-    '''
+
+if __name__ == "__main__":
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    some_calls()
+    dao.close()
+
+    rpcThread = threading.Thread(target=serverRPCThread)
+    queueThread = threading.Thread(target=rabbitMQThread)
+    rpcThread.start()
+    queueThread.start()
+    
+    rpcThread.join()
+    queueThread.join()
+
+    
+    
+    

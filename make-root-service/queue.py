@@ -1,4 +1,5 @@
 import pika
+import json
 
 MAKE_ROUTE_STOP_DATA_QUEUE_1 = 'make_route_stop_data_1'
 PROPOSE_ROUTE_QUEUE = 'propose_route'
@@ -13,9 +14,10 @@ def init_rabbit_mq_queues():
     channel.queue_declare(queue=PROPOSE_ROUTE_QUEUE, durable=True)
     return channel
 
-def publish_message_on_queue(message_json, queue, channel):
+def publish_message_on_queue(message, queue, channel):
     channel.basic_publish(exchange='',
                           routing_key=queue,
-                          body=message_json.encode('utf-8'),
+                          body=message.encode('utf-8'),
                           properties=pika.BasicProperties(delivery_mode=2))
-    print("Sent message" + message_json + "on queue: " + queue)
+    message_json = json.loads(message)
+    print("Sent message\n" + json.dumps(message_json, indent = 2) + "\non queue: [" + queue + "]")

@@ -6,6 +6,7 @@ from collections import deque
 import json
 import queue
 import datetime
+import threading
 
 import pika
 
@@ -175,7 +176,8 @@ def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
 
 
 def prepared_routes_callback(ch, method, properties, body):
-    print("Received prepared routes message: " + body.decode('utf-8'))
+    json_return = json.loads(body.decode('utf-8'))
+    print("Received prepared routes message: \n" + json.dumps(json_return, indent=2))
     # INSERIRE IL CODICE PER GESTIRE IL MESSAGGIO RICEVUTO
     message = json.loads(body.decode('utf-8'))
     node_limit = message["node_limit"]
@@ -212,8 +214,7 @@ def prepared_routes_callback(ch, method, properties, body):
     result_json["user_routes"] = user_routes
     queue.publish_message_on_queue(json.dumps(result_json), queue.PROPOSE_ROUTE_QUEUE, queue_channel_pub)
 
-
-if __name__ == "__main__":
+def rabbitMQThreadConsumer():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
     channel = connection.channel()
     # Create a queue, if already exist nothing happens
@@ -222,44 +223,25 @@ if __name__ == "__main__":
                           auto_ack=True,
                           on_message_callback=prepared_routes_callback)
 
-    #Questa è la coda da publisher
-    queue_channel_pub = queue.init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    
-
-
-
+    print("I'm waiting for messages on queue [" + queue.MAKE_ROUTE_STOP_DATA_QUEUE_1 + "]...")
     channel.start_consuming()
-    
-    
-    print("AO")
 
-    '''node_limit = {'1': (None, datetime.time(13, 55)),
-                  '3': (datetime.time(14, 10), datetime.time(14, 40)),
-                  '5': (datetime.time(14, 45), None)}
-    prec_hash = {'0': ['1'], '1': [], '2': ['3'], '3': [], '4': ['5'], '5': []}
-    dist_matrix = [[0, 20, 10, 30, 20, 30],
-                   [20, 0, 10, 20, 10, 20],
-                   [10, 10, 0, 20, 10, 20],
-                   [30, 20, 20, 0, 10, 10],
-                   [20, 10, 10, 10, 0, 10],
-                   [30, 20, 20, 10, 10, 0]]
-    user_routes = {"Giovanni": ('0', '1'),
-                   "Marco": ('2', '3'),
-                   "Luca": ('4', '5')}
-
-    node_limit_min = {k: (alg2.convert_time_to_minutes(v[0]), alg2.convert_time_to_minutes(v[1])) for k, v in
-                      node_limit.items()}
-
-    result = calculate_route(dist_matrix, prec_hash, node_limit_min, user_routes)
-    print(node_limit_min)
-    if result == None:
-        print("No route found")
-    else:
-        print(result)
-    
+def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
-    print("Listening on port 8000...")
+    print("Server RPC is ON on port 8000")
 
     server.register_function(calculate_route, "calculate_route")
     server.serve_forever()
-    '''
+
+if __name__ == "__main__":
+    queue_channel_pub = queue.init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
+
+    queueConsumerThread = threading.Thread(target=rabbitMQThreadConsumer)
+    serverRPCThread = threading.Thread(target=serverRPCThread)
+    
+    queueConsumerThread.start()
+    serverRPCThread.start()
+
+    queueConsumerThread.join()
+    serverRPCThread.join()
+    
