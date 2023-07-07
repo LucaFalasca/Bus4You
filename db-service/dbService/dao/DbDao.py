@@ -115,3 +115,52 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def insert_route_info(conn, route_expiration, order_list, it_list):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                conn.autocommit = False
+                conn.start_transaction(consistent_snapshot=True,
+                                       isolation_level='REPEATABLE READ',
+                                       readonly=False)
+                # insert route
+                print("Inserisco il percorso")
+                args = (route_expiration,)
+                curs.callproc('insert_route', args)
+                res = None
+                # get output parameter value which is the auto incremental generated route id
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                route_id = res[0][0]
+                print("Returned route id: ", route_id)
+
+                # insert order list
+                print("Inserisco gli ordini")
+                for order in order_list:
+                    args = (order[0], route_id, order[1], order[2])
+                    curs.callproc('insert_order', args)
+
+                print("Inserisco gli itinerari")
+                # insert itinerary list
+                for it in it_list:
+                    args = (it[0], it[1], it[2], it[3], it[4], it[5], route_id, it[6], it[7], it[8], it[9])
+                    curs.callproc('insert_it_proposed', args)
+
+                conn.commit()
+                return 0
+
+            except mysql.connector.Error as error:
+                # rollback transaction on error
+                print("Error occurred: {}".format(error))
+                conn.rollback()
+                return -2
+
+            finally:
+                # close cursor and connection
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return -1
