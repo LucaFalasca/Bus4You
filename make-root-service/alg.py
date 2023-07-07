@@ -209,6 +209,7 @@ def prepared_routes_callback(ch, method, properties, body):
     result_json["n_tardy"] = result[0][2]
     result_json["mean_unacceptable_deviance"] = result[0][3]
     result_json["users_travel_time"] = result[1]
+    result_json["user_routes"] = user_routes
     queue.publish_message_on_queue(json.dumps(result_json), queue.PROPOSE_ROUTE_QUEUE, queue_channel_pub)
 
 
