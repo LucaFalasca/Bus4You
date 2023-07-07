@@ -1,6 +1,7 @@
 import requests
 import xmlrpc.server
 
+#Gli devi passare un vettore di sto tipo [[12.527504,41.837339],[12.627504,41.837339], ecc...]
 def getMatrix(nodes):
     url = 'http://ors-app:8080/ors/v2/matrix/driving-car'
     body = {}
