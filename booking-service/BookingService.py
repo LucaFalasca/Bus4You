@@ -196,6 +196,7 @@ def test_rabbitMq(channel):
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish, time):
+    print("START_OR_FINISH" + start_or_finish)
     create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
