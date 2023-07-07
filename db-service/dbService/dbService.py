@@ -12,6 +12,7 @@ def serve():
     server.register_function(get_stops_rect, "get_stops_rect")
     server.register_function(confirm_it, "confirm_it")
     server.register_function(reject_it, "reject_it")
+    server.register_function(insert_route_info, "insert_route_info")
     server.serve_forever()
 
 
