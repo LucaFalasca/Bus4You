@@ -128,7 +128,7 @@ def send_nodes_for_computation(channel):
     message["prec_hash"] = prec_hash
     message["dist_matrix"] = dist_matrix
     message["user_routes"] = user_routes
-    message["date"] = "05/07/2023"
+    message["date"] = str(date)
     message["points_location"] = points_location
     publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, channel)
 

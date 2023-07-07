@@ -183,7 +183,7 @@ def prepared_routes_callback(ch, method, properties, body):
     dist_matrix = message["dist_matrix"]
     user_routes = message["user_routes"]
     date_string = message["date"]
-    date = datetime.datetime.strptime(date_string, "%d/%m/%Y").strftime("%d-%m-%Y")
+    date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     result = calculate_route(dist_matrix, prec_hash, node_limit, user_routes)
     print("Result : " + str(result))
     result_json = {}
@@ -194,20 +194,20 @@ def prepared_routes_callback(ch, method, properties, body):
         step_json["id"] = step[0]
         time = round(float(step[1]), 0)
         if time > 0 and time < 1440:
-            step_json["date"] = str(date)
+            step_json["date"] = str(date)[0:10]
             step_json["time"] = str(datetime.timedelta(minutes=(time)))
         elif time < 0:
-            step_json["date"] = str(date + datetime.timedelta(days=-1))
+            step_json["date"] = str(date + datetime.timedelta(days=-1))[0:10]
             step_json["time"] = str(datetime.timedelta(minutes=1440 + time))
         elif time > 1440:
-            step_json["date"] = str(date + datetime.timedelta(days=1))
+            step_json["date"] = str(date + datetime.timedelta(days=1))[0:10]
             step_json["time"] = str(datetime.timedelta(minutes=time - 1440))
         step_json["location"] = message["points_location"][str(step[0])][::-1]
         steps.append(step_json)
     result_json["steps"] = steps
     result_json["travel_time"] = str(datetime.timedelta(minutes = round(float(result[0][1]),0)))
     result_json["n_tardy"] = result[0][2]
-    result_json["mean_unacceptable_deviance"] = result[0][3]
+    result_json["mean_unacceptable_deviance"] = str(datetime.timedelta(minutes = round(result[0][3])))
     result_json["users_travel_time"] = result[1]
     result_json["user_routes"] = user_routes
     queue.publish_message_on_queue(json.dumps(result_json), queue.PROPOSE_ROUTE_QUEUE, queue_channel_pub)
@@ -225,6 +225,7 @@ if __name__ == "__main__":
     #Questa è la coda da publisher
     queue_channel_pub = queue.init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     
+
 
 
     channel.start_consuming()
