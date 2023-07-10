@@ -373,8 +373,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `get_stops_rect`(in x DECIMAL(8, 6),
 BEGIN
 	SELECT *
     FROM b4y_user_db.fermata as fermata
-    WHERE fermata.lat > x AND fermata.lat < x + width
-		AND femrmata.lon < y AND fermata.lon > y - height;
+    WHERE fermata.lat < x AND fermata.lat > x - height
+    AND fermata.lon > y AND fermata.lon < y + width;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -393,7 +393,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_routes`(in mail varchar(128))
 BEGIN
-SELECT i.costo, i.orario_partenza_proposto, i.orario_arrivo_proposto, i.stato, p. archiviato, p.stato, p.scadenza, f_start.nome, f_end.nome
+SELECT i.costo, i.orario_partenza_proposto, i.orario_arrivo_proposto, i.stato, p. archiviato, p.stato, p.scadenza, f_start.nome, f_end.nome, i.id
 FROM 
 b4y_user_db.itinerario_proposto as i join b4y_user_db.percorso as p on i.percorso=p.id
 join b4y_user_db.fermata as f_start on i.fermata_lat_partenza=f_start.lat and i.fermata_lon_partenza=f_start.lon 

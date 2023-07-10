@@ -160,6 +160,10 @@ button[id^="btnReject"]:focus{
     border-radius: 12px !important;
 }
 
+label[id^="lbChkBox"]{
+    color: white !important;
+}
+
 button[id^="btnModalRejectClose"]{
     text-align: center;
     width: 150px;

@@ -82,7 +82,7 @@ class DbDao:
                 costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
                 stato percorso, scadenza, nome fermata partenza, nome fermata arrivo, id itinerario
                 '''
-                ret.append([elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8], elem[9], elem[10]])
+                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8], elem[9]])
             return ret
         else:
             print("Connection with db failed")

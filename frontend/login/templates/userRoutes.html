@@ -111,9 +111,13 @@
                                                     <div class="modal-body">
                                                         <h5>Are you sure you want to reject the proposed book?</h5>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
-                                                        <form action="/reject_book" method="post">
+                                                    <form action="/reject_book" method="post">
+                                                        <div class="modal-body">
+                                                            <input type="checkbox" id="chkBox{{ present_routes.index(route) }}" name="chkBox{{ present_routes.index(route) }}" value="True">
+                                                            <label id="lbChkBox{{ present_routes.index(route) }} for="chkBox{{ present_routes.index(route) }}"> Search another route</label><br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
                                                             <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
                                                             <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
                                                             <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
@@ -126,8 +130,8 @@
                                                             <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
 
                                                             <input type=submit id="btnModalReject{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Reject">
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -228,9 +232,13 @@
                                                     <div class="modal-body">
                                                         <h5>Are you sure you want to reject the proposed book?</h5>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
-                                                        <form action="/reject_book" method="post">
+                                                    <form action="/reject_book" method="post">
+                                                        <div class="modal-body">
+                                                           <input type="checkbox" id="chkBox{{ present_routes.index(route) }}" name="chkBox{{ present_routes.index(route) }}" value="True">
+                                                            <label id="lbChkBox{{ present_routes.index(route) }} for="chkBox{{ present_routes.index(route) }}"> Search another route</label><br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
                                                             <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
                                                             <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
                                                             <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
@@ -243,8 +251,8 @@
                                                             <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
 
                                                             <input type=submit id="btnModalReject{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Reject">
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
