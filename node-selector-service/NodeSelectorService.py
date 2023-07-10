@@ -35,7 +35,8 @@ def publish_message_on_queue(message_json, queue, channel):
 def send_nodes_for_computation(channel):
     l = 0
     while(l != 3):
-        nodes_4j = get_random_cluster_with_limits(3)
+        #nodes_4j = get_random_cluster_with_limits(3)
+        nodes_4j = get_cluster_with_limits(50, 3)
         l = len(nodes_4j)
     print(nodes_4j)
 
@@ -112,7 +113,7 @@ def send_nodes_for_computation(channel):
                     else:
                         node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
         
-        user_routes["persona" + str(p)] = (str(k_start), str(k_end))
+        user_routes["prova@gmail.com"] = (str(k_start), str(k_end))
         p += 1
             
 

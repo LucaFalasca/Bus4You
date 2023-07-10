@@ -214,7 +214,7 @@ def json_to_route_info(json_input):
     for username, route in json_input['user_routes'].items():
         start_stop = json_input['steps'][int(route[0])]
         end_stop = json_input['steps'][int(route[-1])]
-        it_list.append([0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username, 0,  
+        it_list.append([0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username, 1,  
                         start_stop['location'][1], start_stop['location'][0], 
                         end_stop['location'][1], end_stop['location'][0]])
     
@@ -279,7 +279,7 @@ if __name__ == "__main__":
       "date": "2023-07-23",
       "time": "18:00:00",
       "location": [
-        12.474834,
+        12.374834,
         42.051147
       ]
     },
@@ -311,15 +311,17 @@ if __name__ == "__main__":
    "persona3": "0:33:00"
  },
  "user_routes": {
-   "persona1": [
+   "prova@gmail.com": [
      "0",
      "1"
    ],
-   "persona2": [
+   "prova@gmail.com": [
      "0",
      "1"
    ],
-   "persona3": [
+   "prova@gmail.com"
+   
+   : [
      "2",
      "3"
    ]
@@ -332,9 +334,9 @@ if __name__ == "__main__":
     print("\nIT_LIST\n" + str(it_list))
 
 
-    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        res = proxy.insert_route_info(route_expiration, order_list, it_list)
-        print("annata bene? " + str(res))
+    #with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        #res = proxy.insert_route_info(route_expiration, order_list, it_list)
+        #print("annata bene? " + str(res))
 
 
     rpcThread = threading.Thread(target=serverRPCThread)

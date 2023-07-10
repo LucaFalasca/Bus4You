@@ -1,5 +1,6 @@
 from datetime import date
 from datetime import time
+from datetime import datetime
 
 from neo4j import GraphDatabase
 
@@ -207,7 +208,7 @@ class Neo4jDAO:
             for record in result:
                 booking = {
                     "id": record["id"],
-                    "date": date(record["date"].year, record["date"].month, record["date"].day),
+                    "date": datetime.strptime(record["date"], "%Y-%m-%d").date(),
                     "hour": (time(hour=record["hour_start"].hour, minute=record["hour_start"].minute), None),
                     "name_end_stop": record["name_end_stop"],
                     "name_start_stop": record["name_start_stop"],
@@ -253,9 +254,10 @@ class Neo4jDAO:
 
             bookings = []
             for record in result:
+                print(record["b_day"])
                 booking = {
                     "id": record["b_id"],
-                    "date": date(record["b_day"].year, record["b_day"].month, record["b_day"].day),
+                    "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
                     "id_s1": record["s1_id"],
                     "id_s2": record["s2_id"],
                     "name_start_stop": record["start_stop"],
@@ -265,9 +267,9 @@ class Neo4jDAO:
                     "type": record["b_type"]
                 }
                 if record["b_type"] == "start":
-                    booking["hour"] = (time(hour=record["b_hs"].hour, minute=record["b_hs"].minute), None)
+                    booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
                 else:
-                    booking["hour"] = (None, time(hour=record["b_he"].hour, minute=record["b_he"].minute))
+                    booking["hour"] = (None, datetime.strptime(record["b_he"], "%H:%M").time())
                 bookings.append(booking)
 
             # Consuma tutti i record prima di restituire il risultato
@@ -299,7 +301,7 @@ class Neo4jDAO:
             for record in result:
                 booking = {
                     "id": record["id"],
-                    "date": date(record["date"].year, record["date"].month, record["date"].day),
+                    "date": datetime.strptime(record["date"], "%Y-%m-%d").date(),
                     "hour": (None, time(hour=record["hour_end"].hour, minute=record["hour_end"].minute)),
                     "name_end_stop": record["name_end_stop"],
                     "name_start_stop": record["name_start_stop"],

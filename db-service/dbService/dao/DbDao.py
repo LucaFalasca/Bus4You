@@ -141,6 +141,7 @@ class DbDao:
                 print("Inserisco gli ordini")
                 for order in order_list:
                     args = (order[0], route_id, order[1], order[2])
+                    print(args)
                     curs.callproc('insert_order', args)
 
                 print("Inserisco gli itinerari")
