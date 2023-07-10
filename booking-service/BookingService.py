@@ -10,6 +10,7 @@ from NodeToAlg import *
 from Node import *
 from utils import *
 import threading
+import datetime
 
 PROPOSE_ROUTE_QUEUE = 'propose_route'
 
@@ -201,11 +202,38 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
     return True
 
 
+def json_to_route_info(json_input):
+    order_list = []
+    it_list = []
 
+    route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
+    
+    for step in json_input['steps']:
+        order_list.append([int(step['id']), step['location'][1], step['location'][0]])
+        
+    for username, route in json_input['user_routes'].items():
+        start_stop = json_input['steps'][int(route[0])]
+        end_stop = json_input['steps'][int(route[-1])]
+        it_list.append([0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username, 0,  
+                        start_stop['location'][1], start_stop['location'][0], 
+                        end_stop['location'][1], end_stop['location'][0]])
+    
+    
+    
+    return str(route_expiration), order_list, it_list, 
 
 def propose_route_callback(ch, method, properties, body):
     json_return = json.loads(body.decode('utf-8'))
-    print("Received prepared routes message: \n" + json.dumps(json_return, indent=2))
+    print("Received prepared routes message: \n" + json.dumps(json_return))
+
+    route_expiration, order_list, it_list = json_to_route_info(json_return)
+
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        proxy.insert_route_info(route_expiration, order_list, it_list)
+
+
+   
+
 
 def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
@@ -232,8 +260,82 @@ def rabbitMQThread():
 
 if __name__ == "__main__":
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    some_calls()
+    #some_calls()
     dao.close()
+
+    prova = {
+  "steps": [
+    {
+      "id": "2",
+      "date": "2023-07-23",
+      "time": "17:48:00",
+      "location": [
+        12.375458,
+        42.028740
+      ]
+    },
+    {
+      "id": "0",
+      "date": "2023-07-23",
+      "time": "18:00:00",
+      "location": [
+        12.474834,
+        42.051147
+      ]
+    },
+    {
+      "id": "1",
+      "date": "2023-07-23",
+      "time": "18:06:00",
+      "location": [
+        12.448636,
+        42.029957
+      ]
+    },
+    {
+      "id": "3",
+      "date": "2023-07-23",
+      "time": "18:21:00",
+      "location": [
+        12.469408,
+        42.032089
+      ]
+    }
+  ],
+ "travel_time": "0:33:00",
+ "n_tardy": 2,
+ "mean_unacceptable_deviance": "1:59:00",
+ "users_travel_time": {
+   "persona1": "0:06:00",
+   "persona2": "0:06:00",
+   "persona3": "0:33:00"
+ },
+ "user_routes": {
+   "persona1": [
+     "0",
+     "1"
+   ],
+   "persona2": [
+     "0",
+     "1"
+   ],
+   "persona3": [
+     "2",
+     "3"
+   ]
+ }
+}
+    route_expiration, order_list, it_list = json_to_route_info(prova)
+
+    print("ROUTE EXPIRATION:\n" + str(route_expiration))
+    print("\nORDER_LIST\n" + str(order_list))
+    print("\nIT_LIST\n" + str(it_list))
+
+
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        res = proxy.insert_route_info(route_expiration, order_list, it_list)
+        print("annata bene? " + str(res))
+
 
     rpcThread = threading.Thread(target=serverRPCThread)
     queueThread = threading.Thread(target=rabbitMQThread)
