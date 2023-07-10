@@ -175,11 +175,10 @@ def reject_book():
     elif response['status'] == 'error':
         flash("Book rejection failed", category='info')
 
-    if data_len == 10:  # quando la checkbox non è spuntata la submit non mette il la checkbox nella request quindi ho un parametro in meno
-        print("Non rimetto in coda")
-    elif data_len == 11:
+    if data_len == 11:  # la submit non mette il valore della checkbox nella request solo se è spuntata quindi ho un parametro in più
         print("Rimetto in coda")
     # TODO gestire la rimessa in coda ed i messaggi di ritorno all'utente
+
     return redirect(url_for('load_user_routes_page'))
 
 
