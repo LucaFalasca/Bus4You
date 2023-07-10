@@ -99,12 +99,12 @@ CREATE TABLE `itinerario_proposto` (
   KEY `fk_itinerario_richiesto_id_prop_idx` (`itinerario_richiesto`),
   KEY `fk_itinerario_proposto_fermata1_idx` (`fermata_lat_partenza`,`fermata_lon_partenza`),
   KEY `fk_itinerario_proposto_fermata2_idx` (`fermata_lat_arrivo`,`fermata_lon_arrivo`),
-  CONSTRAINT `fk_itinerario_proposto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`),
-  CONSTRAINT `fk_itinerario_proposto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`),
+  CONSTRAINT `fk_itinerario_proposto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_itinerario_proposto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_id_prop` FOREIGN KEY (`itinerario_richiesto`) REFERENCES `itinerario_richiesto` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_user_prop` FOREIGN KEY (`utente`) REFERENCES `itinerario_richiesto` (`utente`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_prop` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,8 +126,8 @@ DROP TABLE IF EXISTS `itinerario_richiesto`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `itinerario_richiesto` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `ora_inizio` datetime NOT NULL,
-  `ora_fine` datetime NOT NULL,
+  `ora_inizio` datetime DEFAULT NULL,
+  `ora_fine` datetime DEFAULT NULL,
   `costo_max` decimal(6,2) DEFAULT NULL,
   `distanza` decimal(8,4) NOT NULL,
   `utente` varchar(128) NOT NULL,
@@ -139,8 +139,8 @@ CREATE TABLE `itinerario_richiesto` (
   KEY `fk_utente_req_idx` (`utente`),
   KEY `fk_itinerario_richiesto_fermata1_idx` (`fermata_lat_partenza`,`fermata_lon_partenza`),
   KEY `fk_itinerario_richiesto_fermata2_idx` (`fermata_lat_arrivo`,`fermata_lon_arrivo`),
-  CONSTRAINT `fk_itinerario_richiesto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`),
-  CONSTRAINT `fk_itinerario_richiesto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`),
+  CONSTRAINT `fk_itinerario_richiesto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_itinerario_richiesto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_req` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -163,14 +163,14 @@ DROP TABLE IF EXISTS `ordinamento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ordinamento` (
-  `numero` int NOT NULL,
+  `numero` int DEFAULT NULL,
   `percorso` bigint NOT NULL,
   `fermata_lat` decimal(8,6) NOT NULL,
   `fermata_lon` decimal(8,6) NOT NULL,
-  PRIMARY KEY (`percorso`,`fermata_lat`,`fermata_lon`,`numero`),
+  PRIMARY KEY (`percorso`,`fermata_lat`,`fermata_lon`),
   KEY `fk_percorso_ord_idx` (`percorso`),
   KEY `fk_ordinamento_fermata1_idx` (`fermata_lat`,`fermata_lon`),
-  CONSTRAINT `fk_ordinamento_fermata1` FOREIGN KEY (`fermata_lat`, `fermata_lon`) REFERENCES `fermata` (`lat`, `lon`),
+  CONSTRAINT `fk_ordinamento_fermata1` FOREIGN KEY (`fermata_lat`, `fermata_lon`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_ord` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -235,7 +235,7 @@ CREATE TABLE `percorso` (
   `tmstmp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_archiviato_route` (`archiviato`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-06 18:08:15'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-06 18:08:15'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-06 18:08:15'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-06 18:08:15');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-10 20:06:48'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-10 20:06:48'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-10 20:06:48'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-10 20:06:48');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +273,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES ('1234@gmail.com','1234','1234','1234','1234','2022-07-07',0.00),('prova@gmail.com','1234','prova','prova','prova','2022-07-07',0.00);
+INSERT INTO `utente` VALUES ('prova@gmail.com','1234','prova','prova','prova','2022-07-07',0.00);
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,6 +299,38 @@ BEGIN
 UPDATE b4y_user_db.itinerario_proposto
 SET itinerario_proposto.stato='confirmed'
 WHERE itinerario_proposto.id=id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_it_req_info_with_it_prop_id` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_it_req_info_with_it_prop_id`(in it_prop_id BIGINT)
+BEGIN
+declare it_req_id BIGINT;
+select itinerario_richiesto from b4y_user_db.itinerario_proposto where id=it_prop_id into it_req_id;
+select i.id, i.ora_inizio, i.ora_fine, i.costo_max, i.distanza, i.utente, i.fermata_lat_partenza,
+i.fermata_lon_partenza, i.fermata_lat_arrivo, i.fermata_lon_arrivo, fp.nome, fa.nome
+from b4y_user_db.itinerario_richiesto as i
+join
+b4y_user_db.fermata as fp
+on
+i.fermata_lat_partenza=fp.lat and i.fermata_lon_partenza=fp.lon
+join
+b4y_user_db.fermata as fa
+on
+i.fermata_lat_arrivo=fa.lat and i.fermata_lon_arrivo=fa.lon
+where i.id=it_req_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -371,10 +403,10 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_stops_rect`(in x DECIMAL(8, 6), in y DECIMAL(8, 6), in height DECIMAL(8, 6), in width DECIMAL(8, 6))
 BEGIN
-	SELECT *
-    FROM b4y_user_db.fermata as fermata
-    WHERE fermata.lat < x AND fermata.lat > x - height
-    AND fermata.lon > y AND fermata.lon < y + width;
+SELECT *
+FROM b4y_user_db.fermata as fermata
+WHERE fermata.lat < x AND fermata.lat > x - height
+AND fermata.lon > y AND fermata.lon < y + width;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -545,4 +577,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-06 18:55:04
+-- Dump completed on 2023-07-10 20:07:14

@@ -13,6 +13,7 @@ def serve():
     server.register_function(confirm_it, "confirm_it")
     server.register_function(reject_it, "reject_it")
     server.register_function(insert_route_info, "insert_route_info")
+    server.register_function(get_retry_info, "get_retry_info")
     server.serve_forever()
 
 
@@ -85,6 +86,14 @@ def insert_route_info(route_expiration, order_list, it_list):
         return {"status": "ok"}
     else:
         return {"status": "error"}
+
+
+def get_retry_info(it_id):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    it_req_info = usr_db.retry_info_query(conn, it_id)
+    conn.close()
+    return json.dumps(it_req_info)
 
 
 if __name__ == "__main__":

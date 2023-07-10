@@ -76,7 +76,7 @@ class DbDao:
             for result in curs.stored_results():
                 res = result.fetchall()
             curs.close()
-            print(len(res))
+            #print(len(res))
             for elem in res:
                 '''
                 costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
@@ -161,6 +161,33 @@ class DbDao:
             finally:
                 # close cursor and connection
                 curs.close()
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def retry_info_query(conn, it_id):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            print("it_id: ", it_id)
+            curs = conn.cursor()
+            args = (it_id,)
+            curs.callproc('get_it_req_info_with_it_prop_id', args)
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                '''
+                it_req_id, it_req_ora_inizio, it_req_ora_fine, it_req_costo_max, it_req_distanza, utente,
+                it_req_fermata_lat_partenza, it_req_fermata_lon_partenza, it_req_fermata_lat_arrivo, 
+                it_req_fermata_lon_arrivo, nome fermata partenza, nome fermata arrivo
+                '''
+                ret.append([elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8], elem[9], elem[10],
+                            elem[11]])
+            return ret
         else:
             print("Connection with db failed")
             return -1
