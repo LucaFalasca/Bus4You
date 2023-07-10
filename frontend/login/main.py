@@ -79,20 +79,20 @@ def request_route():
     end_lng = request.args.get('end_lng')
     date = request.args.get('date')
     start_or_finish_raw = request.args.get('start-finish')
-    if (start_or_finish_raw == 'on'):
+    if start_or_finish_raw == 'on':
         start_or_finish = 'start'
     else:
         start_or_finish = 'finish'
     time = request.args.get('time')
-    print(starting_point)
-    print(ending_point)
-    print(date)
-    print(start_or_finish)
-    print(time)
-    print(start_lat)
-    print(start_lng)
-    print(end_lat)
-    print(end_lng)
+    # print(starting_point)
+    # print(ending_point)
+    # print(date)
+    # print(start_or_finish)
+    # print(time)
+    # print(start_lat)
+    # print(start_lng)
+    # print(end_lat)
+    # print(end_lng)
     gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
@@ -112,11 +112,11 @@ def get_stops_rect():
     height = request.args.get('height')
     width = request.args.get('width')
     gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
-    print("AOO")
     print(gateway_get_bus_stops_url)
-    print(requests.get(gateway_get_bus_stops_url))
+    # print(requests.get(gateway_get_bus_stops_url))
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
-    return jsonify(result = bus_stops)
+    return jsonify(result=bus_stops)
+
 
 @app.route('/_get_path', methods=['POST'])
 def get_path():
@@ -128,8 +128,7 @@ def get_path():
 
     result = requests.post(url, json=body).json()
     print(result)
-    return jsonify(result = result)
-    
+    return jsonify(result=result)
 
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])
@@ -160,18 +159,27 @@ def load_user_routes_page():
 def reject_book():
     data = request.form
     parsed_data = []
+    data_len = 0
     for elem in data.items():
         parsed_data.append([elem[0], elem[1]])
-        #print("Key: \n\t" + elem[0])
-        #print("Value: \n\t" + elem[1])
+        print("Key: \n\t" + elem[0])
+        print("Value: \n\t" + elem[1])
+        data_len += 1
+    # print("LEN: "+str(data_len))
     it_id = str(parsed_data[0][1])
     gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
     response = requests.get(gateway_reject_book_url).json()
-    print(response)
+    # print(response)
     if response['status'] == 'ok':
         flash("Book rejected correctly", category='info')
     elif response['status'] == 'error':
         flash("Book rejection failed", category='info')
+
+    if data_len == 10:  # quando la checkbox non è spuntata la submit non mette il la checkbox nella request quindi ho un parametro in meno
+        print("Non rimetto in coda")
+    elif data_len == 11:
+        print("Rimetto in coda")
+    # TODO gestire la rimessa in coda ed i messaggi di ritorno all'utente
     return redirect(url_for('load_user_routes_page'))
 
 
@@ -181,12 +189,12 @@ def confirm_book():
     parsed_data = []
     for elem in data.items():
         parsed_data.append([elem[0], elem[1]])
-        #print("Key: \n\t" + elem[0])
-        #print("Value: \n\t" + elem[1])
+        # print("Key: \n\t" + elem[0])
+        # print("Value: \n\t" + elem[1])
     it_id = parsed_data[0][1]
     gateway_confirm_book_url = 'http://localhost:50052/api/confirm_it?it_id=' + it_id
     response = requests.get(gateway_confirm_book_url).json()
-    print(response)
+    # print(response)
     if response['status'] == 'ok':
         flash("Book confirmed correctly", category='info')
     elif response['status'] == 'error':

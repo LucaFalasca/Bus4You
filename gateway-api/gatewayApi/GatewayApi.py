@@ -106,6 +106,7 @@ def get_bus_stops_rect():
         ret.append(stop)
     return json.dumps(ret)
 
+
 @api.route('/api/get_path', methods=['POST'])
 def get_path():
     data = request.get_json()
