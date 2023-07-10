@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
 import requests
 from frontend.login.utils.json_parser import parse_user_routes_json
@@ -161,23 +163,70 @@ def reject_book():
     parsed_data = []
     data_len = 0
     for elem in data.items():
-        parsed_data.append([elem[0], elem[1]])
-        print("Key: \n\t" + elem[0])
-        print("Value: \n\t" + elem[1])
         data_len += 1
-    # print("LEN: "+str(data_len))
-    it_id = str(parsed_data[0][1])
-    gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
-    response = requests.get(gateway_reject_book_url).json()
-    # print(response)
-    if response['status'] == 'ok':
-        flash("Book rejected correctly", category='info')
-    elif response['status'] == 'error':
-        flash("Book rejection failed", category='info')
+        parsed_data.append([elem[0], elem[1]])
+        # print("Key: \n\t" + elem[0])
+        # print("Value: \n\t" + elem[1])
 
+    # REJECT E RIMETTO IN CODA
     if data_len == 11:  # la submit non mette il valore della checkbox nella request solo se è spuntata quindi ho un parametro in più
-        print("Rimetto in coda")
-    # TODO gestire la rimessa in coda ed i messaggi di ritorno all'utente
+        it_id = str(parsed_data[1][1])
+        gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
+        response = requests.get(gateway_reject_book_url).json()
+        # print(response)
+        if response['status'] == 'error':
+            flash("Book rejection failed", category='info')
+        elif response['status'] == 'ok':
+            flash("Book rejected correctly", category='info')
+            print("Rimetto in coda")
+            gateway_requeue_url = 'http://localhost:50052/api/get_retry_info?it_id=' + it_id
+            response = json.loads(requests.get(gateway_requeue_url).json())[0]
+            print(response)
+            mail = response[4]
+            starting_point = response[9]
+            start_lat = response[5]
+            start_lng = response[6]
+            ending_point = response[10]
+            end_lat = response[7]
+            end_lng = response[8]
+            start_hour = response[0]
+            finish_hour = response[1]
+            date = ''
+            time = ''
+            start_or_finish = ''
+            # costo_max = response[2] # not used
+            # distanza = response[3] # not used
+            if start_hour is None:
+                start_or_finish = 'finish'
+                date_obj = datetime.strptime(finish_hour, "%a, %d %b %Y %H:%M:%S %Z")
+                date = date_obj.date()
+                time = date_obj.time()
+            elif finish_hour is None:
+                start_or_finish = 'start'
+                date_obj = datetime.strptime(start_hour, "%a, %d %b %Y %H:%M:%S %Z")
+                date = date_obj.date()
+                time = date_obj.time()
+
+            gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user=' + mail + '&starting_point=' + \
+                                        starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + \
+                                        '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
+                                        '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
+            print(gateway_request_route_url)
+            response = requests.get(gateway_request_route_url).json()
+            session['user_routes'] = response
+            flash("Book requeued correctly", category='info')
+
+    # NON RIMETTO IN CODA, SOLO REJECT
+    else:
+        print("Non rimetto in coda")
+        it_id = str(parsed_data[0][1])
+        gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
+        response = requests.get(gateway_reject_book_url).json()
+        # print(response)
+        if response['status'] == 'ok':
+            flash("Book rejected correctly", category='info')
+        elif response['status'] == 'error':
+            flash("Book rejection failed", category='info')
 
     return redirect(url_for('load_user_routes_page'))
 

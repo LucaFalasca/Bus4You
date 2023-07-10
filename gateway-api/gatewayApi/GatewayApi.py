@@ -141,5 +141,14 @@ def reject_it():
         return json.dumps(ret)
 
 
+@api.route('/api/get_retry_info', methods=['GET'])
+def get_retry_info():
+    it_id = request.args.get('it_id')
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = proxy.get_retry_info(it_id)
+        print(ret)
+        return json.dumps(ret)
+
+
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)

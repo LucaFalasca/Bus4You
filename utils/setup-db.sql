@@ -15,7 +15,7 @@ fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-0
  41.660835, 12.411013, 41.665523, 12.404817);
 
 #Percorso pending
-insert into  b4y_user_db.percorso(id,scadenza, timestamp) values(1,"2024-12-12", now());
+insert into  b4y_user_db.percorso(id,scadenza, tmstmp) values(1,"2024-12-12", now());
 
 #Relazione percorso fermata, cioè fermate che formano il percorso
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(1, 1, 41.648593, 12.431090);
@@ -57,7 +57,7 @@ values(8, 5, 10, "2022-07-07 12:00:00", "2022-07-07 12:30:00", "prova@gmail.com"
 
 
 #Percorso confermato presente
- insert into  b4y_user_db.percorso(id,scadenza, timestamp, stato) values(2,"2024-12-12", now(), 'confirmed');
+ insert into  b4y_user_db.percorso(id,scadenza, tmstmp, stato) values(2,"2024-12-12", now(), 'confirmed');
 
  #Relazione percorso fermata, cioè fermate che formano il percorso
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(1, 2, 41.648593, 12.431090);
@@ -99,7 +99,7 @@ values(16, 5, 10, "2022-07-07 12:00:00", "2022-07-07 12:30:00", "prova@gmail.com
 
 
 #Percorso rejected
- insert into  b4y_user_db.percorso(id,scadenza, timestamp, stato, archiviato) values(3, "2024-12-12", now(), 'rejected', 1);
+ insert into  b4y_user_db.percorso(id,scadenza, tmstmp, stato, archiviato) values(3, "2024-12-12", now(), 'rejected', 1);
 
  #Relazione percorso fermata, cioè fermate che formano il percorso
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(1, 3, 41.648593, 12.431090);
@@ -140,7 +140,7 @@ utente, itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_parten
 values(24, 5, 10, "2022-07-07 12:00:00", "2022-07-07 12:30:00", "prova@gmail.com", 2, 3, 41.660835, 12.411013, 41.665523, 12.404817, 'confirmed');
 
 #Percorso confermato passato
-insert into  b4y_user_db.percorso(id,scadenza, timestamp, stato, archiviato) values(4, "2024-12-12", now(), 'confirmed', 1);
+insert into  b4y_user_db.percorso(id,scadenza, tmstmp, stato, archiviato) values(4, "2024-12-12", now(), 'confirmed', 1);
 
  #Relazione percorso fermata, cioè fermate che formano il percorso
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(1, 4, 41.648593, 12.431090);
