@@ -129,7 +129,7 @@ CREATE TABLE `itinerario_richiesto` (
   `ora_inizio` datetime DEFAULT NULL,
   `ora_fine` datetime DEFAULT NULL,
   `costo_max` decimal(6,2) DEFAULT NULL,
-  `distanza` decimal(8,4) NOT NULL,
+  `distanza` decimal(8,4),
   `utente` varchar(128) NOT NULL,
   `fermata_lat_partenza` decimal(8,6) NOT NULL,
   `fermata_lon_partenza` decimal(8,6) NOT NULL,
