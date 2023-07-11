@@ -109,46 +109,49 @@ def create_booking_type_start(username, name_start_stop, name_end_stop, date, ho
 
 
 def some_calls():
-    # Esempio 1
-    create_booking_type_end("Alice", "Termini", "Piazza Venezia", datetime.date(2023, 7, 23), datetime.time(10, 15),
-                            41.9014, 12.5005, 41.8954, 12.4823)
+     # Esempio 1
+    create_booking_type_end("Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
+                            41.900473, 12.500650, 41.894342, 12.481170)
 
     # Esempio 2
-    create_booking_type_start("Bob", "Colosseo", "San Giovanni", datetime.date(2023, 7, 23), datetime.time(8, 30),
-                            41.8902, 12.4924, 41.8743, 12.5110)
+    create_booking_type_start("Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
+                            41.889927, 12.494197, 41.885616, 12.509768)
 
     # Esempio 3
-    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", datetime.date(2023, 7, 23), datetime.time(17, 45),
-                            41.9142, 12.4921, 41.9098, 12.4767)
+    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
+                            41.912492, 12.477485, 41.911860, 12.475263)
 
+    '''
     # Esempio 4
-    create_booking_type_start("Dave", "Ostia Antica", "Fiumicino Airport", datetime.date(2023, 7, 23), datetime.time(14, 0),
+    create_booking_type_start("Dave", "Ostia Antica", "Fiumicino Airport", "2023-07-23", "14:00",
                             41.7553, 12.2922, 41.7966, 12.2366)
 
     # Esempio 5
-    create_booking_type_end("Eve", "Castel Sant'Angelo", "Ponte Milvio", datetime.date(2023, 7, 23), datetime.time(12, 30),
+    create_booking_type_end("Eve", "Castel Sant'Angelo", "Ponte Milvio", "2023-07-23", "12:30",
                             41.9028, 12.4669, 41.9311, 12.4719)
 
     # Esempio 6
-    create_booking_type_start("Frank", "Cinecittà", "Villa Ada", datetime.date(2023, 7, 23), datetime.time(9, 45),
+    create_booking_type_start("Frank", "Cinecittà", "Villa Ada", "2023-07-23", "09:45",
                             41.8513, 12.5731, 41.9321, 12.5028)
 
     # Esempio 7
-    create_booking_type_end("Gina", "Villa d'Este", "Tivoli", datetime.date(2023, 7, 23), datetime.time(16, 20),
+    create_booking_type_end("Gina", "Villa d'Este", "Tivoli", "2023-07-23", "16:20",
                             41.9624, 12.7949, 41.9679, 12.8006)
 
     # Esempio 8
-    create_booking_type_start("Harry", "Terme di Caracalla", "Aventino", datetime.date(2023, 7, 23), datetime.time(18, 0),
+    create_booking_type_start("Harry", "Terme di Caracalla", "Aventino", "2023-07-23", "18:00",
                             41.8799, 12.4925, 41.8824, 12.4761)
 
     # Esempio 9
-    create_booking_type_end("Ian", "Villa Adriana", "Villa d'Este", datetime.date(2023, 7, 23), datetime.time(11, 15),
+    create_booking_type_end("Ian", "Villa Adriana", "Villa d'Este", "2023-07-23", "11:15",
                             41.9387, 12.7971, 41.9624, 12.7949)
 
     # Esempio 10
-    create_booking_type_start("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", datetime.date(2023, 7, 23),
-                            datetime.time(14, 45),
+    create_booking_type_start("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", "2023-07-23",
+                            "14:45",
                             41.9271, 12.4997, 41.8532, 12.5636)
+    '''
+
 
 
 '''Funzione per inizializzare le code di rabbitMq e ricevere l'handler per la comunicazione, per aggiungere una coda
@@ -260,7 +263,7 @@ def rabbitMQThread():
 
 if __name__ == "__main__":
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    #some_calls()
+    some_calls()
     dao.close()
 
     prova = {

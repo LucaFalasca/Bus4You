@@ -253,7 +253,9 @@ class Neo4jDAO:
             result = session.run(query, booking_id=booking_id, limit=limit)
 
             bookings = []
+            print("AO")
             for record in result:
+                
                 print(record["b_day"])
                 booking = {
                     "id": record["b_id"],
