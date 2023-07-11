@@ -14,6 +14,7 @@ def serve():
     server.register_function(reject_it, "reject_it")
     server.register_function(insert_route_info, "insert_route_info")
     server.register_function(get_retry_info, "get_retry_info")
+    server.register_function(get_stops_from_it, "get_stops_from_it")
     server.serve_forever()
 
 
@@ -94,6 +95,15 @@ def get_retry_info(it_id):
     it_req_info = usr_db.retry_info_query(conn, it_id)
     conn.close()
     return json.dumps(it_req_info)
+
+def get_stops_from_it(it_id):
+    print("HEYLA")
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    stops = usr_db.get_stops_from_it_query(conn, it_id)
+    conn.close()
+    print(stops)
+    return json.dumps(stops)
 
 
 if __name__ == "__main__":

@@ -531,7 +531,7 @@
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
 
 
-                                                var data_in = [[12.527504,41.837339],[12.627504,41.837339]];
+                                                var data_in = {{ route.getItId() }};
 
                                                 var busStopIcon = L.Icon.extend({
                                                     options: {
@@ -550,26 +550,33 @@
                                                     })
                                                     .then(response => response.json())
                                                     .then(data => {
-                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result, {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
 
                                                         map_past{{ past_routes.index(route) }}.invalidateSize();
 
                                                         map_past{{ past_routes.index(route) }}.fitBounds(path{{ past_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
+
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){}
+                                                            var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                icon: busStopIconBlue,
+                                                                title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                            }).addTo(map_past{{ past_routes.index(route) }});
+                                                            marker.bindTooltip("name", {
+                                                                offset: L.point(0, -50)
+                                                            });
+                                                            marker.addTo(markersLayer);
+                                                        });  
                                                     })
-
-                                                var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
-
-                                                data_in.forEach(function(bus_stop) {
-                                                    console.log("ao" + bus_stop)
-                                                    var marker = L.marker([bus_stop[1], bus_stop[0]], {
-                                                        icon: busStopIconBlue,
-                                                        title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
-                                                    }).addTo(map_past{{ past_routes.index(route) }});
-                                                    marker.bindTooltip("name", {
-                                                        offset: L.point(0, -50)
-                                                    });
-                                                    marker.addTo(markersLayer);
-                                                });
 
                                             })
 

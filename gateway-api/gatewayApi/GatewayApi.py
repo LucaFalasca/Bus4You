@@ -111,16 +111,27 @@ def get_bus_stops_rect():
 def get_path():
     data = request.get_json()
     print(data)
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = proxy.get_stops_from_it(data)
+        print(ret)
+        stops = json.loads(ret)
     url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
     body = {}
-    body['coordinates'] = data
+    print(stops)
+    true_stops = [[float(s[2]), float(s[1])] for s in stops]
+    body['coordinates'] = true_stops
+    
     print("CIAOO")
     print(body)
     result = requests.post(url, json=body).json()
+    print(result)
     coords = result["features"][0]["geometry"]["coordinates"]
     print(coords)
     coords_reversed = [coord[::-1] for coord in coords]
-    return coords_reversed
+    final_ret = {}
+    final_ret["coordinates"] = coords_reversed
+    final_ret["stops"] = true_stops
+    return json.dumps(final_ret)
 
 
 @api.route('/api/confirm_it', methods=['GET'])

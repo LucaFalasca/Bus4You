@@ -202,3 +202,24 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+
+    @staticmethod
+    def get_stops_from_it_query(conn, it):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            curs.callproc('get_stops_from_it', (it,))
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1], elem[2]])
+            print(ret)
+            return ret
+        else:
+            print("Connection with db failed")
+            return -1
