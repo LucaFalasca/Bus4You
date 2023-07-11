@@ -244,7 +244,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-11 16:49:53'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-11 16:49:53'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-11 16:49:53'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-11 16:49:53');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-11 18:52:13'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-11 18:52:13'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-11 18:52:13'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-11 18:52:14');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -611,6 +611,37 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `scadenza` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `scadenza`(in route_id BIGINT)
+BEGIN
+declare tot decimal(6,3);
+declare conf decimal(6,3);
+declare min_conf decimal(6,3);
+UPDATE percorso SET archiviato=1 WHERE percorso.id=route_id;
+select count(*) from itinerario_proposto where percorso=route_id into tot;
+select count(*) from itinerario_proposto where percorso=route_id and stato='confirmed' into conf;
+set min_conf = 0.65*tot;
+select min_conf, conf, tot;
+ IF conf > min_conf THEN
+	UPDATE percorso SET stato='confirmed' WHERE percorso.id=route_id;
+ELSE
+	UPDATE percorso SET stato='rejected' WHERE percorso.id=route_id;
+END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sign_up` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -640,4 +671,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-11 16:50:11
+-- Dump completed on 2023-07-11 18:52:29

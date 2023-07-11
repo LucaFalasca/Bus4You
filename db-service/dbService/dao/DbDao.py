@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import mysql.connector
 from mysql.connector import Error
 
@@ -76,7 +78,7 @@ class DbDao:
             for result in curs.stored_results():
                 res = result.fetchall()
             curs.close()
-            #print(len(res))
+            # print(len(res))
             for elem in res:
                 '''
                 costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
@@ -136,6 +138,14 @@ class DbDao:
                     res = result.fetchall()
                 route_id = res[0][0]
                 print("Returned route id: ", route_id)
+                # Create a cursor object to execute queries
+
+                # Create the trigger SQL statement
+                trigger_sql = "CREATE EVENT scadenza_route_" + str(route_id) + " ON SCHEDULE AT '" \
+                              + route_expiration + "' DO call scadenza(" + str(route_id) + ");"
+                print(trigger_sql)
+                # Execute the trigger SQL statement
+                curs.execute(trigger_sql)
 
                 # insert order list
                 print("Inserisco gli ordini")
