@@ -128,6 +128,8 @@ services:
     volumes:
       - ./node-selector-service:/app
     depends_on:
+      booking_service:
+        condition: service_started
       ors-app:
         condition: service_started
       vroom:

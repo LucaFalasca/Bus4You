@@ -87,8 +87,9 @@ def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour
     if dao.search_for_compatibility_type_3(booking_id):
         return
 
+
 def create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
-                            position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
+                              position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
 
@@ -97,7 +98,7 @@ def create_booking_type_start(username, name_start_stop, name_end_stop, date, ho
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
     stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
     booking_id = dao.create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
-                                             position_start_stop, position_end_stop)
+                                               position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
     if dao.search_for_compatibility_type_1(booking_id):
@@ -109,13 +110,13 @@ def create_booking_type_start(username, name_start_stop, name_end_stop, date, ho
 
 
 def some_calls():
-     # Esempio 1
+    # Esempio 1
     create_booking_type_end("Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
                             41.900473, 12.500650, 41.894342, 12.481170)
 
     # Esempio 2
     create_booking_type_start("Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
-                            41.889927, 12.494197, 41.885616, 12.509768)
+                              41.889927, 12.494197, 41.885616, 12.509768)
 
     # Esempio 3
     create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
@@ -153,13 +154,15 @@ def some_calls():
     '''
 
 
-
 '''Funzione per inizializzare le code di rabbitMq e ricevere l'handler per la comunicazione, per aggiungere una coda
 basta aggiungere un'altra queue declare con il nome della coda che si vuole creare che deve essere univoco, ricordare
 che se si hanno più consumer per lo stesso messaggio occorre creare una coda per consumer, sulla quale poi si pubblicheranno
 gli stessi messaggi'''
+
+
 def init_rabbit_mq_queues():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitMq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
+                                                                   blocked_connection_timeout=3600))
     channel = connection.channel()
     channel.queue_declare(queue='preparedRoutes1', durable=True)
     return channel
@@ -183,6 +186,8 @@ message=[{"route_expiration": "2023-07-07 00:00:00", "mail": "matteo.conti.977@g
   "it_arrival_stop": "Subaugusta (MA)"}] 
 notare che il parametro messagge_json va passato come json.dumps(message)
 '''
+
+
 def publish_message_on_queue(message_json, queue, channel):
     channel.basic_publish(exchange='',
                           routing_key=queue,
@@ -200,7 +205,9 @@ def test_rabbitMq(channel):
     ]
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
-def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish, time):
+
+def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish,
+                   time):
     create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
@@ -210,20 +217,21 @@ def json_to_route_info(json_input):
     it_list = []
 
     route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
-    
+
     for step in json_input['steps']:
         order_list.append([int(step['id']), step['location'][1], step['location'][0]])
-        
+
     for username, route in json_input['user_routes'].items():
         start_stop = json_input['steps'][int(route[0])]
         end_stop = json_input['steps'][int(route[-1])]
-        it_list.append([0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username, 1,  
-                        start_stop['location'][1], start_stop['location'][0], 
-                        end_stop['location'][1], end_stop['location'][0]])
-    
-    
-    
-    return str(route_expiration), order_list, it_list, 
+        it_list.append(
+            [0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username,
+             1,
+             start_stop['location'][1], start_stop['location'][0],
+             end_stop['location'][1], end_stop['location'][0]])
+
+    return str(route_expiration), order_list, it_list,
+
 
 def propose_route_callback(ch, method, properties, body):
     json_return = json.loads(body.decode('utf-8'))
@@ -235,31 +243,31 @@ def propose_route_callback(ch, method, properties, body):
         proxy.insert_route_info(route_expiration, order_list, it_list)
 
 
-   
-
-
 def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Server RPC is ON on port 8000")
     server.register_function(insert_booking, "insert_booking")
     server.serve_forever()
 
+
 def rabbitMQThread():
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    queue_channel= init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    #test_rabbitMq(queue_channel)
-    
+    queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
+    # test_rabbitMq(queue_channel)
+
     # Coda da consumer per ricevere i messaggi di makeRouteService
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
+                                                                   blocked_connection_timeout=3600))
     channel = connection.channel()
     # Create a queue, if already exist nothing happens
-    channel.queue_declare(queue = PROPOSE_ROUTE_QUEUE, durable = True)
-    channel.basic_consume(queue = PROPOSE_ROUTE_QUEUE,
-                          auto_ack = True,
-                          on_message_callback = propose_route_callback)
-    
+    channel.queue_declare(queue=PROPOSE_ROUTE_QUEUE, durable=True)
+    channel.basic_consume(queue=PROPOSE_ROUTE_QUEUE,
+                          auto_ack=True,
+                          on_message_callback=propose_route_callback)
+
     print("I'm waiting for messages on queue [" + PROPOSE_ROUTE_QUEUE + "]...")
     channel.start_consuming()
+
 
 if __name__ == "__main__":
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
@@ -267,89 +275,83 @@ if __name__ == "__main__":
     dao.close()
 
     prova = {
-  "steps": [
-    {
-      "id": "2",
-      "date": "2023-07-23",
-      "time": "17:48:00",
-      "location": [
-        12.375458,
-        42.028740
-      ]
-    },
-    {
-      "id": "0",
-      "date": "2023-07-23",
-      "time": "18:00:00",
-      "location": [
-        12.374834,
-        42.051147
-      ]
-    },
-    {
-      "id": "1",
-      "date": "2023-07-23",
-      "time": "18:06:00",
-      "location": [
-        12.448636,
-        42.029957
-      ]
-    },
-    {
-      "id": "3",
-      "date": "2023-07-23",
-      "time": "18:21:00",
-      "location": [
-        12.469408,
-        42.032089
-      ]
+        "steps": [
+            {
+                "id": "2",
+                "date": "2023-07-23",
+                "time": "17:48:00",
+                "location": [
+                    12.375458,
+                    42.028740
+                ]
+            },
+            {
+                "id": "0",
+                "date": "2023-07-23",
+                "time": "18:00:00",
+                "location": [
+                    12.374834,
+                    42.051147
+                ]
+            },
+            {
+                "id": "1",
+                "date": "2023-07-23",
+                "time": "18:06:00",
+                "location": [
+                    12.448636,
+                    42.029957
+                ]
+            },
+            {
+                "id": "3",
+                "date": "2023-07-23",
+                "time": "18:21:00",
+                "location": [
+                    12.469408,
+                    42.032089
+                ]
+            }
+        ],
+        "travel_time": "0:33:00",
+        "n_tardy": 2,
+        "mean_unacceptable_deviance": "1:59:00",
+        "users_travel_time": {
+            "persona1": "0:06:00",
+            "persona2": "0:06:00",
+            "persona3": "0:33:00"
+        },
+        "user_routes": {
+            "prova@gmail.com": [
+                "0",
+                "1"
+            ],
+            "prova@gmail.com": [
+                "0",
+                "1"
+            ],
+            "prova@gmail.com"
+
+            : [
+                "2",
+                "3"
+            ]
+        }
     }
-  ],
- "travel_time": "0:33:00",
- "n_tardy": 2,
- "mean_unacceptable_deviance": "1:59:00",
- "users_travel_time": {
-   "persona1": "0:06:00",
-   "persona2": "0:06:00",
-   "persona3": "0:33:00"
- },
- "user_routes": {
-   "prova@gmail.com": [
-     "0",
-     "1"
-   ],
-   "prova@gmail.com": [
-     "0",
-     "1"
-   ],
-   "prova@gmail.com"
-   
-   : [
-     "2",
-     "3"
-   ]
- }
-}
     route_expiration, order_list, it_list = json_to_route_info(prova)
 
     print("ROUTE EXPIRATION:\n" + str(route_expiration))
     print("\nORDER_LIST\n" + str(order_list))
     print("\nIT_LIST\n" + str(it_list))
 
-
-    #with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        #res = proxy.insert_route_info(route_expiration, order_list, it_list)
-        #print("annata bene? " + str(res))
-
+    # with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+    # res = proxy.insert_route_info(route_expiration, order_list, it_list)
+    # print("annata bene? " + str(res))
 
     rpcThread = threading.Thread(target=serverRPCThread)
     queueThread = threading.Thread(target=rabbitMQThread)
     rpcThread.start()
     queueThread.start()
-    
+
     rpcThread.join()
     queueThread.join()
-
-    
-    
-    
