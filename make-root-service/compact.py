@@ -127,7 +127,11 @@ def compact(uncompacted_route, dist_matrix, node_limit):
 		max_unacceptable_deviances = 0
 	else:
 		max_unacceptable_deviances = max(unacceptable_deviances)
+
+	print("unacceptable deviance:" + str(unacceptable_deviances))
+	print("acceptable deviance" + str(acceptable_deviances))
 	n_tardy = len(unacceptable_deviances)
+	print(route)
 	return (route, travel_time, n_tardy ,mean_unacceptable_deviance, max_unacceptable_deviances, mean_acceptable_deviance, max_acceptable_deviances)
 
 

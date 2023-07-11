@@ -13,13 +13,13 @@
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
     crossorigin=""></script>
-    <input type="hidden" id="response" value= "{{ ok }}">
+    <input type="hidden" id="response" value= "{{ response }}">
     <link rel="stylesheet" type="text/css" href="../static/css/select_route_from_map.css">
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid h-80">
-      <div class="row g-0 h-80">
+    <div class="container-fluid h-80 h-100">
+      <div class="row g-0 h-80 h-100">
         <div class="col-sm-4">
             <form action="/select-route-from-map" method="GET">
                 <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
@@ -32,6 +32,8 @@
                   <div class="col-9">
                       <!-- campo per l'inserimento del punto di partenza -->
                       <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                      <input type="hidden" id="start_lat" name="start_lat">
+                      <input type="hidden" id="start_lng" name="start_lng">
                   </div>
                   <div class="col-3">
                       <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select </button>
@@ -46,6 +48,8 @@
                   <div class="col-9">
                       <!-- campo per l'inserimento del punto di arrivo -->
                       <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                      <input type="hidden" id="end_lat" name="end_lat">
+                      <input type="hidden" id="end_lng" name="end_lng">
                   </div>
                   <div class="col-3">
                       <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select</button>
@@ -65,11 +69,11 @@
 
                 <div>
                     <div class="form-check form-check-inline">
-                      <input name="start-finish" type="radio" id="start" checked>
+                      <input name="start-finish" type="radio" id="start" value = "on" checked>
                       <label for="start">Partenza dalle:</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input name="start-finish" type="radio" id="finish">
+                      <input name="start-finish" type="radio" id="finish" value = "off">
                       <label for="finish">Arrivo entro le:</label>
                     </div>
                 </div>
@@ -105,6 +109,7 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+
         
         var busStopIcon = L.Icon.extend({
             options: {
@@ -134,7 +139,10 @@
             marker.addTo(markersLayer)
         });
         */
-        setMarkers()
+        var currentZoom = map.getZoom();
+        if (currentZoom >= 16) {
+            setMarkers();
+        }
 
         markersLayer.on("click", markerOnClick);
 
@@ -150,8 +158,13 @@
                     var clickedMarker = e.layer;
                     clickedMarker.setIcon(busStopIconGreen);
                     startingPoint = clickedMarker
-                    bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var lat = clickedMarker.getLatLng().lat;
+                    var lng = clickedMarker.getLatLng().lng;
                     document.getElementById("starting_point").value = bus_stop_name;
+                    document.getElementById("start_lat").value = lat;
+                    document.getElementById("start_lng").value = lng;
+
                 }
                 else if (point == "end"){
                     if (endingPoint != null)
@@ -160,7 +173,11 @@
                     endingPoint = clickedMarker
                     clickedMarker.setIcon(busStopIconRed);
                     bus_stop_name = clickedMarker.getTooltip().getContent()
+                    var lat = clickedMarker.getLatLng().lat;
+                    var lng = clickedMarker.getLatLng().lng;
                     document.getElementById("ending_point").value = bus_stop_name;
+                    document.getElementById("end_lat").value = lat;
+                    document.getElementById("end_lng").value = lng;
                 }
             }
         }
@@ -241,8 +258,9 @@
 
     if(document.getElementById("response").value == "True")
         alert("Your request has been successfully sent!")
-    echo(sessionStorage.getItem("response"))
+        
+
     </script>
-    {{ response }}
+    
 
 {% endblock %}

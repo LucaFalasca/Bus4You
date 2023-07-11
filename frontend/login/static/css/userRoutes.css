@@ -97,7 +97,7 @@ div[id^="divAccPend"] {
     font-size: 20px !important;
 }
 
-#btnConfirm{
+button[id^="btnConfirm"]{
     text-align: center;
     width: 150px;
     background-color: #4a9b4d;
@@ -116,32 +116,185 @@ div[id^="divAccPend"] {
     border-style: solid;
 }
 
-#btnReject{
-text-align: center;
+button[id^="btnReject"]{
+    text-align: center !important;
+    width: 150px !important;
+    background-color: red !important;
+    color: white !important;
+    padding: 8px 8px !important;
+    margin-top: 8px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    transition-duration: 0.4s !important;
+    cursor: pointer !important;
+    border-color: #d01414 !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+}
+
+button[id^="btnConfirm"]:hover{
+    background-color: #3e7e3f;
+    border-color: #3e7e3f;
+}
+
+button[id^="btnConfirm"]:focus{
+    border-color: #3e7e3f !important;
+}
+
+button[id^="btnReject"]:hover{
+    background-color: #D01414FF !important;
+    border-color: #D01414FF !important;
+}
+
+button[id^="btnReject"]:focus{
+    border-color: #D01414FF !important;
+}
+
+.modal-content, .modal-header, .modal-body, .modal-footer{
+    color: white !important;
+    background-color: #152733 !important;
+    border-radius: 12px !important;
+}
+
+label[id^="lbChkBox"]{
+    color: white !important;
+}
+
+button[id^="btnModalRejectClose"]{
+    text-align: center;
     width: 150px;
-    background-color: red;
-    color: white;
+    background-color: #152733;
+    color: red;
     padding: 8px 8px;
     margin-top: 8px;
-    margin-left: 8px;
     margin-right: 8px;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
     transition-duration: 0.4s;
     cursor: pointer;
-    border-color: #d01414;
+    border-color: red;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+    border-width: 2px;
+}
+
+input[id^="btnModalReject"]{
+    text-align: center !important;
+    width: 150px !important;
+    background-color: red !important;
+    color: white !important;
+    padding: 8px 8px !important;
+    margin-top: 8px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    transition-duration: 0.4s !important;
+    cursor: pointer !important;
+    border-color: #ab1212 !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px;
+}
+
+button[id^="btnModalRejectClose"]:hover{
+    background-color: #142431;
+    border-color: #bb1b1b;
+    color: #bb1b1b;
+}
+
+input[id^="btnModalReject"]:hover{
+    background-color: #D01414FF !important;
+    border-color: #D01414FF !important;
+}
+
+button[id^="btnModalConfirmClose"]{
+    text-align: center;
+    width: 150px;
+    background-color: #152733;
+    color: #4a9b4d;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4a9b4d;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+    border-width: 2px;
+}
+
+input[id^="btnModalConfirm"]{
+    text-align: center !important;
+    width: 150px !important;
+    background-color: #4a9b4d !important;
+    color: white !important;
+    padding: 8px 8px !important;
+    margin-top: 8px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    transition-duration: 0.4s !important;
+    cursor: pointer !important;
+    border-color: #3e7e3f !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px;
+}
+
+button[id^="btnModalConfirmClose"]:hover{
+    background-color: #142431;
+    border-color: #3e7e3f;
+    color: #3e7e3f;
+}
+
+input[id^="btnModalConfirm"]:hover{
+    background-color: #3e7e3f !important;
+    border-color: #3e7e3f !important;
+}
+
+button[id^="btnConfirmDis"]{
+    text-align: center;
+    width: 150px;
+    background-color: grey;
+    color: white;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #696969;
     border-radius: 12px;
     outline: none;
     border-style: solid;
 }
 
-#btnConfirm:hover{
-    background-color: #3e7e3f;
-    border-color: #3e7e3f;
+button[id^="btnConfirmDis"]:hover{
+    background-color: grey;
+    border-color: #696969;
 }
 
-#btnReject:hover{
-    background-color: #D01414FF;
-    border-color: #D01414FF;
+button[id^="btnConfirmDis"]:focus{
+    border-color: #696969 !important;
 }
+
+
+

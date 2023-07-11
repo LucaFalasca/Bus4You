@@ -10,8 +10,6 @@
         <link rel="stylesheet" type="text/css" href="../static/css/userRoutes.css">
     {% endblock %}
 
-<!--TODO ho preparato le due liste diverse presenti e passati, fare che vengono creati due accordion diversi e dove e' presente
-        il percorso è pending e la richiesta è pending mettere il bottone per confermare/declinare-->
     {% block body %}
         <div class="accordion" id="accAttive">
           <div id="accItmAttive" class="accordion-item">
@@ -58,6 +56,7 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
+
                                             var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
                                               map{{ present_routes.index(route) }}.invalidateSize();
@@ -67,7 +66,6 @@
                                     </div>
                                   </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -84,15 +82,86 @@
                                   <div class="row">
                                     <div class="col-sm-6">
                                         Data: {{ route.getItPropStart()[0:10]}} <br>
+
                                         Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+
                                         Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+
                                         Fermata Partenza: {{ route.getStartStop() }} <br>
+
                                         Fermata Arrivo: {{ route.getEndStop() }} <br>
+
                                         Costo: {{ route.getItCost() }}<br>
+
                                         Stato Itinerario: {{ route.getItStatus() }}<br>
+
                                         Stato Percorso: {{ route.getRouteStatus() }}<br>
+
                                         Percorso Passato: {{ route.isPast() }}<br>
+
                                         Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+
+                                        <button id="btnConfirm{{ present_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#confirmModal{{ present_routes.index(route) }}">Confirm Book</button>
+                                        <button id="btnReject{{ present_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#rejectModal{{ present_routes.index(route) }}">Reject Book</button>
+
+                                        <!-- Modal Reject -->
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="rejectModal{{ present_routes.index(route) }}" aria-labelledby="rejectModalTitle" aria-describedby="rejectModalDescription">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to reject the proposed book?</h5>
+                                                    </div>
+                                                    <form action="/reject_book" method="post">
+                                                        <div class="modal-body">
+                                                            <input type="checkbox" id="chkBox{{ present_routes.index(route) }}" name="chkBox{{ present_routes.index(route) }}" value="True">
+                                                            <label id="lbChkBox{{ present_routes.index(route) }}" for="chkBox{{ present_routes.index(route) }}"> Search another route</label><br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
+                                                            <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
+                                                            <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
+                                                            <input class="form-control" type="hidden" id="startStop{{ present_routes.index(route) }}" name="startStop{{ present_routes.index(route) }}" value="{{ route.getStartStop() }}">
+                                                            <input class="form-control" type="hidden" id="endStop{{ present_routes.index(route) }}" name="endStop{{ present_routes.index(route) }}" value="{{ route.getEndStop() }}">
+                                                            <input class="form-control" type="hidden" id="cost{{ present_routes.index(route) }}" name="cost{{ present_routes.index(route) }}" value="{{ route.getItCost() }}">
+                                                            <input class="form-control" type="hidden" id="itStatus{{ present_routes.index(route) }}" name="itStatus{{ present_routes.index(route) }}" value="{{ route.getItStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeStatus{{ present_routes.index(route) }}" name="routeStatus{{ present_routes.index(route) }}" value="{{ route.getRouteStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeIsPast{{ present_routes.index(route) }}" name="routeIsPast{{ present_routes.index(route) }}" value="{{ route.isPast() }}">
+                                                            <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
+
+                                                            <input type=submit id="btnModalReject{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Reject">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal Confirm -->
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="confirmModal{{ present_routes.index(route) }}" aria-labelledby="confirmModalTitle" aria-describedby="confirmModalDescription">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to confirm the proposed book?</h5>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button id="btnModalConfirmClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+                                                        <form action="/confirm_book" method="post">
+                                                            <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
+                                                            <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
+                                                            <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
+                                                            <input class="form-control" type="hidden" id="startStop{{ present_routes.index(route) }}" name="startStop{{ present_routes.index(route) }}" value="{{ route.getStartStop() }}">
+                                                            <input class="form-control" type="hidden" id="endStop{{ present_routes.index(route) }}" name="endStop{{ present_routes.index(route) }}" value="{{ route.getEndStop() }}">
+                                                            <input class="form-control" type="hidden" id="cost{{ present_routes.index(route) }}" name="cost{{ present_routes.index(route) }}" value="{{ route.getItCost() }}">
+                                                            <input class="form-control" type="hidden" id="itStatus{{ present_routes.index(route) }}" name="itStatus{{ present_routes.index(route) }}" value="{{ route.getItStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeStatus{{ present_routes.index(route) }}" name="routeStatus{{ present_routes.index(route) }}" value="{{ route.getRouteStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeIsPast{{ present_routes.index(route) }}" name="routeIsPast{{ present_routes.index(route) }}" value="{{ route.isPast() }}">
+                                                            <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
+
+                                                            <input type=submit id="btnModalConfirm{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Confirm">
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
@@ -117,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                            {% elif route.getRouteStatus()=='pending' and route.getItStatus()=='pending'%}
+                            {% elif route.getRouteStatus()=='pending' and (route.getItStatus()=='pending' or route.getItStatus()=='confirmed')%}
                         <div id="divAccPend{{ present_routes.index(route) }}" class="accordion-item">
                         <h2 class="accordion-header" id="head{{ present_routes.index(route) }}">
                           <button id="btnAccPend{{ present_routes.index(route) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc{{ present_routes.index(route) }}" aria-expanded="false" aria-controls="acc{{ present_routes.index(route) }}">
@@ -129,18 +198,91 @@
                                 <div class="container">
                                   <div class="row">
                                     <div class="col-sm-6">
-                                        Data: {{ route.getItPropStart()[0:10]}} <br>
+                                       Data: {{ route.getItPropStart()[0:10]}} <br>
+
                                         Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+
                                         Orario Arrivo: {{ route.getItPropEnd()[11:]}} <br>
+
                                         Fermata Partenza: {{ route.getStartStop() }} <br>
+
                                         Fermata Arrivo: {{ route.getEndStop() }} <br>
+
                                         Costo: {{ route.getItCost() }}<br>
+
                                         Stato Itinerario: {{ route.getItStatus() }}<br>
+
                                         Stato Percorso: {{ route.getRouteStatus() }}<br>
+
                                         Percorso Passato: {{ route.isPast() }}<br>
+
                                         Scadenza Percorso: {{ route.getRouteExpire() }}<br>
-                                        <button id="btnConfirm">Confirm Book</button>
-                                        <button id="btnReject">Reject Book</button>
+
+                                        {% if route.getItStatus()=='confirmed' %}
+                                            <button id="btnConfirmDis{{ present_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#confirmModal{{ present_routes.index(route) }} disabled">Confirm Book</button>
+                                        {% else %}
+                                            <button id="btnConfirm{{ present_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#confirmModal{{ present_routes.index(route) }}">Confirm Book</button>
+                                        {% endif %}
+                                        <button id="btnReject{{ present_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#rejectModal{{ present_routes.index(route) }}">Reject Book</button>
+
+                                        <!-- Modal Reject -->
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="rejectModal{{ present_routes.index(route) }}" aria-labelledby="rejectModalTitle" aria-describedby="rejectModalDescription">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to reject the proposed book?</h5>
+                                                    </div>
+                                                    <form action="/reject_book" method="post">
+                                                        <div class="modal-body">
+                                                           <input type="checkbox" id="chkBox{{ present_routes.index(route) }}" name="chkBox{{ present_routes.index(route) }}" value="True">
+                                                            <label id="lbChkBox{{ present_routes.index(route) }}" for="chkBox{{ present_routes.index(route) }}"> Search another route</label><br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnModalRejectClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
+                                                            <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
+                                                            <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
+                                                            <input class="form-control" type="hidden" id="startStop{{ present_routes.index(route) }}" name="startStop{{ present_routes.index(route) }}" value="{{ route.getStartStop() }}">
+                                                            <input class="form-control" type="hidden" id="endStop{{ present_routes.index(route) }}" name="endStop{{ present_routes.index(route) }}" value="{{ route.getEndStop() }}">
+                                                            <input class="form-control" type="hidden" id="cost{{ present_routes.index(route) }}" name="cost{{ present_routes.index(route) }}" value="{{ route.getItCost() }}">
+                                                            <input class="form-control" type="hidden" id="itStatus{{ present_routes.index(route) }}" name="itStatus{{ present_routes.index(route) }}" value="{{ route.getItStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeStatus{{ present_routes.index(route) }}" name="routeStatus{{ present_routes.index(route) }}" value="{{ route.getRouteStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeIsPast{{ present_routes.index(route) }}" name="routeIsPast{{ present_routes.index(route) }}" value="{{ route.isPast() }}">
+                                                            <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
+
+                                                            <input type=submit id="btnModalReject{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Reject">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal Confirm -->
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="confirmModal{{ present_routes.index(route) }}" aria-labelledby="confirmModalTitle" aria-describedby="confirmModalDescription">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to confirm the proposed book?</h5>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button id="btnModalConfirmClose{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+                                                        <form action="/confirm_book" method="post">
+                                                            <input class="form-control" type="hidden" id="itId{{ present_routes.index(route) }}" name="itId{{ present_routes.index(route) }}" value="{{ route.getItId() }}">
+                                                            <input class="form-control" type="hidden" id="startHour{{ present_routes.index(route) }}" name="startHour{{ present_routes.index(route) }}" value="{{ route.getItPropStart() }}">
+                                                            <input class="form-control" type="hidden" id="endHour{{ present_routes.index(route) }}" name="endHour{{ present_routes.index(route) }}" value="{{ route.getItPropEnd() }}">
+                                                            <input class="form-control" type="hidden" id="startStop{{ present_routes.index(route) }}" name="startStop{{ present_routes.index(route) }}" value="{{ route.getStartStop() }}">
+                                                            <input class="form-control" type="hidden" id="endStop{{ present_routes.index(route) }}" name="endStop{{ present_routes.index(route) }}" value="{{ route.getEndStop() }}">
+                                                            <input class="form-control" type="hidden" id="cost{{ present_routes.index(route) }}" name="cost{{ present_routes.index(route) }}" value="{{ route.getItCost() }}">
+                                                            <input class="form-control" type="hidden" id="itStatus{{ present_routes.index(route) }}" name="itStatus{{ present_routes.index(route) }}" value="{{ route.getItStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeStatus{{ present_routes.index(route) }}" name="routeStatus{{ present_routes.index(route) }}" value="{{ route.getRouteStatus() }}">
+                                                            <input class="form-control" type="hidden" id="routeIsPast{{ present_routes.index(route) }}" name="routeIsPast{{ present_routes.index(route) }}" value="{{ route.isPast() }}">
+                                                            <input class="form-control" type="hidden" id="routeExpire{{ present_routes.index(route) }}" name="routeExpire{{ present_routes.index(route) }}" value="{{ route.getRouteExpire() }}">
+
+                                                            <input type=submit id="btnModalConfirm{{ present_routes.index(route) }}" class="btn btn-primary btn-sm" value="Confirm">
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
@@ -152,6 +294,9 @@
                                                 maxZoom: 19,
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
+
+
+
 
                                             var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
@@ -199,10 +344,16 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
+
+
+
                                             var myCollapsible = document.getElementById('acc{{present_routes.index(route) }}')
                                             myCollapsible.addEventListener('shown.bs.collapse', function () {
                                               map{{present_routes.index(route) }}.invalidateSize();
                                             })
+
+
+
 
                                         </script>
                                     </div>
@@ -311,10 +462,27 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
+                                            console.log("sto qua")
+
                                             var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+                                                console.log("sto qua")
+                                                map_past{{ past_routes.index(route) }}.invalidateSize();
+
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify({data: 'Hello, world!'}),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data)
+                                                    })
                                             })
+
 
                                         </script>
                                     </div>
@@ -349,7 +517,8 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
                                         <script>
-                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -357,16 +526,57 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
+
                                             var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                              map_past{{ past_routes.index(route) }}.invalidateSize();
+
+
+                                                var data_in = [[12.527504,41.837339],[12.627504,41.837339]];
+
+                                                var busStopIcon = L.Icon.extend({
+                                                    options: {
+                                                        iconSize:     [60, 60],
+                                                        iconAnchor:   [30, 60]
+                                                    }
+                                                });
+                                                var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result, {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
+
+                                                        map_past{{ past_routes.index(route) }}.invalidateSize();
+
+                                                        map_past{{ past_routes.index(route) }}.fitBounds(path{{ past_routes.index(route) }}.getBounds());
+                                                    })
+
+                                                var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
+
+                                                data_in.forEach(function(bus_stop) {
+                                                    console.log("ao" + bus_stop)
+                                                    var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                        icon: busStopIconBlue,
+                                                        title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                    }).addTo(map_past{{ past_routes.index(route) }});
+                                                    marker.bindTooltip("name", {
+                                                        offset: L.point(0, -50)
+                                                    });
+                                                    marker.addTo(markersLayer);
+                                                });
+
                                             })
 
                                         </script>
                                     </div>
                                   </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>

@@ -1,3 +1,6 @@
+from datetime import date
+from datetime import time
+
 from neo4j import GraphDatabase
 
 class Neo4jDAO:
@@ -28,26 +31,40 @@ class Neo4jDAO:
             stop_id = result.single()[0]
         return stop_id
 
-    def create_end_stop(self, name, position, hour_end):
+    def create_end_stop(self, name, position):
         with self.driver.session() as session:
             result = session.run(
-                "MERGE (n:Stop {name: $name , position: $position, hour_end: $hour_end})"
+                "MERGE (n:Stop {name: $name , position: $position})"
                 "RETURN id(n)",
-                name=name, position=position, hour_end=hour_end
+                name=name, position=position
             )
             stop_id = result.single()[0]
         return stop_id
 
-    def create_booking(self, username, name_start_stop, name_end_stop, date, hour_end, position_start_stop,
-                       position_end_stop):
+    def create_booking_type_end(self, username, name_start_stop, name_end_stop, date, hour_end, position_start_stop,
+                                position_end_stop):
         with self.driver.session() as session:
             result = session.run(
-                "MERGE (b:Booking {name_start_stop: $name_start_stop, name_end_stop: $name_end_stop, date: $date,"
+                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'end', name_end_stop: $name_end_stop, date: $date,"
                 "hour_end: $hour_end, position_start_stop: $position_start_stop,"
                 "position_end_stop: $position_end_stop})"
                 "RETURN id(b)",
                 name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
                 hour_end=hour_end, position_start_stop=position_start_stop, position_end_stop=position_end_stop
+            )
+            booking_id = result.single()[0]
+        return booking_id
+
+    def create_booking_type_start(self, username, name_start_stop, name_end_stop, date, hour_start, position_start_stop,
+                                position_end_stop):
+        with self.driver.session() as session:
+            result = session.run(
+                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'start', name_end_stop: $name_end_stop, date: $date,"
+                "hour_start: $hour_start, position_start_stop: $position_start_stop,"
+                "position_end_stop: $position_end_stop})"
+                "RETURN id(b)",
+                name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
+                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop
             )
             booking_id = result.single()[0]
         return booking_id
@@ -165,6 +182,124 @@ class Neo4jDAO:
                 booking_id=booking_id
             )
             return [(record["id(booking)"], record["booking.hour_end"], record["booking.date"], record["id(s1)"], record["id(s2)"]) for record in result]
+
+
+
+    def get_start_end_bookings(self):
+
+
+        # Query per selezionare i nodi di tipo "Booking" con valore "start"
+        query = (
+            "MATCH (b:Booking) "
+            "WHERE b.type = 'start' "
+            "RETURN id(b) AS id, b.date AS date, b.hour_start AS hour_start, "
+            "b.name_end_stop AS name_end_stop, b.name_start_stop AS name_start_stop, "
+            "b.position_end_stop AS position_end_stop, b.position_start_stop AS position_start_stop, "
+            "b.type AS type"
+        )
+
+        with self.driver.session() as session:
+            # Esecuzione della query
+            result = session.run(query)
+
+            # Creazione della lista di dizionari con i risultati
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["id"],
+                    "date": date(record["date"].year, record["date"].month, record["date"].day),
+                    "hour": (time(hour=record["hour_start"].hour, minute=record["hour_start"].minute), None),
+                    "name_end_stop": record["name_end_stop"],
+                    "name_start_stop": record["name_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "type": record["type"]
+                }
+                bookings.append(booking)
+
+        # Chiusura della connessione al database e restituzione della lista di risultati
+        session.close()
+        return bookings
+
+
+    def get_end_type_bookings(self):
+
+
+        # Query per selezionare i nodi di tipo "Booking" con valore "start"
+        query = (
+            "MATCH (b:Booking) "
+            "WHERE b.type = 'end' "
+            "RETURN id(b) AS id, b.date AS date, b.hour_end AS hour_end, "
+            "b.name_end_stop AS name_end_stop, b.name_start_stop AS name_start_stop, "
+            "b.position_end_stop AS position_end_stop, b.position_start_stop AS position_start_stop, "
+            "b.type AS type"
+        )
+
+        with self.driver.session() as session:
+            # Esecuzione della query
+            result = session.run(query)
+
+            # Creazione della lista di dizionari con i risultati
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["id"],
+                    "date": date(record["date"].year, record["date"].month, record["date"].day),
+                    "hour": (None, time(hour=record["hour_end"].hour, minute=record["hour_end"].minute)),
+                    "name_end_stop": record["name_end_stop"],
+                    "name_start_stop": record["name_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "type": record["type"]
+                }
+                bookings.append(booking)
+
+        # Chiusura della connessione al database e restituzione della lista di risultati
+        session.close()
+        return bookings
+
+    def get_start_end_bookings_with_limit(self, booking_id, limit):
+        query = (
+            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
+            "WHERE id(b) = $booking_id "
+            "WITH collect(DISTINCT booking) as all_bookings, s1 "
+            "UNWIND all_bookings as booking "
+            "MATCH (booking)-[:END_STOP]->(s2:Stop) "
+            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, booking.position_start_stop AS position_start_stop, booking.type AS b_type "
+            "LIMIT $limit"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["b_id"],
+                    "date": date(record["b_day"].year, record["b_day"].month, record["b_day"].day),
+                    "id_s1": record["s1_id"],
+                    "id_s2": record["s2_id"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "type": record["b_type"]
+                }
+                if record["b_type"] == "start":
+                    booking["hour"] = (time(hour=record["b_hs"].hour, minute=record["b_hs"].minute), None)
+                else:
+                    booking["hour"] = (None, time(hour=record["b_he"].hour, minute=record["b_he"].minute))
+                bookings.append(booking)
+
+            # Consuma tutti i record prima di restituire il risultato
+            result.consume()
+
+        # Restituzione della lista di prenotazioni
+        return bookings
+
+    def get_all_bookings(self):
+        return self.get_start_end_bookings() + self.get_end_type_bookings()
+
 
 
     '''def get_person_by_name(self, name):
