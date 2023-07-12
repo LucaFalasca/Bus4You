@@ -128,9 +128,7 @@ def get_path():
     coords = result["features"][0]["geometry"]["coordinates"]
     print(coords)
     coords_reversed = [coord[::-1] for coord in coords]
-    final_ret = {}
-    final_ret["coordinates"] = coords_reversed
-    final_ret["stops"] = true_stops
+    final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
 
 
@@ -139,7 +137,7 @@ def confirm_it():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.confirm_it(it_id)
-        print(ret)
+        #print(ret)
         return json.dumps(ret)
 
 
@@ -148,7 +146,7 @@ def reject_it():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.reject_it(it_id)
-        print(ret)
+        #print(ret)
         return json.dumps(ret)
 
 
@@ -157,7 +155,16 @@ def get_retry_info():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.get_retry_info(it_id)
-        print(ret)
+        #print(ret)
+        return json.dumps(ret)
+
+
+@api.route('/api/get_user_balance', methods=['GET'])
+def get_user_balance():
+    mail = request.args.get('user')
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = proxy.get_user_balance(mail)
+        #print("Gateway balance",ret)
         return json.dumps(ret)
 
 

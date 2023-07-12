@@ -16,6 +16,7 @@ def serve():
     server.register_function(get_retry_info, "get_retry_info")
     server.register_function(get_stops_from_it, "get_stops_from_it")
     server.register_function(insert_it_req, "insert_it_req")
+    server.register_function(get_user_balance, "get_user_balance")
     server.serve_forever()
 
 
@@ -64,6 +65,7 @@ def reject_it(it_id):
     else:
         return {"status": "error"}
 
+
 '''
 route_expiration(DATETIME) è la data di scadenza del percorso
 
@@ -79,6 +81,8 @@ orario_arrivo_proposto(DATETIME), mail_utente(VARCHAR(128)), id_itinerario_richi
 fermata_lat_partenza(DECIMAL(8,6)), fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), 
 fermata_lon_arrivo(DECIMAL(8,6))], ...] -> id_itinerario_richiesto va preso dal db precedentemente
 '''
+
+
 def insert_route_info(route_expiration, order_list, it_list):
     usr_db = DbDao()
     conn = usr_db.connect()
@@ -97,6 +101,7 @@ def get_retry_info(it_id):
     conn.close()
     return json.dumps(it_req_info)
 
+
 def get_stops_from_it(it_id):
     print("HEYLA")
     usr_db = DbDao()
@@ -105,6 +110,7 @@ def get_stops_from_it(it_id):
     conn.close()
     print(stops)
     return json.dumps(stops)
+
 
 '''
 Query per inserire su db un itinerario richiesto, ritorna l'id autoincrementale generato dalla insert
@@ -116,10 +122,18 @@ def insert_it_req(orario, costo_max, mail, fermata_lat_partenza, fermata_lon_par
                   fermata_lon_arrivo, is_start_hour):
     usr_db = DbDao()
     conn = usr_db.connect()
-    it_req_info = usr_db.insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
-                                          fermata_lat_arrivo, fermata_lon_arrivo, is_start_hour)
+    it_req_id = usr_db.insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
+                                     fermata_lat_arrivo, fermata_lon_arrivo, is_start_hour)
     conn.close()
-    return json.dumps(it_req_info)
+    return json.dumps(it_req_id)
+
+
+def get_user_balance(mail):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    balance = usr_db.get_user_balance(conn, mail)
+    conn.close()
+    return json.dumps(balance)
 
 
 if __name__ == "__main__":
@@ -129,5 +143,3 @@ if __name__ == "__main__":
                                         2, 41.648593, 12.431090, 41.654548, 12.427688]]
     insert_route_info("2023-07-11 19:28:00", order_list, it_list)'''
     serve()
-
-

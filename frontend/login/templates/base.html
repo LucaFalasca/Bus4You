@@ -11,10 +11,11 @@
 <body>
     <div id="navbar-div">
         <ul id="navbar-ul">
+            <li id="navbar-li-balance"><button id="navbar-button-balance" onclick="" disabled></button></li>
+            <li id="navbar-li-usr"><button id="navbar-button-usr" onclick="" disabled>{{ session['usr'] }}</button></li>
             <form action="/logout">
                 <li id="navbar-li"><button id="navbar-button" type="submit">Sign Out</button></li>
             </form>
-            <li id="navbar-li"><button id="navbar-button" onclick="">Account</button></li>
             <form action="/loadUserRoutesPage">
                 <li id="navbar-li"><button id="navbar-button" type="submit">My Routes</button></li>
             </form>
@@ -30,4 +31,14 @@
 {% block body %}
 {% endblock %}
 </body>
+<script>
+    var url = "/_get_user_balance"
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.result)
+                var balance = data.result.substring(1,data.result.length-1)
+                document.getElementById("navbar-button-balance").innerHTML = "&#129689;"+balance+" €";
+            })
+</script>
 </html>

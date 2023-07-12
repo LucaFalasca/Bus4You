@@ -231,8 +231,7 @@ class DbDao:
             print("Connection with db successful")
             curs = conn.cursor()
 
-            # insert route
-            print("Inserisco il percorso")
+            # insert request it
             args = (orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
                     fermata_lon_arrivo, is_start_hour)
             curs.callproc('insert_it_req', args)
@@ -244,6 +243,26 @@ class DbDao:
             print("Returned route id: ", req_id)
             conn.commit()
             return req_id
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_user_balance(conn, mail):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # get balance
+            args = (mail, )
+            curs.callproc('get_user_balance', args)
+            res = None
+
+            for result in curs.stored_results():
+                res = result.fetchall()
+            balance = res[0][0]
+            conn.commit()
+            return balance
         else:
             print("Connection with db failed")
             return -1

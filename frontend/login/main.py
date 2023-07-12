@@ -97,6 +97,7 @@ def request_route():
     # print(end_lng)
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
+
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
         return render_template("select_route_from_map.html", bus_stops=bus_stops)
     else:
@@ -105,6 +106,15 @@ def request_route():
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
         return render_template("select_route_from_map.html", bus_stops=bus_stops, response=response)
+
+
+@app.route('/_get_user_balance', methods=['GET'])
+def get_user_balance():
+    mail = session['mail']
+    gateway_get_user_balance_url = 'http://gateway-api:50052/api/get_user_balance?user=' + mail
+    balance = requests.get(gateway_get_user_balance_url).json()
+    session['balance'] = balance
+    return jsonify(result=balance)
 
 
 @app.route('/_get_stops_rect', methods=['GET'])

@@ -11,19 +11,39 @@
 html, body {
     height: 100%;
     background-color: #152733;
-    overflow: visible;
+    overflow: auto;
 }
 
-#navbar-div{
+
+ #navbar-li-balance, #navbar-li-usr{
+     float:right;
+     display: inline;
+     padding-left: 0 !important;
+     padding-top: 5px;
+     padding-bottom: 5px;
+ }
+
+#navbar-div {
     background-color: #1c3c4f;
     overflow: hidden;
-    padding: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-#navbar-li {
+#navbar-li{
     float:right;
     display: inline;
     padding: 5px 5px;
+}
+
+
+#usr, #balance{
+    color: white;
+    font-size: 30px;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
 }
 
 #navbar-button{
@@ -43,6 +63,29 @@ html, body {
     outline: none;
     border-style: solid;
 }
+
+#navbar-button-usr, #navbar-button-balance{
+    text-align: center;
+    width: auto;
+    background-color: #1c3c4f;
+    color: white;
+    padding: 8px 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #1c3c4f;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+}
+#navbar-button-usr:focus, #navbar-button-balance:focus{
+    border-color: #1c3c4f;
+}
+
 
 #navbar-button:hover {
     background-color: #4CAF50;
