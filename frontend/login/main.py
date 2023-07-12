@@ -243,7 +243,7 @@ def reject_book():
         response = requests.get(gateway_reject_book_url).json()
         # print(response)
         if response['status'] == 'ok':
-            flash("Book rejected correctly", category='info')
+            flash("Book rejected correctly, you will receive soon a refund", category='info')
         elif response['status'] == 'error':
             flash("Book rejection failed", category='info')
 

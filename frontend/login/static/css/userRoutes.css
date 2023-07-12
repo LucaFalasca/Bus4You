@@ -166,7 +166,7 @@ label[id^="lbChkBox"]{
 
 button[id^="btnModalRejectClose"]{
     text-align: center;
-    width: 150px;
+    width: 160px;
     background-color: #152733;
     color: red;
     padding: 8px 8px;
@@ -186,7 +186,7 @@ button[id^="btnModalRejectClose"]{
 
 input[id^="btnModalReject"]{
     text-align: center !important;
-    width: 150px !important;
+    width: 160px !important;
     background-color: red !important;
     color: white !important;
     padding: 8px 8px !important;
@@ -218,7 +218,7 @@ input[id^="btnModalReject"]:hover{
 
 button[id^="btnModalConfirmClose"]{
     text-align: center;
-    width: 150px;
+    width: 160px;
     background-color: #152733;
     color: #4a9b4d;
     padding: 8px 8px;
@@ -238,7 +238,7 @@ button[id^="btnModalConfirmClose"]{
 
 input[id^="btnModalConfirm"]{
     text-align: center !important;
-    width: 150px !important;
+    width: 160px !important;
     background-color: #4a9b4d !important;
     color: white !important;
     padding: 8px 8px !important;
