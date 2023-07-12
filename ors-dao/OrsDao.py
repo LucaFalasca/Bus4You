@@ -9,6 +9,7 @@ def getMatrix(nodes):
     body['metrics'] = ['duration']
     
     data = requests.post(url, json = body).json()
+    print(data)
 
     n_nodes = len(nodes)
 
@@ -17,6 +18,27 @@ def getMatrix(nodes):
     for i in range(n_nodes):
         for j in range(n_nodes):
             matrix[i][j] = round(data['durations'][i][j] / 60, 2)
+
+    print(matrix)
+    return matrix
+
+def getMatrixDistance(nodes):
+    url = 'http://ors-app:8080/ors/v2/matrix/driving-car'
+    body = {}
+    body['locations'] = nodes
+    body['metrics'] = ['distance']
+    
+    data = requests.post(url, json = body).json()
+
+    print(data)
+
+    n_nodes = len(nodes)
+
+    matrix = [[0 for j in range(n_nodes)] for i in range(n_nodes)]
+
+    for i in range(n_nodes):
+        for j in range(n_nodes):
+            matrix[i][j] = round(data['distances'][i][j], 2)
 
     print(matrix)
     return matrix
@@ -177,7 +199,8 @@ def make_route_plan(bus_start_position, shipments):
     return data
 
 if __name__ == '__main__':
-    #getMatrix([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
+    #getMatrixKm([[12.527504,41.837339],[12.627504,41.837339],[12.427504,41.837339],[12.527504,41.737339], [12.427504,41.737339]])
+    #getMatrix([[42.051147, 12.374834], [42.029957, 12.448636], [42.02874, 12.375458], [42.032089, 12.469408]]);
     #test_vroom()
     #test_opt()
 
@@ -223,5 +246,6 @@ if __name__ == '__main__':
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Server RPC is ON on port 8000")
     server.register_function(getMatrix, "get_matrix")
+    server.register_function(getMatrixDistance, "get_matrix_distance")
     server.register_function(getGeo, "get_geo")
     server.serve_forever()

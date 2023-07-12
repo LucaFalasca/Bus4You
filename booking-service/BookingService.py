@@ -216,19 +216,56 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
 
 
 def json_to_route_info(json_input):
+    print(json_input)
     order_list = []
     it_list = []
+    nodes = [0 for q in json_input['steps']]
+    print(nodes)
 
     route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
 
+    
     for step in json_input['steps']:
         order_list.append([int(step['id']), step['location'][1], step['location'][0]])
+        nodes[int(step['id'])] = [step['location'][0], step['location'][1]]
 
+    print(nodes)
+    with xmlrpc.client.ServerProxy("http://ors-dao:8000/") as proxy:
+        matrix_distance = proxy.get_matrix_distance(nodes)
+    
+    total_distance = 0
+    for i in range(len(order_list) - 1):
+        total_distance += matrix_distance[order_list[i][0]][order_list[i + 1][0]]
+
+    total_metres = 0 
+    for username, route in json_input['user_routes'].items():
+        metres = matrix_distance[int(route[0])][int(route[1])]
+        total_metres += metres
+
+    lt_per_km = 0.08
+    fuel_price = 1.85
+    price_per_km = lt_per_km * fuel_price
+    #supplemento del costo dovuto al fatto che il 35% delle persone potrebbe rifiutare il percorso
+    supplement_due_refuse = 1.35
+    #supplemento del costo dovuto al fatto che il 50% del costo è profitto
+    supplement_due_profit = 1.5
+    
+    total_price = total_distance /1000 * price_per_km * supplement_due_refuse *supplement_due_profit
+    print("Total distance: " + str(total_distance))
+    print("Total metres: " + str(total_metres))
+    print("Total price: " + str(total_price))
+    
+
+    print(json_input['user_routes'].items())
     for username, route in json_input['user_routes'].items():
         start_stop = json_input['steps'][int(route[0])]
-        end_stop = json_input['steps'][int(route[-1])]
+        end_stop = json_input['steps'][int(route[1])]
+        metres = matrix_distance[int(route[0])][int(route[1])]
+        weight  = metres / total_metres
+        price = total_price * weight
+        print()
         it_list.append(
-            [0, 0, start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username,
+            [round(price, 2), round(metres/1000, 3), start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username,
              1,
              start_stop['location'][1], start_stop['location'][0],
              end_stop['location'][1], end_stop['location'][0]])
@@ -273,9 +310,9 @@ def rabbitMQThread():
 
 
 if __name__ == "__main__":
-    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    some_calls()
-    dao.close()
+    #dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    #some_calls()
+    #dao.close()
 
     prova = {
         "steps": [
@@ -325,17 +362,15 @@ if __name__ == "__main__":
             "persona3": "0:33:00"
         },
         "user_routes": {
-            "prova@gmail.com": [
+            "prova1@gmail.com": [
                 "0",
                 "1"
             ],
-            "prova@gmail.com": [
+            "prova2@gmail.com": [
                 "0",
                 "1"
             ],
-            "prova@gmail.com"
-
-            : [
+            "prova3@gmail.com": [
                 "2",
                 "3"
             ]
