@@ -4,7 +4,7 @@ INSERT INTO b4y_user_db.fermata VALUES ("LAGO MAGGIORE",41.648593,12.431090,NULL
 #Utente
 insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, saldo)
 values("prova@gmail.com", "1234", "prova", "prova", "prova", "2022-07-07", 500.00);
-    insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, saldo)
+insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, saldo)
 values("prova1@gmail.com", "1234", "prova1", "prova1", "prova1", "2022-07-07", 500.00);
 insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, saldo)
 values("prova2@gmail.com", "1234", "prova2", "prova2", "prova2", "2022-07-07", 500.00);

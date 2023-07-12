@@ -244,7 +244,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-11 18:52:13'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-11 18:52:13'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-11 18:52:13'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-11 18:52:14');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',1,'rejected','2023-07-11 19:30:41'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-11 19:30:41'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-11 19:30:41'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-11 19:30:41');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +273,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES ('prova@gmail.com','1234','prova','prova','prova','2022-07-07',0.00);
+INSERT INTO `utente` VALUES ('prova1@gmail.com','1234','prova1','prova1','prova1','2022-07-07',500.00),('prova2@gmail.com','1234','prova2','prova2','prova2','2022-07-07',500.00),('prova3@gmail.com','1234','prova3','prova3','prova3','2022-07-07',500.00),('prova4@gmail.com','1234','prova4','prova4','prova4','2022-07-07',500.00),('prova5@gmail.com','1234','prova5','prova5','prova5','2022-07-07',500.00),('prova@gmail.com','1234','prova','prova','prova','2022-07-07',500.00);
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -441,6 +441,25 @@ SELECT *
 FROM b4y_user_db.fermata as fermata
 WHERE fermata.lat < x AND fermata.lat > x - height
 AND fermata.lon > y AND fermata.lon < y + width;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_user_balance` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_balance`(in user_mail VARCHAR(128))
+BEGIN
+select saldo from b4y_user_db.utente where mail=user_mail;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -671,4 +690,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-11 18:52:29
+-- Dump completed on 2023-07-12 11:32:05
