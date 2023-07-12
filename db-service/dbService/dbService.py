@@ -113,11 +113,11 @@ fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), fermata_lo
 isStartHour(BOOLEAN) 0 se è orario di arrivo, 1 se è orario di partenza
 '''
 def insert_it_req(orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
-                  fermata_lon_arrivo, isStartHour):
+                  fermata_lon_arrivo, is_start_hour):
     usr_db = DbDao()
     conn = usr_db.connect()
     it_req_info = usr_db.insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
-                                          fermata_lat_arrivo, fermata_lon_arrivo, isStartHour)
+                                          fermata_lat_arrivo, fermata_lon_arrivo, is_start_hour)
     conn.close()
     return json.dumps(it_req_info)
 
