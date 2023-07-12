@@ -1,0 +1,65 @@
+.accordion{
+    width: 80% !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+    padding-left: 20px !important;
+}
+
+#gigaDiv{
+    padding-top:20px;
+}
+
+#gigaH2{
+    color: white !important;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+.accordion-collapse{
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+.accordion-button{
+    color: white !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
+.accordion-button:hover, .accordion-button:active, .accordion-button:not(.collapsed){
+    background-color: #4CAF50 !important;
+}
+
+button[id^="btnAcc"]:hover, button[id^="btnAcc"]:active, button[id^="btnAcc"]:not(.collapsed){
+    background-color: #4CAF50 !important;
+}
+
+#btnAttive, #btnPast{
+    font-size: 28px !important;
+    height: 70px !important;
+    background-color: #152733 !important;
+    width : 40% !important;
+}
+
+.accordion-item{
+    border-color: #4CAF50 !important;
+    border-radius: 15px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px !important;
+    background-color: #312626;
+}
+
+div[id^="divAcc"] {
+    border-color: #4CAF50 !important;
+}
+
+.map {
+    height: 100%;
+    border-radius: 7px;
+    border: 1px solid #000000;
+}
+
+
+
+

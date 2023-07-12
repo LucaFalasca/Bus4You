@@ -116,6 +116,15 @@ def get_user_balance():
     session['balance'] = balance
     return jsonify(result=balance)
 
+@app.route('/load_recomended_routes_page', methods=['GET'])
+def load_recomended_routes_page():
+    usr = session['usr']
+    mail = session['mail']
+    #gateway_get_recommended_routes_url = 'http://gateway-api:50052/api/get_recommended_routes?user=' + mail
+    #recommended_routes = requests.get(gateway_get_recommended_routes_url).json()
+    recommended_routes = ['Stringa 1', 'Stringa 2', 'Stringa 3', 'Stringa 4', 'Stringa 5', 'Stringa 6', 'Stringa 7', 'Stringa 8', 'Stringa 9', 'Stringa 10']
+    return render_template("recommended_routes.html", recommended_routes=recommended_routes)
+
 
 @app.route('/_get_stops_rect', methods=['GET'])
 def get_stops_rect():
