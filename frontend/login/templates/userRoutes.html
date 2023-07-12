@@ -11,6 +11,17 @@
     {% endblock %}
 
     {% block body %}
+    <script>
+        var busStopIcon = L.Icon.extend({
+            options: {
+                iconSize:     [60, 60],
+                iconAnchor:   [30, 60]
+            }
+        });
+        var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
+        var busStopIconGreen = new busStopIcon({iconUrl: '/static/resources/bus-stop-green.png' });
+        var busStopIconRed = new busStopIcon({iconUrl: '/static/resources/bus-stop-red.png' });
+    </script>
         <div class="accordion" id="accAttive">
           <div id="accItmAttive" class="accordion-item">
             <h1 class="accordion-header " id="headingAttive">
@@ -48,7 +59,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
                                         <script>
-                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -57,10 +68,70 @@
                                             }).addTo(map{{ present_routes.index(route) }});
 
 
-                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
-                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
-                                              map{{ present_routes.index(route) }}.invalidateSize();
-                                            })
+                                            var myCollapsible{{ present_routes.index(route) }} = document.getElementById('acc{{ present_routes.index(route) }}');
+                                            myCollapsible{{ present_routes.index(route) }}.addEventListener('shown.bs.collapse', function () {
+
+
+                                                var data_in = {{ route.getItId() }};
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ present_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ present_routes.index(route) }});
+
+                                                        map{{ present_routes.index(route) }}.invalidateSize();
+
+                                                        map{{ present_routes.index(route) }}.fitBounds(path{{ present_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map{{ present_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
 
                                         </script>
                                     </div>
@@ -166,7 +237,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
                                         <script>
-                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -174,10 +245,71 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map{{ present_routes.index(route) }});
 
-                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
-                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
-                                              map{{ present_routes.index(route) }}.invalidateSize();
-                                            })
+
+                                            var myCollapsible{{ present_routes.index(route) }} = document.getElementById('acc{{ present_routes.index(route) }}');
+                                            myCollapsible{{ present_routes.index(route) }}.addEventListener('shown.bs.collapse', function () {
+
+
+                                                var data_in = {{ route.getItId() }};
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ present_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ present_routes.index(route) }});
+
+                                                        map{{ present_routes.index(route) }}.invalidateSize();
+
+                                                        map{{ present_routes.index(route) }}.fitBounds(path{{ present_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map{{ present_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
 
                                         </script>
                                     </div>
@@ -287,7 +419,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
                                         <script>
-                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -296,12 +428,72 @@
                                             }).addTo(map{{ present_routes.index(route) }});
 
 
+                                            var myCollapsible{{ present_routes.index(route) }} = document.getElementById('acc{{ present_routes.index(route) }}');
+                                            myCollapsible{{ present_routes.index(route) }}.addEventListener('shown.bs.collapse', function () {
 
 
-                                            var myCollapsible = document.getElementById('acc{{ present_routes.index(route) }}')
-                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
-                                              map{{ present_routes.index(route) }}.invalidateSize();
-                                            })
+                                                var data_in = {{ route.getItId() }};
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ present_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ present_routes.index(route) }});
+
+                                                        map{{ present_routes.index(route) }}.invalidateSize();
+
+                                                        map{{ present_routes.index(route) }}.fitBounds(path{{ present_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map{{ present_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
+
+                                            
 
                                         </script>
                                     </div>
@@ -336,7 +528,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map{{ present_routes.index(route) }}"></div>
                                         <script>
-                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map{{ present_routes.index(route) }} = L.map('map{{ present_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -345,12 +537,70 @@
                                             }).addTo(map{{ present_routes.index(route) }});
 
 
+                                            var myCollapsible{{ present_routes.index(route) }} = document.getElementById('acc{{ present_routes.index(route) }}');
+                                            myCollapsible{{ present_routes.index(route) }}.addEventListener('shown.bs.collapse', function () {
 
 
-                                            var myCollapsible = document.getElementById('acc{{present_routes.index(route) }}')
-                                            myCollapsible.addEventListener('shown.bs.collapse', function () {
-                                              map{{present_routes.index(route) }}.invalidateSize();
-                                            })
+                                                var data_in = {{ route.getItId() }};
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ present_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ present_routes.index(route) }});
+
+                                                        map{{ present_routes.index(route) }}.invalidateSize();
+
+                                                        map{{ present_routes.index(route) }}.fitBounds(path{{ present_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map{{ present_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map{{ present_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
 
 
 
@@ -407,7 +657,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
                                         <script>
-                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -415,10 +665,70 @@
                                                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
-                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}');
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                              map_past{{ past_routes.index(route) }}.invalidateSize();
-                                            })
+
+
+                                                var data_in = {{ route.getItId() }};
+
+                                                fetch('/_get_path', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(data_in),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
+
+                                                        map_past{{ past_routes.index(route) }}.invalidateSize();
+
+                                                        map_past{{ past_routes.index(route) }}.fitBounds(path{{ past_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
 
                                         </script>
                                     </div>
@@ -454,7 +764,7 @@
                                     <div class="col-sm-6">
                                         <div class="map" id="map_past{{ past_routes.index(route) }}"></div>
                                         <script>
-                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+                                            var map_past{{ past_routes.index(route) }} = L.map('map_past{{ past_routes.index(route) }}');
 
 
                                             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -464,24 +774,71 @@
 
                                             console.log("sto qua")
 
-                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
-                                            myCollapsible_past.addEventListener('shown.bs.collapse', function () {
-                                                console.log("sto qua")
-                                                map_past{{ past_routes.index(route) }}.invalidateSize();
 
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}');
+                                            myCollapsible_past.addEventListener('shown.bs.collapse', function () {
+
+
+                                                var data_in = {{ route.getItId() }};
 
                                                 fetch('/_get_path', {
                                                       method: 'POST',
-                                                      body: JSON.stringify({data: 'Hello, world!'}),
+                                                      body: JSON.stringify(data_in),
                                                       headers: {
                                                         'Content-Type': 'application/json'
                                                       }
                                                     })
                                                     .then(response => response.json())
                                                     .then(data => {
-                                                        console.log(data)
-                                                    })
-                                            })
+                                                        console.log(data.result)
+                                                        console.log(data.result["coordinates"])
+                                                        var path{{ past_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map_past{{ past_routes.index(route) }});
+
+                                                        map_past{{ past_routes.index(route) }}.invalidateSize();
+
+                                                        map_past{{ past_routes.index(route) }}.fitBounds(path{{ past_routes.index(route) }}.getBounds());
+
+                                                        bus_stops = data.result["stops"]
+
+                                                        console.log(bus_stops)
+
+                                                        var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
+
+                                                        var c = 0;
+                                                        bus_stops.forEach(function(bus_stop) {
+                                                            c++;
+                                                            console.log("ao" + bus_stop)
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            marker.addTo(markersLayer);
+                                                        });  
+                                                    });
+
+                                            });
 
 
                                         </script>
@@ -527,19 +884,11 @@
                                             }).addTo(map_past{{ past_routes.index(route) }});
 
 
-                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}')
+                                            var myCollapsible_past = document.getElementById('acc{{ past_routes.index(route) }}');
                                             myCollapsible_past.addEventListener('shown.bs.collapse', function () {
 
 
                                                 var data_in = {{ route.getItId() }};
-
-                                                var busStopIcon = L.Icon.extend({
-                                                    options: {
-                                                        iconSize:     [60, 60],
-                                                        iconAnchor:   [30, 60]
-                                                    }
-                                                });
-                                                var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
 
                                                 fetch('/_get_path', {
                                                       method: 'POST',
@@ -564,21 +913,41 @@
 
                                                         var markersLayer = L.featureGroup().addTo(map_past{{ past_routes.index(route) }});
 
+                                                        var c = 0;
                                                         bus_stops.forEach(function(bus_stop) {
+                                                            c++;
                                                             console.log("ao" + bus_stop)
-                                                            if(bus_stop == bus_stops[0]){}
-                                                            var marker = L.marker([bus_stop[1], bus_stop[0]], {
-                                                                icon: busStopIconBlue,
-                                                                title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
-                                                            }).addTo(map_past{{ past_routes.index(route) }});
-                                                            marker.bindTooltip("name", {
-                                                                offset: L.point(0, -50)
-                                                            });
+                                                            if(bus_stop == bus_stops[0]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconGreen,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
+                                                            else if(bus_stop == bus_stops[bus_stops.length - 1]){
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconRed,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata " + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            } else{
+                                                                var marker = L.marker([bus_stop[1], bus_stop[0]], {
+                                                                    icon: busStopIconBlue,
+                                                                    title: "(" + bus_stop[1] + "," + bus_stop[0] + ")"
+                                                                }).addTo(map_past{{ past_routes.index(route) }});
+                                                                marker.bindTooltip("Fermata" + c, {
+                                                                    offset: L.point(0, -50)
+                                                                });
+                                                            }
                                                             marker.addTo(markersLayer);
                                                         });  
-                                                    })
+                                                    });
 
-                                            })
+                                            });
 
                                         </script>
                                     </div>
