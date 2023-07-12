@@ -223,3 +223,27 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
+                      fermata_lat_arrivo, fermata_lon_arrivo, isStartHour):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # insert route
+            print("Inserisco il percorso")
+            args = (orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
+                    fermata_lon_arrivo, isStartHour)
+            curs.callproc('insert_it_req', args)
+            res = None
+            # get output parameter value which is the auto incremental generated route id
+            for result in curs.stored_results():
+                res = result.fetchall()
+            req_id = res[0][0]
+            print("Returned route id: ", req_id)
+            conn.commit()
+            return req_id
+        else:
+            print("Connection with db failed")
+            return -1

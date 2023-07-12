@@ -15,6 +15,7 @@ def serve():
     server.register_function(insert_route_info, "insert_route_info")
     server.register_function(get_retry_info, "get_retry_info")
     server.register_function(get_stops_from_it, "get_stops_from_it")
+    server.register_function(insert_it_req, "insert_it_req")
     server.serve_forever()
 
 
@@ -104,6 +105,21 @@ def get_stops_from_it(it_id):
     conn.close()
     print(stops)
     return json.dumps(stops)
+
+'''
+Query per inserire su db un itinerario richiesto, ritorna l'id autoincrementale generato dalla insert
+orario(DATETIME), costo_max(DECIMAL(6,2)), mail_utente(VARCHAR(128)), fermata_lat_partenza(DECIMAL(8,6)),
+fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), fermata_lon_arrivo(DECIMAL(8,6)), 
+isStartHour(BOOLEAN) 0 se è orario di arrivo, 1 se è orario di partenza
+'''
+def insert_it_req(orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
+                  fermata_lon_arrivo, isStartHour):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    it_req_info = usr_db.insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
+                                          fermata_lat_arrivo, fermata_lon_arrivo, isStartHour)
+    conn.close()
+    return json.dumps(it_req_info)
 
 
 if __name__ == "__main__":
