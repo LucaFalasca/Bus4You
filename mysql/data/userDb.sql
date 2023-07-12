@@ -1,10 +1,10 @@
-CREATE DATABASE  IF NOT EXISTS `b4y_user_db` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `b4y_user_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `b4y_user_db`;
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: localhost    Database: b4y_user_db
+-- Host: 127.0.0.1    Database: b4y_user_db
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `cashback` (
   PRIMARY KEY (`utente`),
   KEY `fk_utente_cb_idx` (`utente`),
   CONSTRAINT `fk_utente_cb` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `fermata` (
   `lon` decimal(8,6) NOT NULL,
   `indirizzo` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`lat`,`lon`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +104,7 @@ CREATE TABLE `itinerario_proposto` (
   CONSTRAINT `fk_itinerario_richiesto_id_prop` FOREIGN KEY (`itinerario_richiesto`) REFERENCES `itinerario_richiesto` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_user_prop` FOREIGN KEY (`utente`) REFERENCES `itinerario_richiesto` (`utente`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_prop` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `itinerario_proposto` (
 
 LOCK TABLES `itinerario_proposto` WRITE;
 /*!40000 ALTER TABLE `itinerario_proposto` DISABLE KEYS */;
-INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'rejected','prova@gmail.com',1,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(6,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(7,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(8,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(25,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,4,41.648593,12.431090,41.658425,12.422922),(26,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(27,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(28,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(29,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(30,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(31,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(32,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817);
+INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(6,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(7,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(8,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(25,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,4,41.648593,12.431090,41.658425,12.422922),(26,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(27,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(28,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(29,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(30,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(31,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(32,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817);
 /*!40000 ALTER TABLE `itinerario_proposto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +142,7 @@ CREATE TABLE `itinerario_richiesto` (
   CONSTRAINT `fk_itinerario_richiesto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_req` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +172,7 @@ CREATE TABLE `ordinamento` (
   KEY `fk_ordinamento_fermata1_idx` (`fermata_lat`,`fermata_lon`),
   CONSTRAINT `fk_ordinamento_fermata1` FOREIGN KEY (`fermata_lat`, `fermata_lon`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_ord` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +208,7 @@ CREATE TABLE `pagamento` (
   CONSTRAINT `fk_itinerario_proposto_req_pay` FOREIGN KEY (`itinerario_richiesto`) REFERENCES `itinerario_proposto` (`itinerario_richiesto`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_proposto_route_pay` FOREIGN KEY (`percorso`) REFERENCES `itinerario_proposto` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +235,7 @@ CREATE TABLE `percorso` (
   `tmstmp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_archiviato_route` (`archiviato`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',1,'rejected','2023-07-11 19:30:41'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-11 19:30:41'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-11 19:30:41'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-11 19:30:41');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-12 20:47:34'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-12 20:47:34'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-12 20:47:35'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-12 20:47:35');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,7 +264,7 @@ CREATE TABLE `utente` (
   `data_nascita` date NOT NULL,
   `saldo` decimal(6,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`mail`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +273,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES ('prova1@gmail.com','1234','prova1','prova1','prova1','2022-07-07',500.00),('prova2@gmail.com','1234','prova2','prova2','prova2','2022-07-07',500.00),('prova3@gmail.com','1234','prova3','prova3','prova3','2022-07-07',500.00),('prova4@gmail.com','1234','prova4','prova4','prova4','2022-07-07',500.00),('prova5@gmail.com','1234','prova5','prova5','prova5','2022-07-07',500.00),('prova@gmail.com','1234','prova','prova','prova','2022-07-07',505.00);
+INSERT INTO `utente` VALUES ('prova@gmail.com','1234','prova','prova','prova','2022-07-07',0.00);
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,6 +301,63 @@ SET itinerario_proposto.stato='confirmed'
 WHERE itinerario_proposto.id=id;
 select utente, costo from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo;
 call pay(@utente, @costo);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_future_confirmed_routes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_future_confirmed_routes`()
+BEGIN
+	CREATE VIEW route_ids AS
+	SELECT DISTINCT percorso.id
+			FROM percorso, ordinamento, itinerario_proposto
+			WHERE percorso.stato = 'confirmed'
+				AND ordinamento.percorso = percorso.id
+				AND ordinamento.numero = 1
+				AND archiviato = 1
+				AND itinerario_proposto.fermata_lat_partenza = ordinamento.fermata_lat
+				AND itinerario_proposto.fermata_lon_partenza = ordinamento.fermata_lon
+				AND itinerario_proposto.percorso = percorso.id
+				AND itinerario_proposto.orario_partenza_proposto < NOW();
+
+	SELECT it1.percorso,
+			o1.numero, 
+			o1.fermata_lat,
+			o1.fermata_lon,
+			it1.orario_partenza_proposto as timestamp_node,
+			COUNT(it1.id) as climb_up,
+			0 as climb_down
+	FROM itinerario_proposto as it1, ordinamento as o1
+	WHERE it1.percorso in (SELECT * FROM route_ids)
+		AND it1.fermata_lat_partenza = o1.fermata_lat
+		AND it1.fermata_lon_partenza = o1.fermata_lon
+		AND o1.percorso in (SELECT * FROM route_ids)
+	GROUP BY numero
+	UNION ALL
+	SELECT it1.percorso,
+			o1.numero, 
+			o1.fermata_lat,
+			o1.fermata_lon,
+			it1.orario_arrivo_proposto as timestamp_node,
+			0 as climb_up,
+			COUNT(it1.id) as climb_down
+	FROM itinerario_proposto as it1, ordinamento as o1
+	WHERE it1.percorso in (SELECT * FROM route_ids)
+		AND it1.fermata_lat_arrivo = o1.fermata_lat
+		AND it1.fermata_lon_arrivo = o1.fermata_lon
+		AND o1.percorso in (SELECT * FROM route_ids)
+	GROUP BY numero;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -742,4 +799,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-12 18:57:39
+-- Dump completed on 2023-07-12 21:48:23
