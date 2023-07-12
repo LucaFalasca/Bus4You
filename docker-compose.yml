@@ -188,6 +188,17 @@ services:
     depends_on:
       ors-app:
         condition: service_started
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      gateway-api:
+        condition: service_started
 #networks:
   #backend-net:
     #name: backend-net

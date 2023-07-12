@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
 import requests
-from frontend.login.utils.json_parser import parse_user_routes_json
+from utils.json_parser import parse_user_routes_json
 
 app = Flask(__name__)
 app.secret_key = '1234 bianchi legge questo e si sente male'
@@ -26,7 +26,7 @@ def login():
         flash('Login failed some required fields are empty')
         return render_template("login.html")
     else:
-        gateway_login_url = 'http://localhost:50052/api/login?usr=' + mail + '&pwd=' + pwd
+        gateway_login_url = 'http://gateway-api:50052/api/login?usr=' + mail + '&pwd=' + pwd
         response = requests.get(gateway_login_url).json()
         if response['message'] == 'Login successful':
             session['logged'] = True
@@ -59,7 +59,7 @@ def signUp():
         flash('Signup failed some required fields are empty')
         return render_template("signUp.html")
     else:
-        gateway_sign_up_url = 'http://localhost:50052/api/sign-up?name=' + name + '&surname=' + surname + '&mail=' + mail + '&pwd=' + pwd + '&usr=' + username + '&birthdate=' + birthdate
+        gateway_sign_up_url = 'http://gateway-api:50052/api/sign-up?name=' + name + '&surname=' + surname + '&mail=' + mail + '&pwd=' + pwd + '&usr=' + username + '&birthdate=' + birthdate
         response = requests.get(gateway_sign_up_url).json()
         if response['message'] == 'Sign Up successful':
             flash('Sign Up successful now you can access with your credentials', category='info')
@@ -95,12 +95,12 @@ def request_route():
     # print(start_lng)
     # print(end_lat)
     # print(end_lng)
-    gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops'
+    gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
         return render_template("select_route_from_map.html", bus_stops=bus_stops)
     else:
-        gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
+        gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
         response = requests.get(gateway_request_route_url).json()
         session['user_routes'] = response
@@ -113,7 +113,7 @@ def get_stops_rect():
     y = request.args.get('y')
     height = request.args.get('height')
     width = request.args.get('width')
-    gateway_get_bus_stops_url = 'http://localhost:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
+    gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
     print(gateway_get_bus_stops_url)
     # print(requests.get(gateway_get_bus_stops_url))
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
@@ -125,7 +125,7 @@ def get_path():
     data = request.get_json()
     print(data)
 
-    url = 'http://localhost:50052/api/get_path'
+    url = 'http://gateway-api:50052/api/get_path'
     body = data
 
     result = requests.post(url, json=body).json()
@@ -139,7 +139,7 @@ def load_user_routes_page():
         usr = session['usr']
         mail = session['mail']
         # token = session['token']
-        gateway_load_user_routes_url = 'http://localhost:50052/api/load_user_routes?mail=' + mail
+        gateway_load_user_routes_url = 'http://gateway-api:50052/api/load_user_routes?mail=' + mail
         response = requests.get(gateway_load_user_routes_url).json()
         user_routes = parse_user_routes_json(response)
         present_routes = []
@@ -171,7 +171,7 @@ def reject_book():
     # REJECT E RIMETTO IN CODA
     if data_len == 11:  # la submit non mette il valore della checkbox nella request solo se è spuntata quindi ho un parametro in più
         it_id = str(parsed_data[1][1])
-        gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
+        gateway_reject_book_url = 'http://gateway-api:50052/api/reject_it?it_id=' + it_id
         response = requests.get(gateway_reject_book_url).json()
         # print(response)
         if response['status'] == 'error':
@@ -179,7 +179,7 @@ def reject_book():
         elif response['status'] == 'ok':
             flash("Book rejected correctly", category='info')
             print("Rimetto in coda")
-            gateway_requeue_url = 'http://localhost:50052/api/get_retry_info?it_id=' + it_id
+            gateway_requeue_url = 'http://gateway-api:50052/api/get_retry_info?it_id=' + it_id
             response = json.loads(requests.get(gateway_requeue_url).json())[0]
             print(response)
             mail = response[4]
@@ -207,7 +207,7 @@ def reject_book():
                 date = date_obj.date()
                 time = date_obj.time()
 
-            gateway_request_route_url = 'http://localhost:50052/api/route-from-map?user=' + mail + '&starting_point=' + \
+            gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + \
                                         starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + \
                                         '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
                                         '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
@@ -220,7 +220,7 @@ def reject_book():
     else:
         print("Non rimetto in coda")
         it_id = str(parsed_data[0][1])
-        gateway_reject_book_url = 'http://localhost:50052/api/reject_it?it_id=' + it_id
+        gateway_reject_book_url = 'http://gateway-api:50052/api/reject_it?it_id=' + it_id
         response = requests.get(gateway_reject_book_url).json()
         # print(response)
         if response['status'] == 'ok':
@@ -240,7 +240,7 @@ def confirm_book():
         # print("Key: \n\t" + elem[0])
         # print("Value: \n\t" + elem[1])
     it_id = parsed_data[0][1]
-    gateway_confirm_book_url = 'http://localhost:50052/api/confirm_it?it_id=' + it_id
+    gateway_confirm_book_url = 'http://gateway-api:50052/api/confirm_it?it_id=' + it_id
     response = requests.get(gateway_confirm_book_url).json()
     # print(response)
     if response['status'] == 'ok':
@@ -251,4 +251,4 @@ def confirm_book():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

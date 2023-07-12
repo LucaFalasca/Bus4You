@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from frontend.login.entity.user_route import UserRoute
+from entity.user_route import UserRoute
 
 
 def parse_user_routes_json(response):
