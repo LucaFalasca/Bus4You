@@ -17,6 +17,7 @@ def serve():
     server.register_function(get_stops_from_it, "get_stops_from_it")
     server.register_function(insert_it_req, "insert_it_req")
     server.register_function(get_user_balance, "get_user_balance")
+    server.register_function(get_future_confirmed_routes, "get_future_confirmed_routes")
     server.serve_forever()
 
 
@@ -135,6 +136,15 @@ def get_user_balance(mail):
     conn.close()
     return json.dumps(balance)
 
+def get_future_confirmed_routes():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    routes = usr_db.get_future_confirmed_routes_query(conn)
+    conn.close()
+    return json.dumps(routes)
+
+
+
 
 if __name__ == "__main__":
     '''order_list = [[1, 41.648593, 12.431090], [2, 41.654548, 12.427688]]
@@ -142,4 +152,5 @@ if __name__ == "__main__":
                 41.654548, 12.427688], [10.5, 20.52, "2023-05-05 12:00:00", "2023-05-05 12:30:00", "prova@gmail.com",
                                         2, 41.648593, 12.431090, 41.654548, 12.427688]]
     insert_route_info("2023-07-11 19:28:00", order_list, it_list)'''
+    print(get_future_confirmed_routes())
     serve()

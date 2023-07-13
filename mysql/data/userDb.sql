@@ -244,7 +244,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-12 20:47:34'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-12 20:47:34'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-12 20:47:35'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-12 20:47:35');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-13 08:29:12'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-13 08:29:12'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-13 08:29:12'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-13 08:29:12');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,6 +319,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_future_confirmed_routes`()
 BEGIN
+	DROP VIEW IF EXISTS route_ids;
 	CREATE VIEW route_ids AS
 	SELECT DISTINCT percorso.id
 			FROM percorso, ordinamento, itinerario_proposto
@@ -333,9 +334,9 @@ BEGIN
 
 	SELECT it1.percorso,
 			o1.numero, 
-			o1.fermata_lat,
-			o1.fermata_lon,
-			it1.orario_partenza_proposto as timestamp_node,
+			ANY_VALUE(o1.fermata_lat),
+			ANY_VALUE(o1.fermata_lon),
+			ANY_VALUE(it1.orario_partenza_proposto) as timestamp_node,
 			COUNT(it1.id) as climb_up,
 			0 as climb_down
 	FROM itinerario_proposto as it1, ordinamento as o1
@@ -343,13 +344,13 @@ BEGIN
 		AND it1.fermata_lat_partenza = o1.fermata_lat
 		AND it1.fermata_lon_partenza = o1.fermata_lon
 		AND o1.percorso in (SELECT * FROM route_ids)
-	GROUP BY numero
+	GROUP BY o1.numero, o1.percorso, it1.percorso
 	UNION ALL
 	SELECT it1.percorso,
 			o1.numero, 
-			o1.fermata_lat,
-			o1.fermata_lon,
-			it1.orario_arrivo_proposto as timestamp_node,
+			ANY_VALUE(o1.fermata_lat),
+			ANY_VALUE(o1.fermata_lon),
+			ANY_VALUE(it1.orario_arrivo_proposto) as timestamp_node,
 			0 as climb_up,
 			COUNT(it1.id) as climb_down
 	FROM itinerario_proposto as it1, ordinamento as o1
@@ -357,7 +358,10 @@ BEGIN
 		AND it1.fermata_lat_arrivo = o1.fermata_lat
 		AND it1.fermata_lon_arrivo = o1.fermata_lon
 		AND o1.percorso in (SELECT * FROM route_ids)
-	GROUP BY numero;
+	GROUP BY o1.numero, o1.percorso, it1.percorso;
+    
+    DROP VIEW IF EXISTS route_ids;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -799,4 +803,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-12 21:48:23
+-- Dump completed on 2023-07-13  9:29:49
