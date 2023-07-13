@@ -2,7 +2,7 @@ import json
 
 import pika
 import xmlrpc.server
-
+import xmlrpc.client
 from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import WGS84Point
 from Neo4jDAO_BS import *
@@ -160,7 +160,7 @@ che se si hanno più consumer per lo stesso messaggio occorre creare una coda pe
 gli stessi messaggi'''
 
 
-def init_rabbit_mq_queues():
+def init_rabbit_mq_notify_queues():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
                                                                    blocked_connection_timeout=3600))
     channel = connection.channel()
@@ -208,8 +208,9 @@ def test_rabbitMq(channel):
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish,
                    time):
-    if(start_or_finish == "start"):
-        create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
+    if (start_or_finish == "start"):
+        create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
+                                  end_lng)
     else:
         create_booking_type_end(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
@@ -224,7 +225,6 @@ def json_to_route_info(json_input):
 
     route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
 
-    
     for step in json_input['steps']:
         order_list.append([int(step['id']), step['location'][1], step['location'][0]])
         nodes[int(step['id'])] = [step['location'][0], step['location'][1]]
@@ -232,12 +232,12 @@ def json_to_route_info(json_input):
     print(nodes)
     with xmlrpc.client.ServerProxy("http://ors-dao:8000/") as proxy:
         matrix_distance = proxy.get_matrix_distance(nodes)
-    
+
     total_distance = 0
     for i in range(len(order_list) - 1):
         total_distance += matrix_distance[order_list[i][0]][order_list[i + 1][0]]
 
-    total_metres = 0 
+    total_metres = 0
     for username, route in json_input['user_routes'].items():
         metres = matrix_distance[int(route[0])][int(route[1])]
         total_metres += metres
@@ -245,27 +245,27 @@ def json_to_route_info(json_input):
     lt_per_km = 0.08
     fuel_price = 1.85
     price_per_km = lt_per_km * fuel_price
-    #supplemento del costo dovuto al fatto che il 35% delle persone potrebbe rifiutare il percorso
+    # supplemento del costo dovuto al fatto che il 35% delle persone potrebbe rifiutare il percorso
     supplement_due_refuse = 1.35
-    #supplemento del costo dovuto al fatto che il 50% del costo è profitto
+    # supplemento del costo dovuto al fatto che il 50% del costo è profitto
     supplement_due_profit = 1.5
-    
-    total_price = total_distance /1000 * price_per_km * supplement_due_refuse *supplement_due_profit
+
+    total_price = total_distance / 1000 * price_per_km * supplement_due_refuse * supplement_due_profit
     print("Total distance: " + str(total_distance))
     print("Total metres: " + str(total_metres))
     print("Total price: " + str(total_price))
-    
 
     print(json_input['user_routes'].items())
     for username, route in json_input['user_routes'].items():
         start_stop = json_input['steps'][int(route[0])]
         end_stop = json_input['steps'][int(route[1])]
         metres = matrix_distance[int(route[0])][int(route[1])]
-        weight  = metres / total_metres
+        weight = metres / total_metres
         price = total_price * weight
         print()
         it_list.append(
-            [round(price, 2), round(metres/1000, 3), start_stop['date'] + " " + start_stop['time'], end_stop['date'] + " " + end_stop['time'], username,
+            [round(price, 2), round(metres / 1000, 3), start_stop['date'] + " " + start_stop['time'],
+             end_stop['date'] + " " + end_stop['time'], username,
              1,
              start_stop['location'][1], start_stop['location'][0],
              end_stop['location'][1], end_stop['location'][0]])
@@ -278,9 +278,24 @@ def propose_route_callback(ch, method, properties, body):
     print("Received prepared routes message: \n" + json.dumps(json_return))
 
     route_expiration, order_list, it_list = json_to_route_info(json_return)
-
+    res = None
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        proxy.insert_route_info(route_expiration, order_list, it_list)
+        res = proxy.insert_route_info(route_expiration, order_list, it_list)
+    if res['status'] == "ok":
+        print("Route info inserted correctly")
+        for elem in it_list:
+            with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+                start_stop = json.loads(proxy.get_stop_name_from_coords(6, 7))
+            with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+                end_stop = json.loads(proxy.get_stop_name_from_coords(8, 9))
+            message = {'route_expiration': route_expiration, 'mail': elem[4], 'it_cost': elem[0],
+                       'it_distance': elem[1], 'it_departure_time': elem[2], 'it_arrival_time': elem[3],
+                       'it_departure_stop': start_stop, 'it_arrival_stop': end_stop}
+            # create queues for rabbitMq the channel has to be passed as parameter to publish function
+            notify_channel = init_rabbit_mq_notify_queues()  # queue_connection va ammmazzata quando non serve piu
+            # test_rabbitMq(queue_channel)
+            publish_message_on_queue(json.dumps(message), 'preparedRoutes1', notify_channel)
+            notify_channel.close()
 
 
 def serverRPCThread():
@@ -291,10 +306,6 @@ def serverRPCThread():
 
 
 def rabbitMQThread():
-    # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    # test_rabbitMq(queue_channel)
-
     # Coda da consumer per ricevere i messaggi di makeRouteService
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
                                                                    blocked_connection_timeout=3600))
@@ -310,9 +321,9 @@ def rabbitMQThread():
 
 
 if __name__ == "__main__":
-    #dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    #some_calls()
-    #dao.close()
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    some_calls()
+    dao.close()
 
     prova = {
         "steps": [

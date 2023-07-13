@@ -285,3 +285,23 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def get_stop_name_from_coords(conn, lat, lon):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # get balance
+            args = (lat, lon)
+            curs.callproc('get_stop_name_from_coordinates', args)
+            res = None
+
+            for result in curs.stored_results():
+                res = result.fetchall()
+            stop_name = res[0][0]
+            conn.commit()
+            return stop_name
+        else:
+            print("Connection with db failed")
+            return -1
