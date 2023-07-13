@@ -67,7 +67,7 @@ PROPOSE_ROUTE_QUEUE = 'propose_route'
 '''
 
 
-def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
                             position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -88,7 +88,7 @@ def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour
         return
 
 
-def create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                               position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -208,11 +208,15 @@ def test_rabbitMq(channel):
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish,
                    time):
-    if (start_or_finish == "start"):
-        create_booking_type_start(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
+    if start_or_finish == "start":
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            it_id = json.loads(proxy.insert_it_req(date + " " + time, 0.0, user, start_lat, start_lng, end_lat, end_lng, 1))
+        create_booking_type_start(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
                                   end_lng)
     else:
-        create_booking_type_end(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            it_id = json.loads(proxy.insert_it_req(date + " " + time, 0.0, user, start_lat, start_lng, end_lat, end_lng, 0))
+        create_booking_type_end(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
     return True
 
 
@@ -283,19 +287,21 @@ def propose_route_callback(ch, method, properties, body):
         res = proxy.insert_route_info(route_expiration, order_list, it_list)
     if res['status'] == "ok":
         print("Route info inserted correctly")
+        message_list= []
         for elem in it_list:
             with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-                start_stop = json.loads(proxy.get_stop_name_from_coords(6, 7))
+                start_stop = json.loads(proxy.get_stop_name_from_coords(elem[6], elem[7]))
             with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-                end_stop = json.loads(proxy.get_stop_name_from_coords(8, 9))
+                end_stop = json.loads(proxy.get_stop_name_from_coords(elem[8], elem[9]))
             message = {'route_expiration': route_expiration, 'mail': elem[4], 'it_cost': elem[0],
                        'it_distance': elem[1], 'it_departure_time': elem[2], 'it_arrival_time': elem[3],
                        'it_departure_stop': start_stop, 'it_arrival_stop': end_stop}
-            # create queues for rabbitMq the channel has to be passed as parameter to publish function
-            notify_channel = init_rabbit_mq_notify_queues()  # queue_connection va ammmazzata quando non serve piu
-            # test_rabbitMq(queue_channel)
-            publish_message_on_queue(json.dumps(message), 'preparedRoutes1', notify_channel)
-            notify_channel.close()
+            message_list.append(message)
+        # create queues for rabbitMq the channel has to be passed as parameter to publish function
+        notify_channel = init_rabbit_mq_notify_queues()  # queue_connection va ammmazzata quando non serve piu
+        # test_rabbitMq(queue_channel)
+        publish_message_on_queue(json.dumps(message_list), 'preparedRoutes1', notify_channel)
+        notify_channel.close()
 
 
 def serverRPCThread():
