@@ -14,13 +14,19 @@ html, body {
     overflow: auto;
 }
 
-
  #navbar-li-balance, #navbar-li-usr{
      float:right;
-     display: inline;
+     display: inline-block;
      padding-left: 0 !important;
      padding-top: 5px;
      padding-bottom: 5px;
+ }
+
+#navbar-li-logo{
+     float:left;
+     display: inline-block;
+     width: 30%;
+     height: auto;
  }
 
 #navbar-div {
@@ -33,7 +39,7 @@ html, body {
 
 #navbar-li{
     float:right;
-    display: inline;
+    display: inline-block;
     padding: 5px 5px;
 }
 
