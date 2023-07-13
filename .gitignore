@@ -21,3 +21,4 @@ ors/logs/
 ors/centro-latest.osm.pbf
 vroom/conf/access.log
 node-selector-service/__pycache__/
+notify-service/notifyService/credentials/
