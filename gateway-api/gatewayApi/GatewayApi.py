@@ -131,6 +131,26 @@ def get_path():
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
 
+@api.route('/api/get_path_from_stops', methods=['POST'])
+def get_path_from_stops():
+    stops = request.get_json()
+    print(stops)
+    url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
+    body = {}
+    print(stops)
+    true_stops = [[float(s[1]), float(s[0])] for s in stops]
+    body['coordinates'] = true_stops
+    
+    print("CIAOO")
+    print(body)
+    result = requests.post(url, json=body).json()
+    print(result)
+    coords = result["features"][0]["geometry"]["coordinates"]
+    print(coords)
+    coords_reversed = [coord[::-1] for coord in coords]
+    final_ret = {"coordinates": coords_reversed, "stops": true_stops}
+    return json.dumps(final_ret)
+
 
 @api.route('/api/confirm_it', methods=['GET'])
 def confirm_it():
