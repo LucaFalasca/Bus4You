@@ -120,9 +120,10 @@ def get_user_balance():
 def load_recomended_routes_page():
     usr = session['usr']
     mail = session['mail']
-    #gateway_get_recommended_routes_url = 'http://gateway-api:50052/api/get_recommended_routes?user=' + mail
-    #recommended_routes = requests.get(gateway_get_recommended_routes_url).json()
-    recommended_routes = ['Stringa 1', 'Stringa 2', 'Stringa 3', 'Stringa 4', 'Stringa 5', 'Stringa 6', 'Stringa 7', 'Stringa 8', 'Stringa 9', 'Stringa 10']
+    gateway_get_recommended_routes_url = 'http://gateway-api:50052/api/get_future_confirmed_routes'
+    recommended_routes = json.loads(requests.get(gateway_get_recommended_routes_url).json())
+    
+    #recommended_routes = ['Stringa 1', 'Stringa 2', 'Stringa 3', 'Stringa 4', 'Stringa 5', 'Stringa 6', 'Stringa 7', 'Stringa 8', 'Stringa 9', 'Stringa 10']
     return render_template("recommended_routes.html", recommended_routes=recommended_routes)
 
 
@@ -145,6 +146,18 @@ def get_path():
     print(data)
 
     url = 'http://gateway-api:50052/api/get_path'
+    body = data
+
+    result = requests.post(url, json=body).json()
+    print(result)
+    return jsonify(result=result)
+
+@app.route('/_get_path_from_stops', methods=['POST'])
+def get_path_from_stops():
+    data = request.get_json()
+    print(data)
+
+    url = 'http://gateway-api:50052/api/get_path_from_stops'
     body = data
 
     result = requests.post(url, json=body).json()
