@@ -166,7 +166,16 @@ def get_user_balance():
         ret = proxy.get_user_balance(mail)
         #print("Gateway balance",ret)
         return json.dumps(ret)
+    
+@api.route('/api/get_future_confirmed_routes', methods=['GET'])
+def get_user_balance():
+    with xmlrpc.client.ServerProxy("http://reccomend-service:8000/") as proxy:
+        ret = proxy.get_future_confirmed_routes()
+        print(ret)
+        return json.dumps(ret)
 
 
 if __name__ == '__main__':
+    
     api.run(debug=True, host='0.0.0.0', port=50052)
+    
