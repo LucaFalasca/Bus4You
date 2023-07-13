@@ -199,6 +199,15 @@ services:
     depends_on:
       gateway-api:
         condition: service_started
+
+  reccomend-service:
+    build: ./reccomend-service
+    container_name: reccomend-service
+    volumes:
+      - ./reccomend-service:/app
+    depends_on:
+      db-service:
+        condition: service_started
 #networks:
   #backend-net:
     #name: backend-net
