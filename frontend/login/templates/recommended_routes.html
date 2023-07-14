@@ -34,7 +34,7 @@
                                         for (var i = 0; i < route["steps"].length; i++) {
 
                                             document.write(route["steps"][i]["step"] + "<br>");
-                                            document.write("Fermata: " + route["steps"][i]["position"] + "<br>");
+                                            document.write("Fermata: " + route["steps"][i]["name"] + "<br>");
                                             document.write("Orario: " + route["steps"][i]["timestamp"] + "<br>");
                                         }
                                         
@@ -77,24 +77,26 @@
                                                 var markersLayer = L.featureGroup().addTo(map{{ recommended_routes.index(route) }});
                                                 
                                                 var bus_stops = [];
+                                                var bus_stop_names = [];
                                                 for (var i = 0; i < route["steps"].length; i++) {
                                                     bus_stops.push(route["steps"][i]["position"]);
+                                                    bus_stop_names.push(route["steps"][i]["name"]);
                                                 }
                                                 
                                                 console.log(bus_stops)
 
                                                 var c = 0;
                                                 bus_stops.forEach(function(bus_stop) {
-                                                    c++;
                                                     console.log("ao" + bus_stop)
                                                     
                                                     var marker = L.marker([bus_stop[0], bus_stop[1]], {
                                                         icon: busStopIconBlue,
                                                         title: "(" + bus_stop[0] + "," + bus_stop[1] + ")"
                                                     }).addTo(map{{ recommended_routes.index(route) }});
-                                                    marker.bindTooltip("Fermata" + c, {
+                                                    marker.bindTooltip(c + 1  + " - " +bus_stop_names[c], {
                                                         offset: L.point(0, -50)
                                                     });
+                                                    c++;
                                                     marker.addTo(markersLayer);
                                                 });  
 

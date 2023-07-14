@@ -13,14 +13,15 @@ def get_future_confirmed_routes_by_db():
         if index is None:
             final_route.setdefault(route[0], []).append({
                 "step": route[1], 
-                "position": [float(route[2]), float(route[3])], 
-                "timestamp": route[4],
-                "climb_up": route[5],
-                "climb_down": route[6]
+                "name": route[2],
+                "position": [float(route[3]), float(route[4])], 
+                "timestamp": route[5],
+                "climb_up": route[6],
+                "climb_down": route[7]
             })
         else:
-            final_route[route[0]][index]["climb_up"] += route[5]
-            final_route[route[0]][index]["climb_down"] += route[6]
+            final_route[route[0]][index]["climb_up"] += route[6]
+            final_route[route[0]][index]["climb_down"] += route[7]
     return final_route
 
 def get_index(lista, valore):

@@ -280,7 +280,7 @@ class DbDao:
                 res = result.fetchall()
             curs.close()
             for elem in res:
-                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6]])
+                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7]])
             return ret
         else:
             print("Connection with db failed")
