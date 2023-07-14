@@ -104,11 +104,11 @@ insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, sald
 insert into b4y_user_db.utente(mail,pwd,nome,cognome,username,data_nascita, saldo) values('prova99@gmail.com', '1234', 'prova', 'prova', 'prova', '2022-07-07', 500.00);
 
 #Itinerari richiesti
-insert into b4y_user_db.itinerario_richiesto(ora_inizio, ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
-fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 10:00:00", "2022-07-07 10:30:00", 5, 10, "prova@gmail.com",
+insert into b4y_user_db.itinerario_richiesto(ora_inizio, costo_max, distanza, utente, fermata_lat_partenza,
+fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 10:00:00", 5, 10, "prova@gmail.com",
  41.648593, 12.431090, 41.658425, 12.422922);
- insert into b4y_user_db.itinerario_richiesto(ora_inizio, ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
-fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 12:00:00", "2022-07-07 12:30:00", 5, 10, "prova@gmail.com",
+ insert into b4y_user_db.itinerario_richiesto(ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
+fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 12:30:00", 5, 10, "prova@gmail.com",
  41.660835, 12.411013, 41.665523, 12.404817);
 
 #Percorso pending
@@ -439,6 +439,16 @@ insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) 
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(3, 4, 41.658425, 12.422922);
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(2, 4, 41.660835, 12.411013);
 insert into b4y_user_db.ordinamento(numero, percorso, fermata_lat, fermata_lon) values(4, 4, 41.665523, 12.404817);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(1, 41.648593, 12.431090, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(2, 41.654548, 12.427688, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(3, 41.656737, 12.416982, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(4, 41.657195, 12.416498, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(5, 41.658228 ,12.414757, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(6, 41.658425, 12.422922, 150);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(1,41.660835,12.411013,151);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(2,41.660897,12.410602,151);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(3,41.664962,12.405092,151);
+insert into b4y_user_db.ordinamento(numero, fermata_lat, fermata_lon, percorso) values(4,41.665523,12.404817,151);
 
 #Itinerari proposti pending del percorso confermato passato
 insert into b4y_user_db.itinerario_proposto(id, costo, distanza, orario_partenza_proposto, orario_arrivo_proposto,
@@ -447,6 +457,26 @@ values(25, 5, 10, "2022-07-07 10:00:00", "2022-07-07 10:30:00", "prova@gmail.com
 insert into b4y_user_db.itinerario_proposto(id, costo, distanza, orario_partenza_proposto, orario_arrivo_proposto,
 utente, itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
 values(26, 5, 10, "2022-07-07 12:00:00", "2022-07-07 12:30:00", "prova@gmail.com", 2, 4,41.660835, 12.411013, 41.665523, 12.404817);
+
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente,
+itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
+values (10.00, 5.0000, '2024-12-12 09:00:00', '2024-12-12 09:15:00', 'prova@gmail.com', 1, 150, 41.648593, 12.431090, 41.656737, 12.416982);
+
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente,
+itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
+values (11.00, 6.0000, '2024-12-12 09:10:00', '2024-12-12 09:25:00', 'prova@gmail.com', 1, 150, 41.654548, 12.427688, 41.657195, 12.416498);
+
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente,
+itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
+values (12.00, 7.0000, '2024-12-12 09:15:00', '2024-12-12 09:35:00', 'prova@gmail.com', 1, 150, 41.658228 ,12.414757, 41.658425, 12.422922);
+
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente,
+itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
+values (13.00, 8.0000, '2024-12-12 11:00:00', '2024-12-12 11:25:00', 'prova@gmail.com', 1, 151, 41.660835,12.411013, 41.664962,12.405092);
+
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, utente,
+itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo)
+values (14.00, 9.0000, '2024-12-12 11:40:00', '2024-12-12 12:00:00', 'prova@gmail.com', 1, 151, 41.660897,12.410602, 41.665523,12.404817);
 
 
 #Itinerari proposti scartati del percorso confermato passato

@@ -20,6 +20,13 @@
     border-radius: 12px !important;
 }
 
+.accordion.accordion-background-active .accordion-header .accordion-button[aria-expanded=true] {
+    /* background-color: #06c; */
+    color: #fff;
+    border-color: #4CAF50;
+    background-color: #4CAF50;
+}
+
 .accordion-button{
     color: white !important;
     border-radius: 12px !important;
