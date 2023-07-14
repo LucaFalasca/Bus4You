@@ -3,6 +3,7 @@ from datetime import time
 
 from neo4j import GraphDatabase
 
+
 class Neo4jDAO:
     def __init__(self, uri, username, password):
         self.driver = GraphDatabase.driver(uri, auth=(username, password), encrypted=False)
@@ -41,34 +42,33 @@ class Neo4jDAO:
             stop_id = result.single()[0]
         return stop_id
 
-    def create_booking_type_end(self, username, name_start_stop, name_end_stop, date, hour_end, position_start_stop,
+    def create_booking_type_end(self, it_id, username, name_start_stop, name_end_stop, date, hour_end, position_start_stop,
                                 position_end_stop):
         with self.driver.session() as session:
             result = session.run(
-                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'end', name_end_stop: $name_end_stop, date: $date,"
-                "hour_end: $hour_end, position_start_stop: $position_start_stop,"
-                "position_end_stop: $position_end_stop})"
+                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'end', name_end_stop: $name_end_stop, "
+                "date: $date,hour_end: $hour_end, position_start_stop: $position_start_stop,"
+                "position_end_stop: $position_end_stop, it_id: $it_id})"
                 "RETURN id(b)",
                 name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
-                hour_end=hour_end, position_start_stop=position_start_stop, position_end_stop=position_end_stop
-            )
+                hour_end=hour_end, position_start_stop=position_start_stop, position_end_stop=position_end_stop,
+                it_id=it_id)
             booking_id = result.single()[0]
         return booking_id
 
-    def create_booking_type_start(self, username, name_start_stop, name_end_stop, date, hour_start, position_start_stop,
-                                position_end_stop):
+    def create_booking_type_start(self, it_id, username, name_start_stop, name_end_stop, date, hour_start,
+                                  position_start_stop, position_end_stop):
         with self.driver.session() as session:
             result = session.run(
-                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'start', name_end_stop: $name_end_stop, date: $date,"
-                "hour_start: $hour_start, position_start_stop: $position_start_stop,"
-                "position_end_stop: $position_end_stop})"
+                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'start', name_end_stop: $name_end_stop, "
+                "date: $date,hour_start: $hour_start, position_start_stop: $position_start_stop,"
+                "position_end_stop: $position_end_stop, it_id: $it_id})"
                 "RETURN id(b)",
                 name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
-                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop
-            )
+                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop,
+                it_id=it_id)
             booking_id = result.single()[0]
         return booking_id
-
 
     def connect_booking_to_stop(self, booking_id, username_id, start_stop_id, end_stop_id):
         with self.driver.session() as session:
@@ -88,8 +88,6 @@ class Neo4jDAO:
             result = session.run("MATCH (s:Stop) RETURN id(s) AS id_stop")
             stops = [record["id_stop"] for record in result]
         return stops
-
-
 
     def create_distances(self):
         return self.driver.session().run(
@@ -169,7 +167,6 @@ class Neo4jDAO:
             else:
                 return False
 
-
     def get_cluster_nodes(self, booking_id):
         with self.driver.session() as session:
             result = session.run(
@@ -181,12 +178,10 @@ class Neo4jDAO:
                 "RETURN id(booking), booking.hour_end, booking.date, id(s1), id(s2)",
                 booking_id=booking_id
             )
-            return [(record["id(booking)"], record["booking.hour_end"], record["booking.date"], record["id(s1)"], record["id(s2)"]) for record in result]
-
-
+            return [(record["id(booking)"], record["booking.hour_end"], record["booking.date"], record["id(s1)"],
+                     record["id(s2)"]) for record in result]
 
     def get_start_end_bookings(self):
-
 
         # Query per selezionare i nodi di tipo "Booking" con valore "start"
         query = (
@@ -221,9 +216,7 @@ class Neo4jDAO:
         session.close()
         return bookings
 
-
     def get_end_type_bookings(self):
-
 
         # Query per selezionare i nodi di tipo "Booking" con valore "start"
         query = (
@@ -299,8 +292,6 @@ class Neo4jDAO:
 
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
-
-
 
     '''def get_person_by_name(self, name):
         with self.driver.session() as session:

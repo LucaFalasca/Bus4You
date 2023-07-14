@@ -76,7 +76,7 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
     stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
-    booking_id = dao.create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+    booking_id = dao.create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
                                              position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
@@ -97,7 +97,7 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
     stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
-    booking_id = dao.create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+    booking_id = dao.create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                                                position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
@@ -270,7 +270,8 @@ def json_to_route_info(json_input):
         it_list.append(
             [round(price, 2), round(metres / 1000, 3), start_stop['date'] + " " + start_stop['time'],
              end_stop['date'] + " " + end_stop['time'], username,
-             1,
+             #Ho messo 3 perche sto provando per l'utente prova1@gmail.com rimettere 1 o 2 per prova@gmail.com
+             3, # TODO inserire il vero itinerario corretto, notare che nelle prove se si usa un utente diverso da prova@gmail.com da errore la insert
              start_stop['location'][1], start_stop['location'][0],
              end_stop['location'][1], end_stop['location'][0]])
 
@@ -328,7 +329,7 @@ def rabbitMQThread():
 
 if __name__ == "__main__":
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
-    some_calls()
+    #some_calls()
     dao.close()
 
     prova = {

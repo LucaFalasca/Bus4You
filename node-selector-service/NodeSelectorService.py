@@ -30,18 +30,21 @@ def publish_message_on_queue(message_json, queue, channel):
                           routing_key=queue,
                           body=message_json.encode('utf-8'),
                           properties=pika.BasicProperties(delivery_mode=2))
-    print("Sent message" + message_json + "on queue: " + queue)
+    print("Sent message on queue:" + queue)
+    print(message_json)
 
 
 def send_nodes_for_computation(channel):
     l = 0
-    while (l != 2):#min
-        nodes_4j = get_random_cluster_with_limits(3) #max
+    while (l < 1):  # min
+        nodes_4j = get_random_cluster_with_limits(3)  # max
         print(nodes_4j)
         l = len(nodes_4j)
+    print("Ho scelto i nodi:")
+    print(nodes_4j)
     # nodes_4j = get_cluster_with_limits(15, 3)
 
-    print(nodes_4j)
+    # print(nodes_4j)
 
     node_limit = {}
     points_location = {}
@@ -53,40 +56,41 @@ def send_nodes_for_computation(channel):
     c = 0
 
     for itinerario in nodes_4j:
+        it_id = itinerario["it_id"] #TODO LUCA
         date = itinerario["date"]
         coord_start = [itinerario["position_start_stop"][0], itinerario["position_start_stop"][1]]
-        print(coord_start)
-        if (itinerario["hour"][0] != None):
+        # print(coord_start)
+        if itinerario["hour"][0] is not None:
             limit0 = itinerario["hour"][0].hour * 60 + itinerario["hour"][0].minute
         else:
             limit0 = None
-        if (itinerario["hour"][1] != None):
+        if itinerario["hour"][1] is not None:
             limit1 = itinerario["hour"][1].hour * 60 + itinerario["hour"][1].minute
         else:
             limit1 = None
         limit = [limit0, limit1]
 
-        if (coord_start not in points_location.values()):
+        if coord_start not in points_location.values():
             k_start = c
             points_location[str(k_start)] = coord_start
             c += 1
 
         else:
             for key, value in points_location.items():
-                if (value == coord_start):
+                if value == coord_start:
                     k_start = key
                     points_location[str(k_start)] = coord_start
                     break
 
         coord_end = [itinerario["position_end_stop"][0], itinerario["position_end_stop"][1]]
-        print(coord_end)
-        if (coord_end not in points_location.values()):
+        # print(coord_end)
+        if coord_end not in points_location.values():
             k_end = c
             points_location[str(k_end)] = coord_end
             c += 1
         else:
             for key, value in points_location.items():
-                if (value == coord_end):
+                if value == coord_end:
                     k_end = key
                     points_location[str(k_end)] = coord_end
                     break
@@ -97,41 +101,36 @@ def send_nodes_for_computation(channel):
         if str(k_end) not in prec_hash.keys():
             prec_hash[str(k_end)] = []
 
-        if (limit != None):
-            if (limit[0] != None):
-                if (str(k_start) not in node_limit.keys()):
+        if limit is not None:
+            if limit[0] is not None:
+                if str(k_start) not in node_limit.keys():
                     node_limit[str(k_start)] = [limit[0], None]
                 else:
-                    if node_limit[str(k_start)][0] == None:
+                    if node_limit[str(k_start)][0] is None:
                         node_limit[str(k_start)][0] = limit[0]
                     else:
                         node_limit[str(k_start)][0] = min(node_limit[str(k_start)][0], limit[0])
-            if (limit[1] != None):
-                if (str(k_end) not in node_limit.keys()):
+            if limit[1] is not None:
+                if str(k_end) not in node_limit.keys():
                     node_limit[str(k_end)] = [None, limit[1]]
                 else:
-                    if node_limit[str(k_end)][1] == None:
+                    if node_limit[str(k_end)][1] is None:
                         node_limit[str(k_end)][1] = limit[1]
                     else:
                         node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
 
-        user_routes["prova@gmail.com"] = (str(k_start), str(k_end))
+        user_routes[itinerario["user"]] = (str(k_start), str(k_end))
         p += 1
 
-    print(points_location)
-    print(prec_hash)
-    print(node_limit)
-    print(user_routes)
+    # print(points_location)
+    # print(prec_hash)
+    # print(node_limit)
+    # print(user_routes)
 
     input_ors = [q[::-1] for q in list(points_location.values())]
     dist_matrix = OrsDao.getMatrix(input_ors)
-    message = {}
-    message["node_limit"] = node_limit
-    message["prec_hash"] = prec_hash
-    message["dist_matrix"] = dist_matrix
-    message["user_routes"] = user_routes
-    message["date"] = str(date)
-    message["points_location"] = points_location
+    message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix, "user_routes": user_routes,
+               "date": str(date), "points_location": points_location}
     publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, channel)
 
 
@@ -148,12 +147,12 @@ def get_cluster_with_limits(booking_id, limit):
 def get_random_cluster_with_limits(limit):
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     booking_id = dao.get_random_booking()
+    print("Booking id pescato:")
     print(booking_id)
     return dao.get_start_end_bookings_with_limit(booking_id, limit)
 
 
 if __name__ == "__main__":
-    print("Hello World")
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     # print(get_random_cluster_with_limits(5))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
