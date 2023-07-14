@@ -35,8 +35,8 @@ def publish_message_on_queue(message_json, queue, channel):
 
 def send_nodes_for_computation(channel):
     l = 0
-    while (l != 2):
-        nodes_4j = get_random_cluster_with_limits(3)
+    while (l != 2):#min
+        nodes_4j = get_random_cluster_with_limits(3) #max
         print(nodes_4j)
         l = len(nodes_4j)
     # nodes_4j = get_cluster_with_limits(15, 3)

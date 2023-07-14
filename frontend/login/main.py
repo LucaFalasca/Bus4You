@@ -213,7 +213,6 @@ def reject_book():
             print("Rimetto in coda")
             gateway_requeue_url = 'http://gateway-api:50052/api/get_retry_info?it_id=' + it_id
             response = json.loads(requests.get(gateway_requeue_url).json())[0]
-            print(response)
             mail = response[4]
             starting_point = response[9]
             start_lat = response[5]
@@ -221,24 +220,35 @@ def reject_book():
             ending_point = response[10]
             end_lat = response[7]
             end_lng = response[8]
-            start_hour = response[0]
-            finish_hour = response[1]
+            start_hour_tmp = response[0]
+            finish_hour_tmp = response[1]
             date = ''
             time = ''
             start_or_finish = ''
             # costo_max = response[2] # not used
             # distanza = response[3] # not used
-            if start_hour is None:
+            if start_hour_tmp is None:
                 start_or_finish = 'finish'
-                date_obj = datetime.strptime(finish_hour, "%a, %d %b %Y %H:%M:%S %Z")
-                date = date_obj.date()
-                time = date_obj.time()
-            elif finish_hour is None:
+                it_prop_finish_obj = datetime.strptime(response[1], "%a, %d %b %Y %H:%M:%S %Z")
+                finish_hour = it_prop_finish_obj.strftime("%Y-%m-%d %H:%M:%S")
+                date = finish_hour.split(' ')[0]
+                time = finish_hour.split(' ')[1]
+            elif finish_hour_tmp is None:
                 start_or_finish = 'start'
-                date_obj = datetime.strptime(start_hour, "%a, %d %b %Y %H:%M:%S %Z")
-                date = date_obj.date()
-                time = date_obj.time()
-
+                it_prop_start_obj = datetime.strptime(response[0], "%a, %d %b %Y %H:%M:%S %Z")
+                start_hour = it_prop_start_obj.strftime("%Y-%m-%d %H:%M:%S")
+                date = start_hour.split(' ')[0]
+                time = start_hour.split(' ')[1]
+            print(mail)
+            print(starting_point)
+            print(start_lat)
+            print(start_lng)
+            print(ending_point)
+            print(end_lat)
+            print(end_lng)
+            print(date)
+            print(time)
+            print(start_or_finish)
             gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + \
                                         starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + \
                                         '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
