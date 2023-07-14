@@ -194,9 +194,17 @@ def get_future_confirmed_routes():
         ret = proxy.get_future_confirmed_routes()
         print(ret)
         return json.dumps(ret)
+    
+
+@api.route('/api/get_total_km', methods=['GET'])
+def get_total_km():
+    route_id = request.args.get('route_id')
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = proxy.get_total_km(route_id)
+        print(ret)
+        return json.dumps(ret)
 
 
 if __name__ == '__main__':
-    
     api.run(debug=True, host='0.0.0.0', port=50052)
     
