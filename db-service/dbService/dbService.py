@@ -19,6 +19,7 @@ def serve():
     server.register_function(get_user_balance, "get_user_balance")
     server.register_function(get_future_confirmed_routes, "get_future_confirmed_routes")
     server.register_function(get_stop_name_from_coords, 'get_stop_name_from_coords')
+    server.register_function(get_total_km, 'get_total_km')
     server.serve_forever()
 
 
@@ -152,6 +153,13 @@ def get_stop_name_from_coords(lat, lon):
     stop_name = usr_db.get_stop_name_from_coords(conn, lat, lon)
     conn.close()
     return json.dumps(stop_name)
+
+def get_total_km(route_id):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    total_km = usr_db.get_total_km_query(conn, route_id)
+    conn.close()
+    return json.dumps(total_km)
 
 
 if __name__ == "__main__":

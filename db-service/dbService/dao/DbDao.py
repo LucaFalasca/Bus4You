@@ -305,3 +305,24 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+
+    @staticmethod
+    def get_total_km_query(conn, route_id):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # get balance
+            args = (route_id, )
+            curs.callproc('get_route_distance', args)
+            res = None
+
+            for result in curs.stored_results():
+                res = result.fetchall()
+            km = res[0][0]
+            conn.commit()
+            return km
+        else:
+            print("Connection with db failed")
+            return -1

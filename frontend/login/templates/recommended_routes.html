@@ -49,12 +49,12 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di partenza -->
-                                              <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                                              <input type="text" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point" placeholder="Starting point">
                                               <input type="hidden" id="start_lat" name="start_lat">
                                               <input type="hidden" id="start_lng" name="start_lng">
                                           </div>
                                           <div class="col-3">
-                                              <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select </button>
+                                              <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord{{ recommended_routes.index(route) }}()">Select </button>
                                           </div>
                                         </div>
                                         <div class="row">
@@ -65,17 +65,17 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di arrivo -->
-                                              <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                                              <input type="text" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point" placeholder="Ending point">
                                               <input type="hidden" id="end_lat" name="end_lat">
                                               <input type="hidden" id="end_lng" name="end_lng">
                                           </div>
                                           <div class="col-3">
-                                              <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select</button>
+                                              <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord{{ recommended_routes.index(route) }}()">Select</button>
                                           </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-9">
-                                            <button type="button" onclick="set_all_marker_default()">Reset</button>
+                                            <button type="button" onclick="set_all_marker_default{{ recommended_routes.index(route) }}()">Reset</button>
                                           </div>
                                           <div class="col-3">
                                               <!-- pulsante di submit del form -->
@@ -119,156 +119,155 @@
                                                 });
                                                 
 
-                                                var markersLayer = L.featureGroup().addTo(map{{ recommended_routes.index(route) }});
-                                                markersLayer.on("click", markerOnClick);
+                                                var markersLayer{{ recommended_routes.index(route) }} = L.featureGroup().addTo(map{{ recommended_routes.index(route) }});
+                                                markersLayer{{ recommended_routes.index(route) }}.on("click", markerOnClick{{ recommended_routes.index(route) }});
 
                                                 
 
 
-                                                var nodes_disabled_for_starting = get_disabled_nodes_for_starting();
-                                                var nodes_disabled_for_ending = get_disabled_nodes_for_ending();
+                                                var nodes_disabled_for_starting{{ recommended_routes.index(route) }} = get_disabled_nodes_for_starting{{ recommended_routes.index(route) }}();
+                                                var nodes_disabled_for_ending{{ recommended_routes.index(route) }} = get_disabled_nodes_for_ending{{ recommended_routes.index(route) }}();
 
-                                                var startingPoint;
-                                                var endingPoint;
-                                                var point = null;
+                                                var startingPoint{{ recommended_routes.index(route) }};
+                                                var endingPoint{{ recommended_routes.index(route) }};
+                                                var point{{ recommended_routes.index(route) }} = null;
                                                 
-                                                function set_starting_coord(){
-                                                    point = "start";
-                                                    set_all_marker_default();
-                                                    disable_node(bus_stops.length - 1);
-                                                    nodes_disabled_for_starting.forEach(function(node) {
-                                                        disable_node(node);
+                                                function set_starting_coord{{ recommended_routes.index(route) }}(){
+                                                    point{{ recommended_routes.index(route) }} = "start";
+                                                    set_all_marker_default{{ recommended_routes.index(route) }}();
+                                                    disable_node{{ recommended_routes.index(route) }}(bus_stops{{ recommended_routes.index(route) }}.length - 1);
+                                                    nodes_disabled_for_starting{{ recommended_routes.index(route) }}.forEach(function(node) {
+                                                        disable_node{{ recommended_routes.index(route) }}(node);
                                                     });
-                                                    if(endingPoint != null){
-                                                        end_index = get_index_from_stop_marker(endingPoint);
-                                                        a = nodes_disabled_for_ending.filter(function(element) {
+                                                    if(endingPoint{{ recommended_routes.index(route) }} != null){
+                                                        end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
+                                                        a = nodes_disabled_for_ending{{ recommended_routes.index(route) }}.filter(function(element) {
                                                             return element <= end_index;
                                                         });
                                                         max = Math.max(a);
                                                         if(end_index > max){
                                                             for(var i = 0; i < max; i++){
-                                                                disable_node(i);
+                                                                disable_node{{ recommended_routes.index(route) }}(i);
                                                             }
                                                         }
                                                         for(var i = end_index; i < route["steps"].length; i++){
-                                                            disable_node(i);
+                                                            disable_node{{ recommended_routes.index(route) }}(i);
                                                         }  
                                                     }
-                                                    able_start_end_point();
+                                                    able_start_end_point{{ recommended_routes.index(route) }}();
                                                 }
 
-                                                function set_ending_coord(){
-                                                    point = "end";
-                                                    set_all_marker_default();
-                                                    disable_node(0);
-                                                    nodes_disabled_for_ending.forEach(function(node) {
-                                                        disable_node(node);
+                                                function set_ending_coord{{ recommended_routes.index(route) }}(){
+                                                    point{{ recommended_routes.index(route) }} = "end";
+                                                    set_all_marker_default{{ recommended_routes.index(route) }}();
+                                                    disable_node{{ recommended_routes.index(route) }}(0);
+                                                    nodes_disabled_for_ending{{ recommended_routes.index(route) }}.forEach(function(node) {
+                                                        disable_node{{ recommended_routes.index(route) }}(node);
                                                     });
-                                                    if(startingPoint != null){
-                                                        start_index = get_index_from_stop_marker(startingPoint);
-                                                        a = nodes_disabled_for_starting.filter(function(element) {
+                                                    if(startingPoint{{ recommended_routes.index(route) }} != null){
+                                                        start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
+                                                        a = nodes_disabled_for_starting{{ recommended_routes.index(route) }}.filter(function(element) {
                                                             return element >= start_index;
                                                         });
                                                         min = Math.min(a);
                                                         if(start_index < min){
                                                             for(var i = min + 1; i < route["steps"].length; i++){
-                                                                disable_node(i);
+                                                                disable_node{{ recommended_routes.index(route) }}(i);
                                                             }
                                                         }
                                                         for(var i = 0; i < start_index; i++){
-                                                            disable_node(i);
+                                                            disable_node{{ recommended_routes.index(route) }}(i);
                                                         }  
                                                     }
-                                                    able_start_end_point();
+                                                    able_start_end_point{{ recommended_routes.index(route) }}();
                                                 }
 
-                                                function able_start_end_point(){
-                                                    if(startingPoint != null){
-                                                        startingPoint.setIcon(busStopIconGreen);
+                                                function able_start_end_point{{ recommended_routes.index(route) }}(){
+                                                    if(startingPoint{{ recommended_routes.index(route) }} != null){
+                                                        startingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconGreen);
                                                     }
-                                                    if(endingPoint != null){
-                                                        endingPoint.setIcon(busStopIconRed);
+                                                    if(endingPoint{{ recommended_routes.index(route) }} != null){
+                                                        endingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconRed);
                                                     }
-                                                }
-
-                                                
-                                                function get_disabled_nodes_for_starting(){
-                                                    nodes_disabled_for_starting = [];
-                                                    for(var i = 0; i < route["segments"].length; i++){
-                                                        if(route["segments"][i]["seat_available"] <= 0){
-                                                            nodes_disabled_for_starting.push(i);
-                                                        }
-                                                    }
-                                                    return nodes_disabled_for_starting;
                                                 }
 
                                                 
-                                                function get_disabled_nodes_for_ending(){
-                                                    nodes_disabled_for_ending = [];
+                                                function get_disabled_nodes_for_starting{{ recommended_routes.index(route) }}(){
+                                                    nodes_disabled_for_starting{{ recommended_routes.index(route) }} = [];
                                                     for(var i = 0; i < route["segments"].length; i++){
                                                         if(route["segments"][i]["seat_available"] <= 0){
-                                                            nodes_disabled_for_ending.push(i + 1);
+                                                            nodes_disabled_for_starting{{ recommended_routes.index(route) }}.push(i);
                                                         }
                                                     }
-                                                    return nodes_disabled_for_ending;
+                                                    return nodes_disabled_for_starting{{ recommended_routes.index(route) }};
                                                 }
 
-                                                var disabled_nodes = []
+                                                
+                                                function get_disabled_nodes_for_ending{{ recommended_routes.index(route) }}(){
+                                                    nodes_disabled_for_ending{{ recommended_routes.index(route) }} = [];
+                                                    for(var i = 0; i < route["segments"].length; i++){
+                                                        if(route["segments"][i]["seat_available"] <= 0){
+                                                            nodes_disabled_for_ending{{ recommended_routes.index(route) }}.push(i + 1);
+                                                        }
+                                                    }
+                                                    return nodes_disabled_for_ending{{ recommended_routes.index(route) }};
+                                                }
 
-                                                function disable_node(index){
-                                                    var marker = get_stop_marker_from_index(index);
+                                                var disabled_nodes{{ recommended_routes.index(route) }} = []
+
+                                                function disable_node{{ recommended_routes.index(route) }}(index){
+                                                    var marker = get_stop_marker_from_index{{ recommended_routes.index(route) }}(index);
                                                     marker.setIcon(busStopIconGray);
-                                                    marker.off("click", markerOnClick)
-                                                    disabled_nodes.push(index);
+                                                    disabled_nodes{{ recommended_routes.index(route) }}.push(index);
                                                 }
 
-                                                function get_stop_marker_from_index(index){
-                                                    var marker = markersLayer.getLayers()[index];
+                                                function get_stop_marker_from_index{{ recommended_routes.index(route) }}(index){
+                                                    var marker = markersLayer{{ recommended_routes.index(route) }}.getLayers()[index];
                                                     return marker;
                                                 }
 
-                                                function get_index_from_stop_marker(marker){
-                                                    for(var i = 0; i < markersLayer.getLayers().length; i++){
-                                                        if(markersLayer.getLayers()[i] == marker){
+                                                function get_index_from_stop_marker{{ recommended_routes.index(route) }}(marker){
+                                                    for(var i = 0; i < markersLayer{{ recommended_routes.index(route) }}.getLayers().length; i++){
+                                                        if(markersLayer{{ recommended_routes.index(route) }}.getLayers()[i] == marker){
                                                             return i;
                                                         }
                                                     }
                                                 }
 
-                                                function set_all_marker_default(){
-                                                    for (var i = 0; i < bus_stops.length; i++) {
-                                                        marker = get_stop_marker_from_index(i);
+                                                function set_all_marker_default{{ recommended_routes.index(route) }}(){
+                                                    for (var i = 0; i < bus_stops{{ recommended_routes.index(route) }}.length; i++) {
+                                                        marker = get_stop_marker_from_index{{ recommended_routes.index(route) }}(i);
                                                         marker.setIcon(busStopIconBlue);
                                                     }
-                                                    disabled_nodes = [];
+                                                    disabled_nodes{{ recommended_routes.index(route) }} = [];
                                                 }
 
-                                                function markerOnClick(e){
+                                                function markerOnClick{{ recommended_routes.index(route) }}(e){
                                                     var clickedMarker = e.layer;
-                                                    if(!(disabled_nodes.includes(get_index_from_stop_marker(clickedMarker)))){
-                                                        if (point != null){
-                                                            if(point == "start"){
-                                                                if (startingPoint != null)
-                                                                    startingPoint.setIcon(busStopIconBlue);
+                                                    if(!(disabled_nodes{{ recommended_routes.index(route) }}.includes(get_index_from_stop_marker{{ recommended_routes.index(route) }}(clickedMarker)))){
+                                                        if (point{{ recommended_routes.index(route) }} != null){
+                                                            if(point{{ recommended_routes.index(route) }} == "start"){
+                                                                if (startingPoint{{ recommended_routes.index(route) }} != null)
+                                                                    startingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconBlue);
                                                                 clickedMarker.setIcon(busStopIconGreen);
-                                                                startingPoint = clickedMarker;
+                                                                startingPoint{{ recommended_routes.index(route) }} = clickedMarker;
                                                                 var bus_stop_name = clickedMarker.getTooltip().getContent();
                                                                 var lat = clickedMarker.getLatLng().lat;
                                                                 var lng = clickedMarker.getLatLng().lng;
-                                                                document.getElementById("starting_point").value = bus_stop_name;
+                                                                document.getElementById("starting_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
                                                                 document.getElementById("start_lat").value = lat;
                                                                 document.getElementById("start_lng").value = lng;
 
                                                             }
-                                                            else if (point == "end"){
-                                                                if (endingPoint != null)
-                                                                    endingPoint.setIcon(busStopIconBlue);
-                                                                endingPoint = clickedMarker
+                                                            else if (point{{ recommended_routes.index(route) }} == "end"){
+                                                                if (endingPoint{{ recommended_routes.index(route) }} != null)
+                                                                    endingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconBlue);
+                                                                endingPoint{{ recommended_routes.index(route) }} = clickedMarker
                                                                 clickedMarker.setIcon(busStopIconRed);
                                                                 bus_stop_name = clickedMarker.getTooltip().getContent()
                                                                 var lat = clickedMarker.getLatLng().lat;
                                                                 var lng = clickedMarker.getLatLng().lng;
-                                                                document.getElementById("ending_point").value = bus_stop_name;
+                                                                document.getElementById("ending_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
                                                                 document.getElementById("end_lat").value = lat;
                                                                 document.getElementById("end_lng").value = lng;
                                                             }
@@ -276,34 +275,34 @@
                                                     }
                                                 }
                                                 
-                                                var bus_stops = [];
-                                                var bus_stop_names = [];
+                                                var bus_stops{{ recommended_routes.index(route) }} = [];
+                                                var bus_stop_names{{ recommended_routes.index(route) }} = [];
                                                 for (var i = 0; i < route["steps"].length; i++) {
-                                                    bus_stops.push(route["steps"][i]["position"]);
-                                                    bus_stop_names.push(route["steps"][i]["name"]);
+                                                    bus_stops{{ recommended_routes.index(route) }}.push(route["steps"][i]["position"]);
+                                                    bus_stop_names{{ recommended_routes.index(route) }}.push(route["steps"][i]["name"]);
                                                 }
                                                 
-                                                console.log(bus_stops)
+                                                console.log(bus_stops{{ recommended_routes.index(route) }})
 
                                                 var c = 0;
-                                                bus_stops.forEach(function(bus_stop) {
+                                                bus_stops{{ recommended_routes.index(route) }}.forEach(function(bus_stop) {
                                                     
                                                     var marker = L.marker([bus_stop[0], bus_stop[1]], {
                                                         icon: busStopIconBlue,
                                                         title: "(" + bus_stop[0] + "," + bus_stop[1] + ")"
                                                     }).addTo(map{{ recommended_routes.index(route) }});
-                                                    marker.bindTooltip(c + 1  + " - " +bus_stop_names[c], {
+                                                    marker.bindTooltip(c + 1  + " - " +bus_stop_names{{ recommended_routes.index(route) }}[c], {
                                                         offset: L.point(0, -50)
                                                     });
                                                     c++;
-                                                    marker.addTo(markersLayer);
+                                                    marker.addTo(markersLayer{{ recommended_routes.index(route) }});
                                                 });  
 
                                                 var url = "";
 
                                                 fetch('/_get_path_from_stops', {
                                                       method: 'POST',
-                                                      body: JSON.stringify(bus_stops),
+                                                      body: JSON.stringify(bus_stops{{ recommended_routes.index(route) }}),
                                                       headers: {
                                                         'Content-Type': 'application/json'
                                                       }
