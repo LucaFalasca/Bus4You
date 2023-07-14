@@ -166,7 +166,7 @@ def reject_it():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.reject_it(it_id)
-        #print(ret)
+        print(ret)
         return json.dumps(ret)
 
 

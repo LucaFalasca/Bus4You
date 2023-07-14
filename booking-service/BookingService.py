@@ -111,15 +111,15 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
 
 def some_calls():
     # Esempio 1
-    create_booking_type_end("Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
+    create_booking_type_end(100001, "Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
                             41.900473, 12.500650, 41.894342, 12.481170)
 
     # Esempio 2
-    create_booking_type_start("Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
+    create_booking_type_start(100002, "Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
                               41.889927, 12.494197, 41.885616, 12.509768)
 
     # Esempio 3
-    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
+    create_booking_type_end(100003, "Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
                             41.912492, 12.477485, 41.911860, 12.475263)
 
     '''
