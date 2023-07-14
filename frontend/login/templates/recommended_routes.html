@@ -33,12 +33,56 @@
                                     <script>
                                         for (var i = 0; i < route["steps"].length; i++) {
 
-                                            document.write(route["steps"][i]["step"] + "<br>");
-                                            document.write("Fermata: " + route["steps"][i]["name"] + "<br>");
-                                            document.write("Orario: " + route["steps"][i]["timestamp"] + "<br>");
+                                            document.write("[" + route["steps"][i]["step"] + "]<br>");
+                                            document.write(" \t|\t\t Fermata: " + route["steps"][i]["name"] + "<br>");
+                                            document.write(" \t|\t\t Orario: " + route["steps"][i]["timestamp"] + "<br>");
                                         }
                                         
                                     </script>
+                                    <form action="/select-route-from-map" method="GET">
+                                        <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
+                                        <div class="row">
+                                          <div class="col-12">
+                                              <label>Start Point</label>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-9">
+                                              <!-- campo per l'inserimento del punto di partenza -->
+                                              <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                                              <input type="hidden" id="start_lat" name="start_lat">
+                                              <input type="hidden" id="start_lng" name="start_lng">
+                                          </div>
+                                          <div class="col-3">
+                                              <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select </button>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-12">
+                                              <label>End Point</label>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-9">
+                                              <!-- campo per l'inserimento del punto di arrivo -->
+                                              <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                                              <input type="hidden" id="end_lat" name="end_lat">
+                                              <input type="hidden" id="end_lng" name="end_lng">
+                                          </div>
+                                          <div class="col-3">
+                                              <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select</button>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-9">
+                                            <button type="button" onclick="set_all_marker_default()">Reset</button>
+                                          </div>
+                                          <div class="col-3">
+                                              <!-- pulsante di submit del form -->
+                                              <input type="submit" value="Request">
+                                          </div>
+                                        </div>
+                                    </form>
                                 </div>
                                      <div class="col-sm-6">
                                         <div class="map" id="map{{ recommended_routes.index(route) }}"></div>
@@ -61,6 +105,7 @@
                                                 var busStopIconRed = new busStopIcon({iconUrl: '/static/resources/bus-stop-red.png' });
                                                 var busStopIconGreen = new busStopIcon({iconUrl: '/static/resources/bus-stop-green.png' });
                                                 var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
+                                                var busStopIconGray = new busStopIcon({iconUrl: '/static/resources/bus-stop-gray.png' });
                                                 
                                                 //var path{{ recommended_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ recommended_routes.index(route) }});
 
@@ -75,6 +120,161 @@
                                                 
 
                                                 var markersLayer = L.featureGroup().addTo(map{{ recommended_routes.index(route) }});
+                                                markersLayer.on("click", markerOnClick);
+
+                                                
+
+
+                                                var nodes_disabled_for_starting = get_disabled_nodes_for_starting();
+                                                var nodes_disabled_for_ending = get_disabled_nodes_for_ending();
+
+                                                var startingPoint;
+                                                var endingPoint;
+                                                var point = null;
+                                                
+                                                function set_starting_coord(){
+                                                    point = "start";
+                                                    set_all_marker_default();
+                                                    disable_node(bus_stops.length - 1);
+                                                    nodes_disabled_for_starting.forEach(function(node) {
+                                                        disable_node(node);
+                                                    });
+                                                    if(endingPoint != null){
+                                                        end_index = get_index_from_stop_marker(endingPoint);
+                                                        a = nodes_disabled_for_ending.filter(function(element) {
+                                                            return element <= end_index;
+                                                        });
+                                                        max = Math.max(a);
+                                                        if(end_index > max){
+                                                            for(var i = 0; i < max; i++){
+                                                                disable_node(i);
+                                                            }
+                                                        }
+                                                        for(var i = end_index; i < route["steps"].length; i++){
+                                                            disable_node(i);
+                                                        }  
+                                                    }
+                                                    able_start_end_point();
+                                                }
+
+                                                function set_ending_coord(){
+                                                    point = "end";
+                                                    set_all_marker_default();
+                                                    disable_node(0);
+                                                    nodes_disabled_for_ending.forEach(function(node) {
+                                                        disable_node(node);
+                                                    });
+                                                    if(startingPoint != null){
+                                                        start_index = get_index_from_stop_marker(startingPoint);
+                                                        a = nodes_disabled_for_starting.filter(function(element) {
+                                                            return element >= start_index;
+                                                        });
+                                                        min = Math.min(a);
+                                                        if(start_index < min){
+                                                            for(var i = min + 1; i < route["steps"].length; i++){
+                                                                disable_node(i);
+                                                            }
+                                                        }
+                                                        for(var i = 0; i < start_index; i++){
+                                                            disable_node(i);
+                                                        }  
+                                                    }
+                                                    able_start_end_point();
+                                                }
+
+                                                function able_start_end_point(){
+                                                    if(startingPoint != null){
+                                                        startingPoint.setIcon(busStopIconGreen);
+                                                    }
+                                                    if(endingPoint != null){
+                                                        endingPoint.setIcon(busStopIconRed);
+                                                    }
+                                                }
+
+                                                
+                                                function get_disabled_nodes_for_starting(){
+                                                    nodes_disabled_for_starting = [];
+                                                    for(var i = 0; i < route["segments"].length; i++){
+                                                        if(route["segments"][i]["seat_available"] <= 0){
+                                                            nodes_disabled_for_starting.push(i);
+                                                        }
+                                                    }
+                                                    return nodes_disabled_for_starting;
+                                                }
+
+                                                
+                                                function get_disabled_nodes_for_ending(){
+                                                    nodes_disabled_for_ending = [];
+                                                    for(var i = 0; i < route["segments"].length; i++){
+                                                        if(route["segments"][i]["seat_available"] <= 0){
+                                                            nodes_disabled_for_ending.push(i + 1);
+                                                        }
+                                                    }
+                                                    return nodes_disabled_for_ending;
+                                                }
+
+                                                var disabled_nodes = []
+
+                                                function disable_node(index){
+                                                    var marker = get_stop_marker_from_index(index);
+                                                    marker.setIcon(busStopIconGray);
+                                                    marker.off("click", markerOnClick)
+                                                    disabled_nodes.push(index);
+                                                }
+
+                                                function get_stop_marker_from_index(index){
+                                                    var marker = markersLayer.getLayers()[index];
+                                                    return marker;
+                                                }
+
+                                                function get_index_from_stop_marker(marker){
+                                                    for(var i = 0; i < markersLayer.getLayers().length; i++){
+                                                        if(markersLayer.getLayers()[i] == marker){
+                                                            return i;
+                                                        }
+                                                    }
+                                                }
+
+                                                function set_all_marker_default(){
+                                                    for (var i = 0; i < bus_stops.length; i++) {
+                                                        marker = get_stop_marker_from_index(i);
+                                                        marker.setIcon(busStopIconBlue);
+                                                    }
+                                                    disabled_nodes = [];
+                                                }
+
+                                                function markerOnClick(e){
+                                                    var clickedMarker = e.layer;
+                                                    if(!(disabled_nodes.includes(get_index_from_stop_marker(clickedMarker)))){
+                                                        if (point != null){
+                                                            if(point == "start"){
+                                                                if (startingPoint != null)
+                                                                    startingPoint.setIcon(busStopIconBlue);
+                                                                clickedMarker.setIcon(busStopIconGreen);
+                                                                startingPoint = clickedMarker;
+                                                                var bus_stop_name = clickedMarker.getTooltip().getContent();
+                                                                var lat = clickedMarker.getLatLng().lat;
+                                                                var lng = clickedMarker.getLatLng().lng;
+                                                                document.getElementById("starting_point").value = bus_stop_name;
+                                                                document.getElementById("start_lat").value = lat;
+                                                                document.getElementById("start_lng").value = lng;
+
+                                                            }
+                                                            else if (point == "end"){
+                                                                if (endingPoint != null)
+                                                                    endingPoint.setIcon(busStopIconBlue);
+                                                                endingPoint = clickedMarker
+                                                                clickedMarker.setIcon(busStopIconRed);
+                                                                bus_stop_name = clickedMarker.getTooltip().getContent()
+                                                                var lat = clickedMarker.getLatLng().lat;
+                                                                var lng = clickedMarker.getLatLng().lng;
+                                                                document.getElementById("ending_point").value = bus_stop_name;
+                                                                document.getElementById("end_lat").value = lat;
+                                                                document.getElementById("end_lng").value = lng;
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                                 
                                                 var bus_stops = [];
                                                 var bus_stop_names = [];
@@ -87,7 +287,6 @@
 
                                                 var c = 0;
                                                 bus_stops.forEach(function(bus_stop) {
-                                                    console.log("ao" + bus_stop)
                                                     
                                                     var marker = L.marker([bus_stop[0], bus_stop[1]], {
                                                         icon: busStopIconBlue,
@@ -129,5 +328,4 @@
             {% endfor %}
         </div>
     {% endblock %}
-
 
