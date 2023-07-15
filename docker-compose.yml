@@ -14,9 +14,10 @@ services:
       - ./rabbitMq/data:/var/lib/rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+      interval: 3s
+      timeout: 60s
+      retries: 20
+      start_period: 6s
 
   mysqlDb:
     image: mysql:latest
@@ -31,9 +32,9 @@ services:
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
-      timeout: 30s
-      retries: 10
-      start_period: 3s
+      timeout: 60s
+      retries: 20
+      start_period: 6s
 
   neo4jDb:
     # Docker image to be used
@@ -61,10 +62,10 @@ services:
 
     healthcheck:
       test: wget http://localhost:7474 || exit 1
-      interval: 1s
-      timeout: 10s
+      interval: 3s
+      timeout: 60s
       retries: 20
-      start_period: 3s
+      start_period: 6s
 
   notify-service:
     build: ./notify-service
