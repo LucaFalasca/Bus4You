@@ -49,9 +49,7 @@ def send_nodes_for_computation(channel):
     node_limit = {}
     points_location = {}
     prec_hash = {}
-    user_routes = {}
-
-    p = 1
+    user_routes = []
 
     c = 0
 
@@ -119,8 +117,12 @@ def send_nodes_for_computation(channel):
                     else:
                         node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
 
-        user_routes[itinerario["user"]] = (str(k_start), str(k_end))
-        p += 1
+        user_routes.append({
+            "user" : itinerario["user"],
+            "it_id" : it_id,
+            "date" : str(date),
+            "nodes" : [str(k_start), str(k_end)]
+        })
 
     # print(points_location)
     # print(prec_hash)
@@ -129,8 +131,8 @@ def send_nodes_for_computation(channel):
 
     input_ors = [q[::-1] for q in list(points_location.values())]
     dist_matrix = OrsDao.getMatrix(input_ors)
-    message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix, "user_routes": user_routes,
-               "date": str(date), "points_location": points_location}
+    message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix, "user_routes": user_routes, "points_location": points_location}
+    print("Sending message: " + str(message))
     publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, channel)
 
 

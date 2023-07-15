@@ -242,8 +242,8 @@ def json_to_route_info(json_input):
         total_distance += matrix_distance[order_list[i][0]][order_list[i + 1][0]]
 
     total_metres = 0
-    for username, route in json_input['user_routes'].items():
-        metres = matrix_distance[int(route[0])][int(route[1])]
+    for tour in json_input['user_routes']:
+        metres = matrix_distance[int(tour["nodes"][0])][int(tour["nodes"][1])]
         total_metres += metres
 
     lt_per_km = 0.08
@@ -259,21 +259,23 @@ def json_to_route_info(json_input):
     print("Total metres: " + str(total_metres))
     print("Total price: " + str(total_price))
 
-    print(json_input['user_routes'].items())
-    for username, route in json_input['user_routes'].items():
-        start_stop = json_input['steps'][int(route[0])]
-        end_stop = json_input['steps'][int(route[1])]
-        metres = matrix_distance[int(route[0])][int(route[1])]
+    print(json_input['user_routes'])
+    for tour in json_input['user_routes']:
+        start_stop = json_input['steps'][int(tour["nodes"][0])]
+        end_stop = json_input['steps'][int(tour["nodes"][1])]
+        metres = matrix_distance[int(tour["nodes"][0])][int(tour["nodes"][1])]
+        it_id = tour["it_id"]
         weight = metres / total_metres
         price = total_price * weight
         print()
-        it_list.append(
-            [round(price, 2), round(metres / 1000, 3), start_stop['date'] + " " + start_stop['time'],
-             end_stop['date'] + " " + end_stop['time'], username,
-             #Ho messo 3 perche sto provando per l'utente prova1@gmail.com rimettere 1 o 2 per prova@gmail.com
-             3, # TODO inserire il vero itinerario corretto, notare che nelle prove se si usa un utente diverso da prova@gmail.com da errore la insert
-             start_stop['location'][1], start_stop['location'][0],
-             end_stop['location'][1], end_stop['location'][0]])
+        it_list.append([
+            round(price, 2),                                                #prezzo
+            round(metres / 1000, 3),                                        #distanza
+            start_stop['date'] + " " + start_stop['time'],                  #data e ora di partenza
+            end_stop['date'] + " " + end_stop['time'], tour["user"],        #data e ora di arrivo
+            it_id,                                                          #id dellítinerario richiesto
+            start_stop['location'][1], start_stop['location'][0],           #lat e lng di partenza
+            end_stop['location'][1], end_stop['location'][0]])              #lat e lng di arrivo
 
     return str(route_expiration), order_list, it_list,
 
@@ -283,6 +285,9 @@ def propose_route_callback(ch, method, properties, body):
     print("Received prepared routes message: \n" + json.dumps(json_return))
 
     route_expiration, order_list, it_list = json_to_route_info(json_return)
+    print("ROUTE EXPIRATION:\n" + str(route_expiration))
+    print("\nORDER_LIST\n" + str(order_list))
+    print("\nIT_LIST\n" + str(it_list))
     res = None
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         res = proxy.insert_route_info(route_expiration, order_list, it_list)
@@ -394,11 +399,11 @@ if __name__ == "__main__":
             ]
         }
     }
-    route_expiration, order_list, it_list = json_to_route_info(prova)
+    #route_expiration, order_list, it_list = json_to_route_info(prova)
 
-    print("ROUTE EXPIRATION:\n" + str(route_expiration))
-    print("\nORDER_LIST\n" + str(order_list))
-    print("\nIT_LIST\n" + str(it_list))
+    #print("ROUTE EXPIRATION:\n" + str(route_expiration))
+    #print("\nORDER_LIST\n" + str(order_list))
+    #print("\nIT_LIST\n" + str(it_list))
 
     # with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
     # res = proxy.insert_route_info(route_expiration, order_list, it_list)
