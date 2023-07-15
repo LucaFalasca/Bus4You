@@ -259,10 +259,14 @@ def json_to_route_info(json_input):
     print("Total metres: " + str(total_metres))
     print("Total price: " + str(total_price))
 
+    print("nodes: " + str(nodes))
     print(json_input['user_routes'])
     for tour in json_input['user_routes']:
-        start_stop = json_input['steps'][int(tour["nodes"][0])]
-        end_stop = json_input['steps'][int(tour["nodes"][1])]
+        start_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][0])
+        end_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][1])
+
+        print("start_stop: " + str(start_stop))
+        print("end_stop: " + str(end_stop))
         metres = matrix_distance[int(tour["nodes"][0])][int(tour["nodes"][1])]
         it_id = tour["it_id"]
         weight = metres / total_metres
@@ -278,6 +282,12 @@ def json_to_route_info(json_input):
             end_stop['location'][1], end_stop['location'][0]])              #lat e lng di arrivo
 
     return str(route_expiration), order_list, it_list,
+
+def get_step_from_node_number(steps, node_number):
+    for i in range(len(steps)):
+        if steps[i]['id'] == node_number:
+            return steps[i]
+    return -1
 
 
 def propose_route_callback(ch, method, properties, body):
