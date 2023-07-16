@@ -1,5 +1,6 @@
 from datetime import date
 from datetime import time
+from OrsDaoBS import *
 
 from neo4j import GraphDatabase
 
@@ -299,7 +300,6 @@ class Neo4jDAO:
 
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
-
 
     def get_compatible_time_bookings(self):
         with self.driver.session() as session:
