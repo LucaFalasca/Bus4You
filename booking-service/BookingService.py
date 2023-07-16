@@ -76,7 +76,7 @@ def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
     stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
-    booking_id = dao.create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+    booking_id = dao.create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
                                              position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
@@ -100,7 +100,7 @@ def create_booking_type_start(username, name_start_stop, name_end_stop, date, ho
     user_id = dao.create_user(username)
     stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
     stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
-    booking_id = dao.create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+    booking_id = dao.create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                                                position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
@@ -249,8 +249,8 @@ def json_to_route_info(json_input):
         total_distance += matrix_distance[order_list[i][0]][order_list[i + 1][0]]
 
     total_metres = 0
-    for username, route in json_input['user_routes'].items():
-        metres = matrix_distance[int(route[0])][int(route[1])]
+    for tour in json_input['user_routes']:
+        metres = matrix_distance[int(tour["nodes"][0])][int(tour["nodes"][1])]
         total_metres += metres
 
     lt_per_km = 0.08
@@ -267,22 +267,35 @@ def json_to_route_info(json_input):
     print("Total price: " + str(total_price))
     
 
-    print(json_input['user_routes'].items())
-    for username, route in json_input['user_routes'].items():
-        start_stop = json_input['steps'][int(route[0])]
-        end_stop = json_input['steps'][int(route[1])]
-        metres = matrix_distance[int(route[0])][int(route[1])]
+    print("nodes: " + str(nodes))
+    print(json_input['user_routes'])
+    for tour in json_input['user_routes']:
+        start_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][0])
+        end_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][1])
+
+        print("start_stop: " + str(start_stop))
+        print("end_stop: " + str(end_stop))
+        metres = matrix_distance[int(tour["nodes"][0])][int(tour["nodes"][1])]
+        it_id = tour["it_id"]
         weight = metres / total_metres
         price = total_price * weight
         print()
-        it_list.append(
-            [round(price, 2), round(metres / 1000, 3), start_stop['date'] + " " + start_stop['time'],
-             end_stop['date'] + " " + end_stop['time'], username,
-             1,
-             start_stop['location'][1], start_stop['location'][0],
-             end_stop['location'][1], end_stop['location'][0]])
+        it_list.append([
+            round(price, 2),                                                #prezzo
+            round(metres / 1000, 3),                                        #distanza
+            start_stop['date'] + " " + start_stop['time'],                  #data e ora di partenza
+            end_stop['date'] + " " + end_stop['time'], tour["user"],        #data e ora di arrivo
+            it_id,                                                          #id dellítinerario richiesto
+            start_stop['location'][1], start_stop['location'][0],           #lat e lng di partenza
+            end_stop['location'][1], end_stop['location'][0]])              #lat e lng di arrivo
 
     return str(route_expiration), order_list, it_list,
+
+def get_step_from_node_number(steps, node_number):
+    for i in range(len(steps)):
+        if steps[i]['id'] == node_number:
+            return steps[i]
+    return -1
 
 
 def propose_route_callback(ch, method, properties, body):
@@ -290,6 +303,9 @@ def propose_route_callback(ch, method, properties, body):
     print("Received prepared routes message: \n" + json.dumps(json_return))
 
     route_expiration, order_list, it_list = json_to_route_info(json_return)
+    print("ROUTE EXPIRATION:\n" + str(route_expiration))
+    print("\nORDER_LIST\n" + str(order_list))
+    print("\nIT_LIST\n" + str(it_list))
     res = None
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         res = proxy.insert_route_info(route_expiration, order_list, it_list)
@@ -346,14 +362,6 @@ if __name__ == "__main__":
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     #some_calls()
-    #create_booking_type_start("Prova", "Colosseo", "San Giovanni", "2023-07-23", "9:30", 41.889927, 12.494197, 41.885616, 12.509768)
-    create_booking_type_start("Alice", "Termini", "Piazza Venezia", "2023-07-23", "12:00",
-                            41.900473, 12.500650, 41.894342, 12.481170)
-    create_booking_type_end("Prova", "Colosseo", "San Giovanni", "2023-07-23", "12:10",
-                              41.889927, 12.494197, 41.885616, 12.509768)
-    create_booking_type_end("Prova", "Colosseo", "San Giovanni", "2023-07-23", "13:10",
-                              41.889927, 12.494197, 41.885616, 12.509768)
-
 
     dao.close()
 
@@ -424,6 +432,7 @@ if __name__ == "__main__":
             ]
         }
     }
+
     route_expiration, order_list, it_list = json_to_route_info(prova)
 
     print("ROUTE EXPIRATION:\n" + str(route_expiration))
