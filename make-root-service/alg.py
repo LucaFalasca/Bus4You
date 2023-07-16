@@ -69,8 +69,6 @@ def check_prec(route, prec_hash):
 
 
 def is_better(new, old):
-    if len(new) == 0:
-        return True
     if new[0] < old[0]:
         return True
     elif new[0] > old[0]:
@@ -169,9 +167,9 @@ def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
         final_ruote = result[0]
         user_travel_time = {}
         ruote_dict = {tup[0]: tup[1] for tup in final_ruote}
-        for route in user_routes:
-            user_travel_time[route["it_id"]] = str(datetime.timedelta(
-                minutes=round((float(ruote_dict[route["nodes"][1]]) - float(ruote_dict[route["nodes"][0]])), 0)))
+        for user in user_routes:
+            user_travel_time[user] = str(datetime.timedelta(
+                minutes=round((float(ruote_dict[user_routes[user][1]]) - float(ruote_dict[user_routes[user][0]])), 0)))
         return result, user_travel_time
 
 
@@ -184,7 +182,7 @@ def prepared_routes_callback(ch, method, properties, body):
     prec_hash = message["prec_hash"]
     dist_matrix = message["dist_matrix"]
     user_routes = message["user_routes"]
-    date_string = user_routes[0]["date"]
+    date_string = message["date"]
     date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     result = calculate_route(dist_matrix, prec_hash, node_limit, user_routes)
     print("Result : " + str(result))
