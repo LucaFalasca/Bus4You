@@ -244,16 +244,18 @@ class Neo4jDAO:
             "WHERE id(b) = $booking_id "
             "WITH collect(DISTINCT booking) as all_bookings, s1 "
             "UNWIND all_bookings as booking "
-            "MATCH (booking)-[:END_STOP]->(s2:Stop) "
-            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, booking.position_start_stop AS position_start_stop, booking.type AS b_type "
-            "LIMIT $limit"
+            "MATCH (booking)-[:END_STOP]->(s2:Stop) MATCH (booking)<-[:BOOKS]-(u:User)"
+            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
+            "id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, "
+            "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
+            "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
+            "u.name as u_name LIMIT $limit"
         )
 
         with self.driver.session() as session:
             result = session.run(query, booking_id=booking_id, limit=limit)
 
             bookings = []
-            print("AO")
             for record in result:
                 
                 print(record["b_day"])
@@ -266,7 +268,9 @@ class Neo4jDAO:
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
                     "position_end_stop": record["position_end_stop"],
-                    "type": record["b_type"]
+                    "type": record["b_type"],
+                    "user": record["u_name"],
+                    "it_id": record["it_id"]
                 }
                 if record["b_type"] == "start":
                     booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
