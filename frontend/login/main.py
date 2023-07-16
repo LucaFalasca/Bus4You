@@ -121,14 +121,14 @@ def get_user_balance():
     session['balance'] = balance
     return jsonify(result=balance)
 
+
 @app.route('/load_recomended_routes_page', methods=['GET'])
 def load_recomended_routes_page():
     usr = session['usr']
     mail = session['mail']
     gateway_get_recommended_routes_url = 'http://gateway-api:50052/api/get_future_confirmed_routes'
     recommended_routes = json.loads(requests.get(gateway_get_recommended_routes_url).json())
-    
-    #recommended_routes = ['Stringa 1', 'Stringa 2', 'Stringa 3', 'Stringa 4', 'Stringa 5', 'Stringa 6', 'Stringa 7', 'Stringa 8', 'Stringa 9', 'Stringa 10']
+
     return render_template("recommended_routes.html", recommended_routes=recommended_routes)
 
 
@@ -156,6 +156,7 @@ def get_path():
     result = requests.post(url, json=body).json()
     print(result)
     return jsonify(result=result)
+
 
 @app.route('/_get_path_from_stops', methods=['POST'])
 def get_path_from_stops():
@@ -244,16 +245,16 @@ def reject_book():
                 start_hour = it_prop_start_obj.strftime("%Y-%m-%d %H:%M:%S")
                 date = start_hour.split(' ')[0]
                 time = start_hour.split(' ')[1]
-            print(mail)
-            print(starting_point)
-            print(start_lat)
-            print(start_lng)
-            print(ending_point)
-            print(end_lat)
-            print(end_lng)
-            print(date)
-            print(time)
-            print(start_or_finish)
+            # print(mail)
+            # print(starting_point)
+            # print(start_lat)
+            # print(start_lng)
+            # print(ending_point)
+            # print(end_lat)
+            # print(end_lng)
+            # print(date)
+            # print(time)
+            # print(start_or_finish)
             gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + \
                                         starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + \
                                         '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
@@ -315,6 +316,35 @@ def get_km_from_subroute():
     result = requests.post(url, json=body).json()
     print(result)
     return jsonify(result=result)
+
+
+@app.route('/join_recommended_route', methods=['GET', 'POST'])
+def join_recommended_route():
+    data = request.form
+    mail = session['mail']
+    parsed_data = []
+    for elem in data.items():
+        parsed_data.append([elem[0], elem[1]])
+    route_id = parsed_data[1][1]
+    start_lat = parsed_data[3][1]
+    start_lng = parsed_data[4][1]
+    end_lat = parsed_data[6][1]
+    end_lng = parsed_data[7][1]
+    price = parsed_data[8][1]
+    distance = parsed_data[9][1]
+    start_date = parsed_data[10][1]
+    end_date = parsed_data[11][1]
+
+    gateway_join_recommended_route = 'http://gateway-api:50052/api/join_recommended_route?start_lat=' + start_lat + \
+                                     '&start_lng=' + start_lng + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
+                                     '&start_date=' + start_date + '&end_date=' + end_date + '&price=' + price + \
+                                     '&distance=' + distance + '&route_id=' + route_id + '&mail=' + mail
+    response = requests.get(gateway_join_recommended_route).json()
+    if response['status'] == 'ok':
+        flash("Route joined correctly", category='info')
+    elif response['status'] == 'error':
+        flash("Route join failed", category='info')
+    return redirect(url_for('join_recommended_route_page'))
 
 
 if __name__ == '__main__':

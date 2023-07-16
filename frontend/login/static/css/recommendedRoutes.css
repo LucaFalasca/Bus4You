@@ -101,5 +101,112 @@ label{
     color: white;
 }
 
+button[id^="btnModalConfirmClose"]{
+    text-align: center;
+    width: 40%;
+    background-color: #152733;
+    color: #4a9b4d;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4a9b4d;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+    border-width: 2px;
+}
+
+input[id^="btnModalConfirm"]{
+    text-align: center !important;
+    width: 40% !important;
+    background-color: #4a9b4d !important;
+    color: white !important;
+    padding: 8px 8px !important;
+    margin-top: 8px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    transition-duration: 0.4s !important;
+    cursor: pointer !important;
+    border-color: #3e7e3f !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px;
+}
+
+button[id^="btnModalConfirmClose"]:hover{
+    background-color: #142431;
+    border-color: #3e7e3f;
+    color: #3e7e3f;
+}
+
+input[id^="btnModalConfirm"]:hover{
+    background-color: #3e7e3f !important;
+    border-color: #3e7e3f !important;
+}
+
+.modal-content, .modal-header, .modal-body, .modal-footer{
+    color: white !important;
+    background-color: #152733 !important;
+    border-radius: 12px !important;
+}
+
+button[id^="btnJoin"]:hover{
+    background-color: #3e7e3f;
+    border-color: #3e7e3f;
+}
+
+button[id^="btnJoin"]:focus{
+    border-color: #3e7e3f !important;
+}
+
+button[id^="btnJoin"]{
+    text-align: center;
+    width: 100%;
+    background-color: #4a9b4d;
+    color: white;
+    padding: 8px 8px;
+    margin-top: 6%;
+    margin-right: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4CAF50;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+}
+
+#btnReset{
+    text-align: center;
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 6%;
+    border-style: solid;
+    border-color: #c5c5c5;
+    transition-duration: 0.4s;
+    padding: 8px 8px;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+}
+
+#btnReset:hover{
+    background-color: #c5c5c5;
+    border-color: #c5c5c5;
+}
+
+
+
+
 
 

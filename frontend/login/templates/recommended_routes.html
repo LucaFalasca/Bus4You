@@ -39,8 +39,9 @@
                                         }
                                         
                                     </script>
-                                    <form action="/select-route-from-map" method="GET">
+                                    <form action="/join_recommended_route" method="GET">
                                         <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
+                                        <input type="hidden" id="route{{ recommended_routes.index(route) }}" name="route" value={{ route["route"] }}>
                                         <div class="row">
                                           <div class="col-12">
                                               <label>Start Point</label>
@@ -49,7 +50,7 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di partenza -->
-                                              <input type="text" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point" placeholder="Starting point">
+                                              <input type="text" readonly="readonly" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point" placeholder="Starting point">
                                               <input type="hidden" id="start_lat{{ recommended_routes.index(route) }}" name="start_lat">
                                               <input type="hidden" id="start_lng{{ recommended_routes.index(route) }}" name="start_lng">
                                           </div>
@@ -65,7 +66,7 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di arrivo -->
-                                              <input type="text" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point" placeholder="Ending point">
+                                              <input type="text" readonly="readonly" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point" placeholder="Ending point">
                                               <input type="hidden" id="end_lat{{ recommended_routes.index(route) }}" name="end_lat">
                                               <input type="hidden" id="end_lng{{ recommended_routes.index(route) }}" name="end_lng">
                                           </div>
@@ -76,19 +77,36 @@
                                         <div class="row">
                                             <div class="col-9">
                                                 <!-- campo per l'inserimento del punto di arrivo -->
-                                                <input type="text" id="price{{ recommended_routes.index(route) }}" name="price" placeholder="0€">
+                                                <input type="text" readonly="readonly" id="price{{ recommended_routes.index(route) }}" name="price" placeholder="0€">
                                                 <input type="hidden" id="km{{ recommended_routes.index(route) }}" name="km">
+                                                <input type="hidden" id="start_date{{ recommended_routes.index(route) }}" name="start_date">
+                                                <input type="hidden" id="end_date{{ recommended_routes.index(route) }}" name="end_date">
                                             </div>
                                             <div class="col-3">
                                             </div>
                                           </div>
                                         <div class="row">
-                                          <div class="col-9">
-                                            <button type="button" onclick="set_all_marker_default{{ recommended_routes.index(route) }}()">Reset</button>
+                                          <div id="divReset" class="col-3">
+                                            <button type="button" id="btnReset" onclick="set_all_marker_default{{ recommended_routes.index(route) }}()">Reset</button>
                                           </div>
-                                          <div class="col-3">
-                                              <!-- pulsante di submit del form -->
-                                              <input type="submit" value="Request">
+                                          <div class="col-3"></div>
+                                          <div id="joinDiv" class="col-3">
+                                            <button type="button" id="btnJoin{{ recommended_routes.index(route) }}" data-bs-toggle="modal" data-bs-target="#confirmModal{{ recommended_routes.index(route) }}">Join Route</button>
+                                              <!-- Modal Confirm -->
+                                            <div class="modal fade" tabindex="-1" role="dialog" id="confirmModal{{ recommended_routes.index(route) }}" aria-labelledby="confirmModalTitle" aria-describedby="confirmModalDescription">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to join the route?</h5>
+                                                        <p>Qui ci va il piccolo riepilogo, fermate che ha selezionato + prezzo</p>
+                                                    </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnModalConfirmClose{{ recommended_routes.index(route) }}" class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal">Close</button>
+                                                                <input type=submit id="btnModalConfirm{{ recommended_routes.index(route) }}" class="btn btn-primary btn-sm" value="Confirm and Pay">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                           </div>
                                         </div>
                                     </form>

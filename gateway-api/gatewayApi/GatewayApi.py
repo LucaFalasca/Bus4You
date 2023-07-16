@@ -120,8 +120,6 @@ def get_path():
     print(stops)
     true_stops = [[float(s[2]), float(s[1])] for s in stops]
     body['coordinates'] = true_stops
-    
-    print("CIAOO")
     print(body)
     result = requests.post(url, json=body).json()
     print(result)
@@ -130,6 +128,7 @@ def get_path():
     coords_reversed = [coord[::-1] for coord in coords]
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
+
 
 @api.route('/api/get_path_from_stops', methods=['POST'])
 def get_path_from_stops():
@@ -140,8 +139,6 @@ def get_path_from_stops():
     print(stops)
     true_stops = [[float(s[1]), float(s[0])] for s in stops]
     body['coordinates'] = true_stops
-    
-    print("CIAOO")
     print(body)
     result = requests.post(url, json=body).json()
     print(result)
@@ -203,7 +200,8 @@ def get_total_km():
         ret = proxy.get_total_km(route_id)
         print(ret)
         return json.dumps(ret)
-    
+
+
 @api.route('/api/get_km_from_subroute', methods=['POST'])
 def get_km_from_subroute():
     stops = request.get_json()
@@ -225,6 +223,24 @@ def get_km_from_subroute():
     coords_reversed = [coord[::-1] for coord in coords]
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
+
+
+@api.route('/join_recommended_route', methods=['GET', 'POST'])
+def join_recommended_route():
+    route_id = request.args.get('route_id')
+    start_lat = request.args.get('start_lat')
+    start_lng = request.args.get('start_lng')
+    end_lat = request.args.get('end_lat')
+    end_lng = request.args.get('end_lng')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    price = request.args.get('price')
+    distance = request.args.get('distance')
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
+                                           price, distance)
+        print(ret)
+        return json.dumps(ret)
 
 
 if __name__ == '__main__':

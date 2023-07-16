@@ -20,6 +20,7 @@ def serve():
     server.register_function(get_future_confirmed_routes, "get_future_confirmed_routes")
     server.register_function(get_stop_name_from_coords, 'get_stop_name_from_coords')
     server.register_function(get_total_km, 'get_total_km')
+    server.register_function(join_recommended_route, 'join_recommended_route')
     server.serve_forever()
 
 
@@ -154,12 +155,18 @@ def get_stop_name_from_coords(lat, lon):
     conn.close()
     return json.dumps(stop_name)
 
+
 def get_total_km(route_id):
     usr_db = DbDao()
     conn = usr_db.connect()
     total_km = usr_db.get_total_km_query(conn, route_id)
     conn.close()
     return json.dumps(total_km)
+
+
+def join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
+                                           price, distance):
+    pass #TODO sia la chiamata alla dao che la query stessa
 
 
 if __name__ == "__main__":
