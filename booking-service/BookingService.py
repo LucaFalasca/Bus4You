@@ -67,7 +67,7 @@ PROPOSE_ROUTE_QUEUE = 'propose_route'
 '''
 
 
-def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
+def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
                             position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -91,7 +91,7 @@ def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour
         return
 
 
-def create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
+def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                               position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -336,9 +336,6 @@ def serverRPCThread():
 
 
 def rabbitMQThread():
-    # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    # test_rabbitMq(queue_channel)
 
     # Coda da consumer per ricevere i messaggi di makeRouteService
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
