@@ -81,24 +81,29 @@ def request_route():
     end_lng = request.args.get('end_lng')
     date = request.args.get('date')
     start_or_finish_raw = request.args.get('start-finish')
+    time = request.args.get('time')
     if start_or_finish_raw == 'on':
         start_or_finish = 'start'
     else:
         start_or_finish = 'finish'
-    time = request.args.get('time')
-    # print(starting_point)
-    # print(ending_point)
-    # print(date)
-    # print(start_or_finish)
-    # print(time)
-    # print(start_lat)
-    # print(start_lng)
-    # print(end_lat)
-    # print(end_lng)
+    print(starting_point)
+    print(ending_point)
+    print(date)
+    print(start_or_finish)
+    print(time)
+    print(start_lat)
+    print(start_lng)
+    print(end_lat)
+    print(end_lng)
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops'
     bus_stops = requests.get(gateway_get_bus_stops_url).json()
 
-    if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
+    if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None \
+            or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
+        return render_template("select_route_from_map.html", bus_stops=bus_stops)
+    elif starting_point == '' or ending_point == '' or date == '' or start_or_finish == '' or time == '' or \
+            start_lat == '' or start_lng == '' or end_lat == '' or end_lng == '':
+        Flask.alert('Some required fields are empty', category='info')
         return render_template("select_route_from_map.html", bus_stops=bus_stops)
     else:
         gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
