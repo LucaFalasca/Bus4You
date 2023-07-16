@@ -67,7 +67,7 @@ PROPOSE_ROUTE_QUEUE = 'propose_route'
 '''
 
 
-def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
+def create_booking_type_end(username, name_start_stop, name_end_stop, date, hour_end,
                             position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -81,14 +81,17 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
     if dao.search_for_compatibility_type_1(booking_id):
+        dao.get_compatible_time_bookings()
         return
     if dao.search_for_compatibility_type_2(booking_id):
+        dao.get_compatible_time_bookings()
         return
     if dao.search_for_compatibility_type_3(booking_id):
+        dao.get_compatible_time_bookings()
         return
 
 
-def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
+def create_booking_type_start(username, name_start_stop, name_end_stop, date, hour_start,
                               position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
@@ -102,27 +105,30 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
 
     if dao.search_for_compatibility_type_1(booking_id):
+        dao.get_compatible_time_bookings()
         return
     if dao.search_for_compatibility_type_2(booking_id):
+        dao.get_compatible_time_bookings()
         return
     if dao.search_for_compatibility_type_3(booking_id):
+        dao.get_compatible_time_bookings()
         return
 
 
 def some_calls():
     # Esempio 1
-    create_booking_type_end(100001, "Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
+    create_booking_type_end("Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
                             41.900473, 12.500650, 41.894342, 12.481170)
 
     # Esempio 2
-    create_booking_type_start(100002, "Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
+    create_booking_type_start("Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
                               41.889927, 12.494197, 41.885616, 12.509768)
 
     # Esempio 3
-    create_booking_type_end(100003, "Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
+    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
                             41.912492, 12.477485, 41.911860, 12.475263)
 
-    '''
+
     # Esempio 4
     create_booking_type_start("Dave", "Ostia Antica", "Fiumicino Airport", "2023-07-23", "14:00",
                             41.7553, 12.2922, 41.7966, 12.2366)
@@ -151,7 +157,7 @@ def some_calls():
     create_booking_type_start("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", "2023-07-23",
                             "14:45",
                             41.9271, 12.4997, 41.8532, 12.5636)
-    '''
+
 
 
 '''Funzione per inizializzare le code di rabbitMq e ricevere l'handler per la comunicazione, per aggiungere una coda
@@ -229,6 +235,7 @@ def json_to_route_info(json_input):
 
     route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
 
+    
     for step in json_input['steps']:
         order_list.append([int(step['id']), step['location'][1], step['location'][0]])
         nodes[int(step['id'])] = [step['location'][0], step['location'][1]]
@@ -258,6 +265,7 @@ def json_to_route_info(json_input):
     print("Total distance: " + str(total_distance))
     print("Total metres: " + str(total_metres))
     print("Total price: " + str(total_price))
+    
 
     print(json_input['user_routes'].items())
     for username, route in json_input['user_routes'].items():
@@ -312,6 +320,10 @@ def serverRPCThread():
 
 
 def rabbitMQThread():
+    # create queues for rabbitMq the channel has to be passed as parameter to publish function
+    queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
+    # test_rabbitMq(queue_channel)
+
     # Coda da consumer per ricevere i messaggi di makeRouteService
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
                                                                    blocked_connection_timeout=3600))
@@ -327,12 +339,30 @@ def rabbitMQThread():
 
 
 if __name__ == "__main__":
+    print("*********")
+    print("*********")
+    print("*********")
+
+
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     #some_calls()
+    #create_booking_type_start("Prova", "Colosseo", "San Giovanni", "2023-07-23", "9:30", 41.889927, 12.494197, 41.885616, 12.509768)
+    create_booking_type_start("Alice", "Termini", "Piazza Venezia", "2023-07-23", "12:00",
+                            41.900473, 12.500650, 41.894342, 12.481170)
+    create_booking_type_end("Prova", "Colosseo", "San Giovanni", "2023-07-23", "12:10",
+                              41.889927, 12.494197, 41.885616, 12.509768)
+    create_booking_type_end("Prova", "Colosseo", "San Giovanni", "2023-07-23", "13:10",
+                              41.889927, 12.494197, 41.885616, 12.509768)
+
 
     dao.close()
 
-    prova = {
+
+    print("*********")
+
+
+
+    '''prova = {
         "steps": [
             {
                 "id": "2",
@@ -394,13 +424,12 @@ if __name__ == "__main__":
             ]
         }
     }
-
-    '''route_expiration, order_list, it_list = json_to_route_info(prova)
+    route_expiration, order_list, it_list = json_to_route_info(prova)
 
     print("ROUTE EXPIRATION:\n" + str(route_expiration))
     print("\nORDER_LIST\n" + str(order_list))
     print("\nIT_LIST\n" + str(it_list))'''
-    
+
     # with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
     # res = proxy.insert_route_info(route_expiration, order_list, it_list)
     # print("annata bene? " + str(res))
@@ -412,3 +441,4 @@ if __name__ == "__main__":
 
     rpcThread.join()
     queueThread.join()
+
