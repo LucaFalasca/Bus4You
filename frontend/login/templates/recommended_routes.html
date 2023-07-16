@@ -50,8 +50,8 @@
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di partenza -->
                                               <input type="text" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point" placeholder="Starting point">
-                                              <input type="hidden" id="start_lat" name="start_lat">
-                                              <input type="hidden" id="start_lng" name="start_lng">
+                                              <input type="hidden" id="start_lat{{ recommended_routes.index(route) }}" name="start_lat">
+                                              <input type="hidden" id="start_lng{{ recommended_routes.index(route) }}" name="start_lng">
                                           </div>
                                           <div class="col-3">
                                               <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord{{ recommended_routes.index(route) }}()">Select </button>
@@ -66,13 +66,22 @@
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di arrivo -->
                                               <input type="text" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point" placeholder="Ending point">
-                                              <input type="hidden" id="end_lat" name="end_lat">
-                                              <input type="hidden" id="end_lng" name="end_lng">
+                                              <input type="hidden" id="end_lat{{ recommended_routes.index(route) }}" name="end_lat">
+                                              <input type="hidden" id="end_lng{{ recommended_routes.index(route) }}" name="end_lng">
                                           </div>
                                           <div class="col-3">
                                               <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord{{ recommended_routes.index(route) }}()">Select</button>
                                           </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <!-- campo per l'inserimento del punto di arrivo -->
+                                                <input type="text" id="price{{ recommended_routes.index(route) }}" name="price" placeholder="0€">
+                                                <input type="hidden" id="km{{ recommended_routes.index(route) }}" name="km">
+                                            </div>
+                                            <div class="col-3">
+                                            </div>
+                                          </div>
                                         <div class="row">
                                           <div class="col-9">
                                             <button type="button" onclick="set_all_marker_default{{ recommended_routes.index(route) }}()">Reset</button>
@@ -108,8 +117,15 @@
                                                 var busStopIconGray = new busStopIcon({iconUrl: '/static/resources/bus-stop-gray.png' });
                                                 
                                                 //var path{{ recommended_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ recommended_routes.index(route) }});
-
                                                 
+                                                km_total{{ recommended_routes.index(route) }} = 0;
+
+                                                fetch('/_get_total_km_trips?id=' + route["route"])
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        km_total{{ recommended_routes.index(route) }} = data.result;
+                                                        console.log("KM_RESULT: " + km_total{{ recommended_routes.index(route) }});
+                                                    });
 
                                                 //map{{ recommended_routes.index(route) }}.fitBounds(path{{ recommended_routes.index(route) }}.getBounds());
                                                 
@@ -189,6 +205,7 @@
                                                     if(endingPoint{{ recommended_routes.index(route) }} != null){
                                                         endingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconRed);
                                                     }
+                                                    
                                                 }
 
                                                 
@@ -255,8 +272,8 @@
                                                                 var lat = clickedMarker.getLatLng().lat;
                                                                 var lng = clickedMarker.getLatLng().lng;
                                                                 document.getElementById("starting_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
-                                                                document.getElementById("start_lat").value = lat;
-                                                                document.getElementById("start_lng").value = lng;
+                                                                document.getElementById("start_lat{{ recommended_routes.index(route) }}").value = lat;
+                                                                document.getElementById("start_lng{{ recommended_routes.index(route) }}").value = lng;
 
                                                             }
                                                             else if (point{{ recommended_routes.index(route) }} == "end"){
@@ -268,13 +285,22 @@
                                                                 var lat = clickedMarker.getLatLng().lat;
                                                                 var lng = clickedMarker.getLatLng().lng;
                                                                 document.getElementById("ending_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
-                                                                document.getElementById("end_lat").value = lat;
-                                                                document.getElementById("end_lng").value = lng;
+                                                                document.getElementById("end_lat{{ recommended_routes.index(route) }}").value = lat;
+                                                                document.getElementById("end_lng{{ recommended_routes.index(route) }}").value = lng;
                                                             }
                                                         }
                                                     }
+                                                    if(startingPoint{{ recommended_routes.index(route) }} != null && endingPoint{{ recommended_routes.index(route) }} != null){
+                                                        start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
+                                                        end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
+                                                        console.log("START_INDEX: " + start_index);
+                                                        console.log("END_INDEX: " + end_index);
+                                                        price = compute_price(start_index, end_index);
+                                                        console.log("PRICE: " + price);
+
+                                                    }
                                                 }
-                                                
+                                
                                                 var bus_stops{{ recommended_routes.index(route) }} = [];
                                                 var bus_stop_names{{ recommended_routes.index(route) }} = [];
                                                 for (var i = 0; i < route["steps"].length; i++) {
@@ -282,7 +308,8 @@
                                                     bus_stop_names{{ recommended_routes.index(route) }}.push(route["steps"][i]["name"]);
                                                 }
                                                 
-                                                console.log(bus_stops{{ recommended_routes.index(route) }})
+                                                console.log("BUS STOPS" + bus_stops{{ recommended_routes.index(route) }});
+                                                console.log("BUS STOPS 000" + bus_stops{{ recommended_routes.index(route) }}.slice(0, 3));
 
                                                 var c = 0;
                                                 bus_stops{{ recommended_routes.index(route) }}.forEach(function(bus_stop) {
@@ -299,6 +326,23 @@
                                                 });  
 
                                                 var url = "";
+
+                                                function compute_price(start, end){
+                                                    fetch('/_get_km_from_subroute', {
+                                                      method: 'POST',
+                                                      body: JSON.stringify(bus_stops{{ recommended_routes.index(route) }}.slice(start, stop)),
+                                                      headers: {
+                                                        'Content-Type': 'application/json'
+                                                      }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        km = data.result;
+                                                        console.log("KM: " + km);
+
+
+                                                    });
+                                                }
 
                                                 fetch('/_get_path_from_stops', {
                                                       method: 'POST',

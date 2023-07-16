@@ -203,6 +203,28 @@ def get_total_km():
         ret = proxy.get_total_km(route_id)
         print(ret)
         return json.dumps(ret)
+    
+@api.route('/api/get_km_from_subroute', methods=['POST'])
+def get_km_from_subroute():
+    stops = request.get_json()
+    print(stops)
+    true_stops = [[float(s[1]), float(s[0])] for s in stops]
+    body = {}
+    body['coordinates'] = true_stops
+    url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
+    print(stops)
+    true_stops = [[float(s[1]), float(s[0])] for s in stops]
+    body['coordinates'] = true_stops
+    
+    print("CIAOO")
+    print(body)
+    result = requests.post(url, json=body).json()
+    print(result)
+    coords = result["features"][0]["properties"]["summary"]["distance"]
+    print(coords)
+    coords_reversed = [coord[::-1] for coord in coords]
+    final_ret = {"coordinates": coords_reversed, "stops": true_stops}
+    return json.dumps(final_ret)
 
 
 if __name__ == '__main__':

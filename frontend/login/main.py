@@ -291,6 +291,26 @@ def confirm_book():
         flash("Book confirmation failed", category='info')
     return redirect(url_for('load_user_routes_page'))
 
+@app.route('/_get_total_km_trips', methods=['GET', 'POST'])
+def get_total_km_trips():
+    id_route = request.args.get('id')
+    gateway_get_total_km_trips_url = 'http://gateway-api:50052/api/get_total_km?route_id=' + id_route
+    print(gateway_get_total_km_trips_url)
+    bus_stops = requests.get(gateway_get_total_km_trips_url).json()
+    return jsonify(result=bus_stops)
+
+@app.route('/_get_km_from_subroute', methods=['POST'])
+def get_km_from_subroute():
+    data = request.get_json()
+    print(data)
+
+    url = 'http://gateway-api:50052/api/get_km_from_subroute'
+    body = data
+
+    result = requests.post(url, json=body).json()
+    print(result)
+    return jsonify(result=result)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
