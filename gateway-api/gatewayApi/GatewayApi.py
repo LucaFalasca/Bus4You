@@ -204,6 +204,47 @@ def get_total_km():
 
 @api.route('/api/get_km_from_subroute', methods=['POST'])
 def get_km_from_subroute():
+    print("REQUEST" + str(request))
+    request_value = request.get_json()
+    stops = request_value["bus_stops"]
+    print(stops)
+    true_stops = [[float(s[1]), float(s[0])] for s in stops]
+    body = {}
+    body['coordinates'] = true_stops
+    url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
+    print(stops)
+    true_stops = [[float(s[1]), float(s[0])] for s in stops]
+    body['coordinates'] = true_stops
+    print("CIAOO")
+    print(body)
+    result = requests.post(url, json=body).json()
+    print(result)
+    distance = result["features"][0]["properties"]["summary"]["distance"]
+    print(distance)
+    
+    route_id = request_value['route']
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = json.loads(proxy.get_total_km(route_id))
+        print(ret)
+    total_km = ret[0][0]
+    total_price = ret[0][1]
+
+
+
+    print("DISTANCE" + str(distance))
+    print("TOTAL KM" + str(total_km))
+    print("TOTAL PRICE" + str(total_price))
+
+    weight = distance / (float(total_km) * 1000 + distance)
+    price = float(total_price) * weight
+
+    final_ret = {"price" : round(price, 2), 
+                 "distance" : distance}
+    print(final_ret)
+    return json.dumps(final_ret)
+
+@api.route('/api/get_price_from_subroute', methods=['POST'])
+def get_price_from_subroute():
     stops = request.get_json()
     print(stops)
     true_stops = [[float(s[1]), float(s[0])] for s in stops]
@@ -222,6 +263,9 @@ def get_km_from_subroute():
     print(coords)
     coords_reversed = [coord[::-1] for coord in coords]
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
+
+
+
     return json.dumps(final_ret)
 
 
