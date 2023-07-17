@@ -163,7 +163,7 @@ def delete_nodes_from_list(list):
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     # print(get_random_cluster_with_limits(5))
-    delete_nodes_from_list([29,31])
+    #delete_nodes_from_list([29,31])
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     send_nodes_for_computation(queue_channel)
     # while True:

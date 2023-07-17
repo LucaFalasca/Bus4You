@@ -355,7 +355,7 @@ class Neo4jDAO:
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
                     '''
 
-                    if not (hour - offset1 < hour_diff < hour + offset2):
+                    if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                                     "WHERE id(b) = $id AND id(other_booking) = $other_id "
                                     "DELETE r", id=node["id"], other_id=node["other_id"])
@@ -379,7 +379,7 @@ class Neo4jDAO:
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
                     '''
 
-                    if not (hour - offset1 < hour_diff < hour + offset2):
+                    if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                                     "WHERE id(b) = $id AND id(other_booking) = $other_id "
                                     "DELETE r", id=node["id"], other_id=node["other_id"])
@@ -408,7 +408,7 @@ class Neo4jDAO:
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
                     '''
 
-                    if not (hour - offset1 < hour_diff < hour + offset2):
+                    if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                                     "WHERE id(b) = $id AND id(other_booking) = $other_id "
                                     "DELETE r", id=node["id"], other_id=node["other_id"])
@@ -440,7 +440,7 @@ class Neo4jDAO:
                     '''
 
 
-                    if not (hour - offset1 < hour_diff < hour + offset2):
+                    if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                                     "WHERE id(b) = $id AND id(other_booking) = $other_id "
                                     "DELETE r", id=node["id"], other_id=node["other_id"])
