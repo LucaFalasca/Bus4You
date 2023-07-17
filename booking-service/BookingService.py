@@ -352,9 +352,6 @@ def rabbitMQThread():
 
 
 if __name__ == "__main__":
-    print("*********")
-    print("*********")
-    print("*********")
 
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")

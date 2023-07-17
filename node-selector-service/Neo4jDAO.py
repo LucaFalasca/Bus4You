@@ -56,16 +56,18 @@ class Neo4jDAO:
             booking_id = result.single()[0]
         return booking_id
 
-    def create_booking_type_start(self, username, name_start_stop, name_end_stop, date, hour_start, position_start_stop,
-                                position_end_stop):
+    def create_booking_type_start(self, it_id, username, name_start_stop, name_end_stop, date, hour_start,
+                                  position_start_stop,
+                                  position_end_stop):
         with self.driver.session() as session:
             result = session.run(
                 "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'start', name_end_stop: $name_end_stop, date: $date,"
                 "hour_start: $hour_start, position_start_stop: $position_start_stop,"
-                "position_end_stop: $position_end_stop})"
+                "position_end_stop: $position_end_stop, it_id: $it_id })"
                 "RETURN id(b)",
                 name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
-                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop
+                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop,
+                it_id=it_id
             )
             booking_id = result.single()[0]
         return booking_id
