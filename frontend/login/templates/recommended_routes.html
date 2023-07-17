@@ -30,7 +30,7 @@
                               <div class="row">
                                 <div class="col-sm-6">
                                     Steps:<br>
-                                    <form action="/join_recommended_route" method="GET">
+                                    <form action="/join_recommended_route" method="POST">
                                     <script>
                                         for (var i = 0; i < route["steps"].length; i++) {
                                             var date = route["steps"][i]["timestamp"];
@@ -44,8 +44,8 @@
                                         
                                     </script>
                                     
-                                        <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
-                                        <input type="hidden" id="route{{ recommended_routes.index(route) }}" name="route" value={{ route["route"] }}>
+                                        <input class="form-control" type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
+                                        <input class="form-control" type="hidden" id="route{{ recommended_routes.index(route) }}" name="route{{ recommended_routes.index(route) }}" value={{ route["route"] }}>
                                         <div class="row">
                                           <div class="col-12">
                                               <label>Start Point</label>
@@ -54,9 +54,9 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di partenza -->
-                                              <input type="text" readonly="readonly" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point" placeholder="Starting point" value="">
-                                              <input type="hidden" id="start_lat{{ recommended_routes.index(route) }}" name="start_lat">
-                                              <input type="hidden" id="start_lng{{ recommended_routes.index(route) }}" name="start_lng">
+                                              <input class="form-control" type="text" readonly="readonly" id="starting_point{{ recommended_routes.index(route) }}" name="starting_point{{ recommended_routes.index(route) }}" placeholder="Starting point" value="">
+                                              <input class="form-control" type="hidden" id="start_lat{{ recommended_routes.index(route) }}" name="start_lat{{ recommended_routes.index(route) }}">
+                                              <input class="form-control" type="hidden" id="start_lng{{ recommended_routes.index(route) }}" name="start_lng{{ recommended_routes.index(route) }}">
                                           </div>
                                           <div class="col-3">
                                               <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord{{ recommended_routes.index(route) }}()">Select </button>
@@ -70,9 +70,9 @@
                                         <div class="row">
                                           <div class="col-9">
                                               <!-- campo per l'inserimento del punto di arrivo -->
-                                              <input type="text" readonly="readonly" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point" placeholder="Ending point" value="">
-                                              <input type="hidden" id="end_lat{{ recommended_routes.index(route) }}" name="end_lat">
-                                              <input type="hidden" id="end_lng{{ recommended_routes.index(route) }}" name="end_lng">
+                                              <input class="form-control" type="text" readonly="readonly" id="ending_point{{ recommended_routes.index(route) }}" name="ending_point{{ recommended_routes.index(route) }}" placeholder="Ending point" value="">
+                                              <input class="form-control" type="hidden" id="end_lat{{ recommended_routes.index(route) }}" name="end_lat{{ recommended_routes.index(route) }}">
+                                              <input class="form-control" type="hidden" id="end_lng{{ recommended_routes.index(route) }}" name="end_lng{{ recommended_routes.index(route) }}">
                                           </div>
                                           <div class="col-3">
                                               <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord{{ recommended_routes.index(route) }}()">Select</button>
@@ -81,10 +81,10 @@
                                         <div class="row">
                                             <div class="col-9">
                                                 <!-- campo per l'inserimento del punto di arrivo -->
-                                                <input type="text" readonly="readonly" id="price{{ recommended_routes.index(route) }}" name="price" placeholder="0€" value = "">
-                                                <input type="hidden" id="km{{ recommended_routes.index(route) }}" name="km">
-                                                <input type="hidden" id="start_date{{ recommended_routes.index(route) }}" name="start_date">
-                                                <input type="hidden" id="end_date{{ recommended_routes.index(route) }}" name="end_date">
+                                                <input class="form-control" type="text" readonly="readonly" id="price{{ recommended_routes.index(route) }}" name="price{{ recommended_routes.index(route) }}" placeholder="0€">
+                                                <input class="form-control" type="hidden" id="km{{ recommended_routes.index(route) }}" name="km{{ recommended_routes.index(route) }}">
+                                                <input class="form-control" type="hidden" id="start_date{{ recommended_routes.index(route) }}" name="start_date{{ recommended_routes.index(route) }}">
+                                                <input class="form-control" type="hidden" id="end_date{{ recommended_routes.index(route) }}" name="end_date{{ recommended_routes.index(route) }}">
                                             </div>
                                             <div class="col-3">
                                             </div>

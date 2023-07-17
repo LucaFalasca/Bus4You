@@ -31,7 +31,6 @@ def signUp():
 
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
-    print("Ciao come va?")
     user = request.args.get('user')
     starting_point = request.args.get('starting_point')
     start_lat = request.args.get('start_lat')
@@ -45,7 +44,6 @@ def route_from_map():
     time = request.args.get('time')
     print(user, starting_point, ending_point, date, start_or_finish, time, start_lat, start_lng, end_lat, end_lng)
     with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
-        print("PROXY")
         result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
                                       start_or_finish, time)
         print(result)
@@ -269,7 +267,7 @@ def get_price_from_subroute():
     return json.dumps(final_ret)
 
 
-@api.route('/join_recommended_route', methods=['GET', 'POST'])
+@api.route('/api/join_recommended_route', methods=['GET', 'POST'])
 def join_recommended_route():
     route_id = request.args.get('route_id')
     start_lat = request.args.get('start_lat')
@@ -280,9 +278,10 @@ def join_recommended_route():
     end_date = request.args.get('end_date')
     price = request.args.get('price')
     distance = request.args.get('distance')
+    mail = request.args.get('mail')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
-                                           price, distance)
+                                           price, distance, mail)
         print(ret)
         return json.dumps(ret)
 

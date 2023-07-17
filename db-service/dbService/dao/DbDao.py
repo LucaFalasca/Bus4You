@@ -205,7 +205,6 @@ class DbDao:
             print("Connection with db failed")
             return -1
 
-
     @staticmethod
     def get_stops_from_it_query(conn, it):
         ret = []
@@ -256,7 +255,7 @@ class DbDao:
             curs = conn.cursor()
 
             # get balance
-            args = (mail, )
+            args = (mail,)
             curs.callproc('get_user_balance', args)
             res = None
 
@@ -308,7 +307,6 @@ class DbDao:
             print("Connection with db failed")
             return -1
 
-
     @staticmethod
     def get_total_km_query(conn, route_id):
         if conn is not None:
@@ -317,7 +315,7 @@ class DbDao:
             ret = []
 
             # get balance
-            args = (route_id, )
+            args = (route_id,)
             curs.callproc('get_route_distance', args)
             res = None
             conn.commit()
@@ -326,10 +324,26 @@ class DbDao:
             curs.close()
             for elem in res:
                 ret.append([elem[0], elem[1]])
-            
+
             return ret
-            
+
             return km
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def join_recommended_route(conn, route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                               end_date, price, distance, mail):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            args = (route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                    end_date, price, distance, mail)
+            curs.callproc('join_recommended_route', args)
+            conn.commit()
+            curs.close()
+            return 0
         else:
             print("Connection with db failed")
             return -1

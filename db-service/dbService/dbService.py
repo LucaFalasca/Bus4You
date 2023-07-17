@@ -166,8 +166,16 @@ def get_total_km(route_id):
 
 
 def join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
-                                           price, distance):
-    pass #TODO sia la chiamata alla dao che la query stessa
+                                           price, distance, mail):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.join_recommended_route(conn, route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                                             end_date, price, distance, mail)
+    conn.close()
+    if res == 0:
+        return {"status": "ok"}
+    else:
+        return {"status": "error"}
 
 
 if __name__ == "__main__":

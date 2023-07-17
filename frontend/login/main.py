@@ -103,7 +103,7 @@ def request_route():
         return render_template("select_route_from_map.html", bus_stops=bus_stops)
     elif starting_point == '' or ending_point == '' or date == '' or start_or_finish == '' or time == '' or \
             start_lat == '' or start_lng == '' or end_lat == '' or end_lng == '':
-        Flask.alert('Some required fields are empty', category='info')
+        flash('Some required fields are empty', category='info')
         return render_template("select_route_from_map.html", bus_stops=bus_stops)
     else:
         gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
@@ -124,8 +124,6 @@ def get_user_balance():
 
 @app.route('/load_recomended_routes_page', methods=['GET'])
 def load_recomended_routes_page():
-    usr = session['usr']
-    mail = session['mail']
     gateway_get_recommended_routes_url = 'http://gateway-api:50052/api/get_future_confirmed_routes'
     recommended_routes = json.loads(requests.get(gateway_get_recommended_routes_url).json())
 
@@ -148,33 +146,32 @@ def get_stops_rect():
 @app.route('/_get_path', methods=['POST'])
 def get_path():
     data = request.get_json()
-    print(data)
+    #print(data)
 
     url = 'http://gateway-api:50052/api/get_path'
     body = data
 
     result = requests.post(url, json=body).json()
-    print(result)
+    #print(result)
     return jsonify(result=result)
 
 
 @app.route('/_get_path_from_stops', methods=['POST'])
 def get_path_from_stops():
     data = request.get_json()
-    print(data)
+    #print(data)
 
     url = 'http://gateway-api:50052/api/get_path_from_stops'
     body = data
 
     result = requests.post(url, json=body).json()
-    print(result)
+    #print(result)
     return jsonify(result=result)
 
 
 @app.route('/loadUserRoutesPage', methods=['GET', 'POST'])
 def load_user_routes_page():
     if session['logged']:
-        usr = session['usr']
         mail = session['mail']
         # token = session['token']
         gateway_load_user_routes_url = 'http://gateway-api:50052/api/load_user_routes?mail=' + mail
@@ -297,6 +294,7 @@ def confirm_book():
         flash("Book confirmation failed", category='info')
     return redirect(url_for('load_user_routes_page'))
 
+
 @app.route('/_get_total_km_trips', methods=['GET', 'POST'])
 def get_total_km_trips():
     id_route = request.args.get('id')
@@ -323,28 +321,38 @@ def join_recommended_route():
     data = request.form
     mail = session['mail']
     parsed_data = []
+    print("Form has "+str(len(list(data.items()))))
     for elem in data.items():
-        parsed_data.append([elem[0], elem[1]])
+        parsed_data.append(elem)
+        #print("Key: \n\t" + elem[0])
+        #print("Value: \n\t" + elem[1])
     route_id = parsed_data[1][1]
+    starting_point = parsed_data[2][1]
     start_lat = parsed_data[3][1]
     start_lng = parsed_data[4][1]
+    ending_point = parsed_data[5][1]
     end_lat = parsed_data[6][1]
     end_lng = parsed_data[7][1]
-    price = parsed_data[8][1]
+    price = parsed_data[8][1].split('€')[0]
     distance = parsed_data[9][1]
-    start_date = parsed_data[10][1]
-    end_date = parsed_data[11][1]
-
-    gateway_join_recommended_route = 'http://gateway-api:50052/api/join_recommended_route?start_lat=' + start_lat + \
+    start_date_obj = datetime.strptime(parsed_data[10][1], "%a, %d %b %Y %H:%M:%S %Z")
+    start_date = start_date_obj.strftime("%Y-%m-%d %H:%M:%S")
+    end_date_obj = datetime.strptime(parsed_data[11][1], "%a, %d %b %Y %H:%M:%S %Z")
+    end_date = end_date_obj.strftime("%Y-%m-%d %H:%M:%S")
+    if starting_point == '' or ending_point == '':
+        flash('Join route failed some required fields are empty')
+    else:
+        gateway_join_recommended_route = 'http://gateway-api:50052/api/join_recommended_route?start_lat=' + start_lat + \
                                      '&start_lng=' + start_lng + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
                                      '&start_date=' + start_date + '&end_date=' + end_date + '&price=' + price + \
                                      '&distance=' + distance + '&route_id=' + route_id + '&mail=' + mail
-    response = requests.get(gateway_join_recommended_route).json()
-    if response['status'] == 'ok':
-        flash("Route joined correctly", category='info')
-    elif response['status'] == 'error':
-        flash("Route join failed", category='info')
-    return redirect(url_for('join_recommended_route_page'))
+        response = requests.get(gateway_join_recommended_route).json()
+        if response['status'] == 'ok':
+            flash("Route joined correctly", category='info')
+        elif response['status'] == 'error':
+            flash("Route join failed", category='info')
+
+    return redirect(url_for('load_recomended_routes_page'))
 
 
 if __name__ == '__main__':

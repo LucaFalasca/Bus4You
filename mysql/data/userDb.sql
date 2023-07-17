@@ -759,6 +759,7 @@ declare it_req_id BIGINT;
 call insert_it_req_into(start_date, 0.0, mail, start_lat, start_lng, end_lat, end_lng, 1, it_req_id);
 call insert_it_proposed(price, distance, start_date, end_date, mail, it_req_id, route_id,
 start_lat, start_lng, end_lat, end_lng);
+call pay(mail, price);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
