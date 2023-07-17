@@ -326,6 +326,21 @@ class Neo4jDAO:
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
 
+    def delete_nodes_from_list(self, booking_ids):
+        query = (
+            "MATCH (b:Booking)-[r:START_STOP]-(s:Stop) "
+            "WHERE id(b) = $booking_id "
+            "DETACH DELETE b "
+            "WITH s "
+            "MATCH (s)-[r1]-() "
+            "WITH s, count(r1) AS rel_count "
+            "WHERE rel_count <= 1 "
+            "DETACH DELETE s"
+        )
+        with self.driver.session() as session:
+            for booking_id in booking_ids:
+                session.run(query, booking_id=booking_id)
+
 
 
     '''def get_person_by_name(self, name):
