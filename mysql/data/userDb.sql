@@ -469,7 +469,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_route_distance`(in route_id BIGINT)
 BEGIN
-select sum(distanza) from b4y_user_db.itinerario_proposto where percorso=route_id;
+select sum(distanza), sum(costo) from b4y_user_db.itinerario_proposto where percorso=route_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
