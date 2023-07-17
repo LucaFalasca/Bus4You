@@ -30,16 +30,20 @@
                               <div class="row">
                                 <div class="col-sm-6">
                                     Steps:<br>
+                                    <form action="/join_recommended_route" method="GET">
                                     <script>
                                         for (var i = 0; i < route["steps"].length; i++) {
-
+                                            var date = route["steps"][i]["timestamp"];
                                             document.write("[" + route["steps"][i]["step"] + "]<br>");
                                             document.write(" \t|\t\t Fermata: " + route["steps"][i]["name"] + "<br>");
                                             document.write(" \t|\t\t Orario: " + route["steps"][i]["timestamp"] + "<br>");
+                                            document.write("<input id='date{{ recommended_routes.index(route) }}" + i  + "' type='hidden' value='" + date + "'>");
+                                            
                                         }
                                         
+                                        
                                     </script>
-                                    <form action="/join_recommended_route" method="GET">
+                                    
                                         <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
                                         <input type="hidden" id="route{{ recommended_routes.index(route) }}" name="route" value={{ route["route"] }}>
                                         <div class="row">
@@ -315,7 +319,8 @@
                                                                 document.getElementById("start_lng{{ recommended_routes.index(route) }}").value = lng;
                                                                 start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
                                                                 console.log("START_INDEX OO: " + start_index);
-                                                                document.getElementById("start_date{{ recommended_routes.index(route) }}").value = route["steps"][start_index]["timestamp"];
+                                                                console.log(route)
+                                                                document.getElementById("start_date{{ recommended_routes.index(route) }}").value = document.getElementById("date{{ recommended_routes.index(route) }}" + start_index).value;
 
                                                             }
                                                             else if (point{{ recommended_routes.index(route) }} == "end"){
@@ -331,7 +336,7 @@
                                                                 document.getElementById("end_lng{{ recommended_routes.index(route) }}").value = lng;
                                                                 end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
                                                                 console.log("END_INDEX OO: " + end_index);
-                                                                document.getElementById("end_date{{ recommended_routes.index(route) }}").value = route["steps"][end_index]["timestamp"];
+                                                                document.getElementById("end_date{{ recommended_routes.index(route) }}").value = document.getElementById("date{{ recommended_routes.index(route) }}" + end_index).value;
                                                             }
                                                         }
                                                     }
