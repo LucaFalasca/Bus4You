@@ -314,16 +314,21 @@ class DbDao:
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
+            ret = []
 
             # get balance
             args = (route_id, )
             curs.callproc('get_route_distance', args)
             res = None
-
+            conn.commit()
             for result in curs.stored_results():
                 res = result.fetchall()
-            km = res[0][0]
-            conn.commit()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1]])
+            
+            return ret
+            
             return km
         else:
             print("Connection with db failed")

@@ -159,9 +159,10 @@ def get_stop_name_from_coords(lat, lon):
 def get_total_km(route_id):
     usr_db = DbDao()
     conn = usr_db.connect()
-    total_km = usr_db.get_total_km_query(conn, route_id)
+    res = usr_db.get_total_km_query(conn, route_id)
+    print(res)
     conn.close()
-    return json.dumps(total_km)
+    return json.dumps(res)
 
 
 def join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
