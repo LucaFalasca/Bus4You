@@ -151,12 +151,19 @@ def get_random_cluster_with_limits(limit):
     booking_id = dao.get_random_booking()
     print("Booking id pescato:")
     print(booking_id)
+    dao.close()
     return dao.get_start_end_bookings_with_limit(booking_id, limit)
+
+def delete_nodes_from_list(list):
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    dao.delete_nodes_from_list(list)
+    dao.close()
 
 
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
     # print(get_random_cluster_with_limits(5))
+    delete_nodes_from_list([29,31])
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
     send_nodes_for_computation(queue_channel)
     # while True:
