@@ -383,8 +383,8 @@ BEGIN
 		AND o1.percorso in (SELECT * FROM route_ids)
         AND fermata.lat = o1.fermata_lat
 		AND fermata.lon = o1.fermata_lon 
-	GROUP BY o1.numero, o1.percorso, it1.percorso;
-    
+	GROUP BY o1.numero, o1.percorso, it1.percorso
+    order by numero asc;
     DROP VIEW IF EXISTS route_ids;
 END ;;
 DELIMITER ;
