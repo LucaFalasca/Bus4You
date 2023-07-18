@@ -1,10 +1,10 @@
-CREATE DATABASE  IF NOT EXISTS `b4y_user_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `b4y_user_db` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `b4y_user_db`;
--- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: b4y_user_db
+-- Host: localhost    Database: b4y_user_db
 -- ------------------------------------------------------
--- Server version	8.0.22
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -34,7 +34,7 @@ CREATE TABLE `cashback` (
   KEY `fk_percorso_cb_idx` (`percorso`),
   CONSTRAINT `fk_percorso_cb` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_cb` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +59,7 @@ CREATE TABLE `fermata` (
   `lon` decimal(8,6) NOT NULL,
   `indirizzo` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`lat`,`lon`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `itinerario_proposto` (
   CONSTRAINT `fk_itinerario_richiesto_id_prop` FOREIGN KEY (`itinerario_richiesto`) REFERENCES `itinerario_richiesto` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_user_prop` FOREIGN KEY (`utente`) REFERENCES `itinerario_richiesto` (`utente`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_prop` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +162,7 @@ CREATE TABLE `itinerario_richiesto` (
   CONSTRAINT `fk_itinerario_richiesto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_req` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +171,7 @@ CREATE TABLE `itinerario_richiesto` (
 
 LOCK TABLES `itinerario_richiesto` WRITE;
 /*!40000 ALTER TABLE `itinerario_richiesto` DISABLE KEYS */;
-INSERT INTO `itinerario_richiesto` VALUES (1,'2022-07-07 10:00:00',NULL,5.00,10.0000,'prova@gmail.com',41.648593,12.431090,41.658425,12.422922),(2,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova@gmail.com',41.660835,12.411013,41.665523,12.404817);
+INSERT INTO `itinerario_richiesto` VALUES (1,'2022-07-07 10:00:00',NULL,5.00,10.0000,'prova@gmail.com',41.648593,12.431090,41.658425,12.422922),(2,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova@gmail.com',41.660835,12.411013,41.665523,12.404817),(3,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova2@gmail.com',41.660835,12.411013,41.665523,12.404817),(4,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova3@gmail.com',41.660835,12.411013,41.665523,12.404817);
 /*!40000 ALTER TABLE `itinerario_richiesto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +192,7 @@ CREATE TABLE `ordinamento` (
   KEY `fk_ordinamento_fermata1_idx` (`fermata_lat`,`fermata_lon`),
   CONSTRAINT `fk_ordinamento_fermata1` FOREIGN KEY (`fermata_lat`, `fermata_lon`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_percorso_ord` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,9 +223,9 @@ CREATE TABLE `pagamento` (
   KEY `fk_itinerario_proposto_route_pay_idx` (`percorso`) /*!80000 INVISIBLE */,
   KEY `fk_itinerario_proposto_user_pay` (`utente`),
   CONSTRAINT `fk_itinerario_proposto_id_pay` FOREIGN KEY (`itinerario_proposto`) REFERENCES `itinerario_proposto` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_itinerario_proposto_route_pay` FOREIGN KEY (`percorso`) REFERENCES `itinerario_proposto` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_itinerario_proposto_route_pay` FOREIGN KEY (`percorso`) REFERENCES `itinerario_proposto` (`percorso`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE `percorso` (
   `tmstmp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_archiviato_route` (`archiviato`)
-) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(2,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(3,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(4,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(5,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(6,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(7,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(8,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(9,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(10,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(11,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(12,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(13,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(14,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(15,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(16,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(17,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(18,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(19,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(20,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(21,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(22,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(23,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(24,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(25,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(26,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(27,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(28,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(29,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(30,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(31,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(32,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(33,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(34,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(35,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(36,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(37,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(38,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(39,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(40,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(41,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(42,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(43,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(44,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(45,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(46,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(47,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(48,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(49,'2024-12-12 00:00:00',0,'pending','2023-07-18 17:11:53'),(50,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(51,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(52,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(53,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(54,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(55,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(56,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(57,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(58,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(59,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(60,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(61,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(62,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(63,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(64,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(65,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(66,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(67,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(68,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(69,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(70,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(71,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(72,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(73,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(74,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(75,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(76,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(77,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(78,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(79,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(80,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(81,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(82,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(83,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(84,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(85,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(86,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(87,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(88,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(89,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(90,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(91,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(92,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(93,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(94,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(95,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(96,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(97,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(98,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(99,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 17:11:54'),(100,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(101,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(102,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(103,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(104,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(105,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(106,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(107,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(108,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(109,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(110,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(111,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(112,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(113,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(114,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(115,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(116,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(117,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(118,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(119,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(120,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(121,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:54'),(122,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(123,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(124,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(125,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(126,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(127,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(128,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(129,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(130,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(131,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(132,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(133,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(134,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(135,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(136,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(137,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(138,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(139,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(140,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(141,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(142,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(143,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(144,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(145,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(146,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(147,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(148,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(149,'2024-12-12 00:00:00',1,'rejected','2023-07-18 17:11:55'),(150,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(151,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(152,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(153,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(154,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(155,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(156,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(157,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(158,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(159,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(160,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(161,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(162,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(163,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(164,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(165,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(166,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(167,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(168,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(169,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(170,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(171,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(172,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(173,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(174,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(175,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(176,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(177,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(178,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(179,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(180,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(181,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(182,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(183,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(184,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(185,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(186,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(187,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(188,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(189,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(190,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(191,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(192,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(193,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(194,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(195,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(196,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(197,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(198,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55'),(199,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 17:11:55');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(2,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(3,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(4,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(5,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(6,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(7,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(8,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(9,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(10,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(11,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(12,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(13,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(14,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(15,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(16,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(17,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(18,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(19,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(20,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(21,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(22,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(23,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(24,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(25,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(26,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(27,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(28,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(29,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(30,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(31,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(32,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(33,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(34,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(35,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(36,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(37,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(38,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(39,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(40,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(41,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(42,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(43,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(44,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(45,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(46,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(47,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(48,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(49,'2024-12-12 00:00:00',0,'pending','2023-07-18 22:54:08'),(50,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(51,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(52,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(53,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(54,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(55,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(56,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(57,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(58,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(59,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(60,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(61,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(62,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(63,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(64,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(65,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(66,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(67,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(68,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(69,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(70,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(71,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(72,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(73,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(74,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(75,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(76,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(77,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(78,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(79,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(80,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(81,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(82,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(83,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(84,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(85,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(86,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(87,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(88,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(89,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(90,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(91,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(92,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(93,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(94,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(95,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(96,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(97,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(98,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(99,'2024-12-12 00:00:00',0,'confirmed','2023-07-18 22:54:08'),(100,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(101,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(102,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(103,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(104,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(105,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(106,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(107,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(108,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(109,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(110,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(111,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(112,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(113,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(114,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(115,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(116,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(117,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(118,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(119,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(120,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(121,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(122,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(123,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(124,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(125,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(126,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(127,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(128,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(129,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(130,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(131,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(132,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(133,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(134,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(135,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(136,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(137,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(138,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(139,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(140,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(141,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(142,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(143,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(144,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(145,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(146,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(147,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(148,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(149,'2024-12-12 00:00:00',1,'rejected','2023-07-18 22:54:09'),(150,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(151,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(152,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(153,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(154,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(155,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(156,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(157,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(158,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(159,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(160,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(161,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(162,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(163,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(164,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(165,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(166,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(167,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(168,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(169,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(170,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(171,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(172,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(173,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(174,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(175,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(176,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(177,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(178,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(179,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(180,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(181,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(182,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(183,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(184,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(185,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(186,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(187,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(188,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(189,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(190,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(191,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(192,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(193,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(194,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(195,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(196,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(197,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(198,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09'),(199,'2024-12-12 00:00:00',1,'confirmed','2023-07-18 22:54:09');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +281,7 @@ CREATE TABLE `utente` (
   `data_nascita` date NOT NULL,
   `saldo` decimal(6,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`mail`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,8 +318,8 @@ start transaction;
 UPDATE b4y_user_db.itinerario_proposto
 SET itinerario_proposto.stato='confirmed'
 WHERE itinerario_proposto.id=id;
-select utente, costo from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo;
-call pay(@utente, @costo);
+select utente, costo, percorso from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo, @percorso;
+call pay(@utente, @costo, @percorso, id);
 commit;
 END ;;
 DELIMITER ;
@@ -755,11 +755,33 @@ in start_lng DECIMAL(8,6), in end_lat DECIMAL(8,6), in end_lng DECIMAL(8,6),
 in start_date DATETIME, in end_date DATETIME, price DECIMAL(6,2), distance DECIMAL(8,4), 
 mail VARCHAR(128))
 BEGIN
+#Cashback agli altri utenti
+declare done INT DEFAULT FALSE;
 declare it_req_id BIGINT;
+declare user_refund decimal(6,2);
+declare other_users_mail varchar(128);
+declare other_users_num int;
+declare it_prop_id bigint;
+declare curs cursor for select distinct utente from b4y_user_db.itinerario_proposto where percorso=route_id;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+select count(distinct utente) from b4y_user_db.itinerario_proposto where percorso=route_id into other_users_num;
+select  cast(price/other_users_num as decimal(6,2)) into user_refund;
+OPEN curs;
+read_loop: LOOP
+fetch curs into other_users_mail;
+IF done THEN
+      LEAVE read_loop;
+END IF;
+call refund(other_users_mail, user_refund, route_id);
+END LOOP;
+close curs;
+
+#Insert dell'itinerario proposto e relativo pagamento, 1 a insert_it_req perche la metto come start hour semrpe
 call insert_it_req_into(start_date, 0.0, mail, start_lat, start_lng, end_lat, end_lng, 1, it_req_id);
 call insert_it_proposed(price, distance, start_date, end_date, mail, it_req_id, route_id,
 start_lat, start_lng, end_lat, end_lng);
-call pay(mail, price);
+select last_insert_id() into it_prop_id;
+call pay(mail, price, route_id, it_prop_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -800,10 +822,30 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pay`(in utente varchar(128), in payment decimal(6,2))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pay`(in utente varchar(128), in payment decimal(6,2), in route_id BIGINT, in it_id BIGINT)
 BEGIN
 select saldo from b4y_user_db.utente where mail=utente into @saldo_attuale;
 update b4y_user_db.utente set saldo=@saldo_attuale-payment where mail=utente;
+insert into b4y_user_db.pagamento (tmstmp, percorso, itinerario_proposto, utente) values (now(), route_id, it_id, utente);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `perform_cashback` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `perform_cashback`(in refund decimal(6,2), in utente varchar(128), in route_id BIGINT)
+BEGIN
+insert into b4y_user_db.cashback values (refund, now(), utente, route_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -820,10 +862,11 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `refund`(in utente varchar(128), in refund decimal(6,2))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `refund`(in utente varchar(128), in refund decimal(6,2), in route_id BIGINT)
 BEGIN
 select saldo from b4y_user_db.utente where mail=utente into @saldo_attuale;
 update b4y_user_db.utente set saldo=@saldo_attuale+refund where mail=utente;
+call perform_cashback(refund, utente, route_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -876,9 +919,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `reject_it`(in id BIGINT)
 BEGIN
 set transaction isolation level read committed;
 start transaction;
-select utente, costo, stato from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo, @stato;
+select utente, costo, stato, percorso from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo, @stato, @route_id;
   IF @stato='confirmed' THEN
-	call refund(@utente, @costo);
+	call refund(@utente, @costo, @route_id);
   END IF;
 UPDATE b4y_user_db.itinerario_proposto
 SET itinerario_proposto.stato='rejected'
@@ -977,4 +1020,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-18 18:12:33
+-- Dump completed on 2023-07-18 22:54:49
