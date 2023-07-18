@@ -1,7 +1,8 @@
 import json
+
 import pika
+
 import OrsDao
-import datetime
 from Neo4jDAO import *
 
 MAKE_ROUTE_STOP_DATA_QUEUE_1 = 'make_route_stop_data_1'

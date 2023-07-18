@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
 import requests
+from flask import Flask, render_template, request, session, flash, json, jsonify, redirect, url_for
+
 from utils.json_parser import parse_user_routes_json
 
 app = Flask(__name__)
@@ -174,7 +175,7 @@ def load_user_routes_page():
     if session['logged']:
         mail = session['mail']
         # token = session['token']
-        gateway_load_user_routes_url = 'http://gateway-api:50052/api/load_user_routes?mail=' + mail
+        gateway_load_user_routes_url = 'http://gateway-api:50052/api/load_user_routes?user=' + mail
         response = requests.get(gateway_load_user_routes_url).json()
         user_routes = parse_user_routes_json(response)
         present_routes = []
@@ -303,12 +304,13 @@ def get_total_km_trips():
     bus_stops = requests.get(gateway_get_total_km_trips_url).json()
     return jsonify(result=bus_stops)
 
+
 @app.route('/_get_km_from_subroute', methods=['POST'])
 def get_km_from_subroute():
     data = request.get_json()
     print(data)
 
-    url = 'http://gateway-api:50052/api/get_km_from_subroute'
+    url = 'http://gateway-api:50052/api/get_km_price_from_subroute'
     body = data
 
     result = requests.post(url, json=body).json()
@@ -345,7 +347,7 @@ def join_recommended_route():
         gateway_join_recommended_route = 'http://gateway-api:50052/api/join_recommended_route?start_lat=' + start_lat + \
                                      '&start_lng=' + start_lng + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
                                      '&start_date=' + start_date + '&end_date=' + end_date + '&price=' + price + \
-                                     '&distance=' + distance + '&route_id=' + route_id + '&mail=' + mail
+                                     '&distance=' + distance + '&route_id=' + route_id + '&user=' + mail
         response = requests.get(gateway_join_recommended_route).json()
         if response['status'] == 'ok':
             flash("Route joined correctly", category='info')

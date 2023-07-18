@@ -1,8 +1,9 @@
-from flask import Flask, json, request
-import xmlrpc.client
 import random
 import time
+import xmlrpc.client
+
 import requests
+from flask import Flask, json, request
 
 api = Flask(__name__)
 
@@ -67,7 +68,7 @@ def generate_dist_matrix(size, max_val):
 
 @api.route('/api/load_user_routes', methods=['GET'])
 def load_user_routes():
-    mail = request.args.get('mail')
+    mail = request.args.get('user')
     ret = []
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         user_routes = json.loads(proxy.get_user_routes(mail))
@@ -152,7 +153,7 @@ def confirm_it():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.confirm_it(it_id)
-        #print(ret)
+        # print(ret)
         return json.dumps(ret)
 
 
@@ -170,7 +171,7 @@ def get_retry_info():
     it_id = request.args.get('it_id')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.get_retry_info(it_id)
-        #print(ret)
+        # print(ret)
         return json.dumps(ret)
 
 
@@ -179,7 +180,7 @@ def get_user_balance():
     mail = request.args.get('user')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.get_user_balance(mail)
-        #print("Gateway balance",ret)
+        # print("Gateway balance",ret)
         return json.dumps(ret)
 
 
@@ -189,7 +190,7 @@ def get_future_confirmed_routes():
         ret = proxy.get_future_confirmed_routes()
         print(ret)
         return json.dumps(ret)
-    
+
 
 @api.route('/api/get_total_km', methods=['GET'])
 def get_total_km():
@@ -201,7 +202,7 @@ def get_total_km():
 
 
 @api.route('/api/get_km_from_subroute', methods=['POST'])
-def get_km_from_subroute():
+def get_km_price_from_subroute():
     print("REQUEST" + str(request))
     request_value = request.get_json()
     stops = request_value["bus_stops"]
@@ -219,15 +220,13 @@ def get_km_from_subroute():
     print(result)
     distance = result["features"][0]["properties"]["summary"]["distance"]
     print(distance)
-    
+
     route_id = request_value['route']
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = json.loads(proxy.get_total_km(route_id))
         print(ret)
     total_km = ret[0][0]
     total_price = ret[0][1]
-
-
 
     print("DISTANCE" + str(distance))
     print("TOTAL KM" + str(total_km))
@@ -236,34 +235,9 @@ def get_km_from_subroute():
     weight = distance / (float(total_km) * 1000 + distance)
     price = float(total_price) * weight
 
-    final_ret = {"price" : round(price, 2), 
-                 "distance" : distance}
+    final_ret = {"price": round(price, 2),
+                 "distance": distance}
     print(final_ret)
-    return json.dumps(final_ret)
-
-@api.route('/api/get_price_from_subroute', methods=['POST'])
-def get_price_from_subroute():
-    stops = request.get_json()
-    print(stops)
-    true_stops = [[float(s[1]), float(s[0])] for s in stops]
-    body = {}
-    body['coordinates'] = true_stops
-    url = 'http://ors-app:8080/ors/v2/directions/driving-car/geojson'
-    print(stops)
-    true_stops = [[float(s[1]), float(s[0])] for s in stops]
-    body['coordinates'] = true_stops
-    
-    print("CIAOO")
-    print(body)
-    result = requests.post(url, json=body).json()
-    print(result)
-    coords = result["features"][0]["properties"]["summary"]["distance"]
-    print(coords)
-    coords_reversed = [coord[::-1] for coord in coords]
-    final_ret = {"coordinates": coords_reversed, "stops": true_stops}
-
-
-
     return json.dumps(final_ret)
 
 
@@ -278,7 +252,7 @@ def join_recommended_route():
     end_date = request.args.get('end_date')
     price = request.args.get('price')
     distance = request.args.get('distance')
-    mail = request.args.get('mail')
+    mail = request.args.get('user')
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
         ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
                                            price, distance, mail)
@@ -288,4 +262,3 @@ def join_recommended_route():
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
-    

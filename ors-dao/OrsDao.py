@@ -1,5 +1,7 @@
-import requests
 import xmlrpc.server
+
+import requests
+
 
 #Gli devi passare un vettore di sto tipo [[12.527504,41.837339],[12.627504,41.837339], ecc...]
 def getMatrix(nodes):

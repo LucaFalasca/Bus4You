@@ -1,5 +1,6 @@
-import pika
 import json
+
+import pika
 
 MAKE_ROUTE_STOP_DATA_QUEUE_1 = 'make_route_stop_data_1'
 PROPOSE_ROUTE_QUEUE = 'propose_route'

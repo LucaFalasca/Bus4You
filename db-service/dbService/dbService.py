@@ -1,5 +1,7 @@
-from flask import json
 import xmlrpc.server
+
+from flask import json
+
 from dao.DbDao import DbDao
 
 

@@ -1,15 +1,15 @@
+import datetime
+import json
 import random
+import threading
 import time
 import xmlrpc.server
 from collections import deque
-import json
-import queue
-import datetime
-import threading
 
 import pika
 
 import compact as alg2
+import queue
 
 
 def two_opt(route, dist_matrix, prec_hash, node_limit):

@@ -1,6 +1,3 @@
-from Neo4jDAO_BS import *
-from Node import *
-
 class NodeToAlg:
 
     def __init__(self, dao):

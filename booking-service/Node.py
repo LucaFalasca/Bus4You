@@ -1,6 +1,3 @@
-import xmlrpc
-
-
 class Node:
 
     def __init__(self, starting_point, ending_point, data, arrival_time, booking, travel_time="30:00"):

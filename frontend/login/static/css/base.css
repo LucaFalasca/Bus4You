@@ -14,20 +14,20 @@ html, body {
     overflow: auto;
 }
 
- #navbar-li-balance, #navbar-li-usr{
-     float:right;
-     display: inline-block;
-     padding-left: 0 !important;
-     padding-top: 5px;
-     padding-bottom: 5px;
- }
+#navbar-li-balance, #navbar-li-usr {
+    float: right;
+    display: inline-block;
+    padding-left: 0 !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 
-#navbar-li-logo{
-     float:left;
-     display: inline-block;
-     width: 30%;
-     height: auto;
- }
+#navbar-li-logo {
+    float: left;
+    display: inline-block;
+    width: 30%;
+    height: auto;
+}
 
 #navbar-div {
     background-color: #1c3c4f;
@@ -37,14 +37,14 @@ html, body {
     padding-bottom: 5px;
 }
 
-#navbar-li{
-    float:right;
+#navbar-li {
+    float: right;
     display: inline-block;
     padding: 5px 5px;
 }
 
 
-#usr, #balance{
+#usr, #balance {
     color: white;
     font-size: 30px;
     text-decoration: none;
@@ -52,7 +52,7 @@ html, body {
     font-weight: bold;
 }
 
-#navbar-button{
+#navbar-button {
     text-align: center;
     width: 150px;
     background-color: #1c3c4f;
@@ -70,7 +70,7 @@ html, body {
     border-style: solid;
 }
 
-#navbar-button-usr, #navbar-button-balance{
+#navbar-button-usr, #navbar-button-balance {
     text-align: center;
     width: auto;
     background-color: #1c3c4f;
@@ -88,7 +88,8 @@ html, body {
     outline: none;
     border-style: solid;
 }
-#navbar-button-usr:focus, #navbar-button-balance:focus{
+
+#navbar-button-usr:focus, #navbar-button-balance:focus {
     border-color: #1c3c4f;
 }
 

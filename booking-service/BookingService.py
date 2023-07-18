@@ -1,16 +1,13 @@
+import datetime
 import json
+import threading
+import xmlrpc.client
+import xmlrpc.server
 
 import pika
-import xmlrpc.server
-import xmlrpc.client
-from neo4j import GraphDatabase, basic_auth
 from neo4j._spatial import WGS84Point
+
 from Neo4jDAO_BS import *
-from NodeToAlg import *
-from Node import *
-from utils import *
-import threading
-import datetime
 
 PROPOSE_ROUTE_QUEUE = 'propose_route'
 

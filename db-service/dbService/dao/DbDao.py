@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import mysql.connector
 from mysql.connector import Error
 
@@ -327,7 +325,6 @@ class DbDao:
 
             return ret
 
-            return km
         else:
             print("Connection with db failed")
             return -1

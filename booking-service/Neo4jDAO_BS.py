@@ -1,8 +1,10 @@
-from datetime import date, datetime
+from datetime import date
 from datetime import time
-from OrsDaoBS import *
 
 from neo4j import GraphDatabase
+
+from OrsDaoBS import *
+
 
 class Neo4jDAO:
     def __init__(self, uri, username, password):
