@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, datetime
 from datetime import time
 
 from neo4j import GraphDatabase
@@ -244,7 +244,7 @@ class Neo4jDAO:
         query = (
             "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
             "WHERE id(b) = $booking_id "
-            "WITH collect(DISTINCT booking) as all_bookings, s1 "
+            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings, s1 "
             "UNWIND all_bookings as booking "
             "MATCH (booking)-[:END_STOP]->(s2:Stop) MATCH (booking)<-[:BOOKS]-(u:User)"
             "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
@@ -259,7 +259,7 @@ class Neo4jDAO:
 
             bookings = []
             for record in result:
-                
+
                 print(record["b_day"])
                 booking = {
                     "id": record["b_id"],
