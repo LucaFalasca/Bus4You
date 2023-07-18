@@ -81,8 +81,7 @@ class Neo4jDAO:
                 "id(u) = $username_id "
                 "MERGE (b)-[:START_STOP]->(s1) "
                 "MERGE (b)-[:END_STOP]->(s2) "
-                "MERGE (u)-[:BOOKS]->(b) "
-                "MERGE (s1)-[:MUST_FOLLOW]->(s2)",
+                "MERGE (u)-[:BOOKS]->(b) ",
                 booking_id=booking_id, username_id=username_id, start_stop_id=start_stop_id, end_stop_id=end_stop_id
             )
 
@@ -341,8 +340,8 @@ class Neo4jDAO:
                                       [node["other_position_start_stop"][0], node["other_position_start_stop"][1]]])[0][
                         1]
 
-                    offset1 = min(5, 0.15 * hour)
-                    offset2 = min(10, 0.3 * hour)
+                    offset1 = max(5, 0.15 * hour)
+                    offset2 = max(10, 0.3 * hour)
 
                     hour_diff = abs(
                         (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1])) -
@@ -366,8 +365,8 @@ class Neo4jDAO:
                     hour = getMatrix([[node["position_start_stop"][0], node["position_start_stop"][1]],
                                       [node["other_position_end_stop"][0], node["other_position_end_stop"][1]]])[0][
                         1]
-                    offset1 = min(5, 0.15 * hour)
-                    offset2 = min(10, 0.3 * hour)
+                    offset1 = max(5, 0.15 * hour)
+                    offset2 = max(10, 0.3 * hour)
 
                     hour_diff = abs(
                         (int(node["other_hour_start"].split(":")[0]) * 60 + int(node["other_hour_start"].split(":")[1])) -
@@ -395,8 +394,8 @@ class Neo4jDAO:
                     hour_step2 = matrix[1][2]
                     hour = hour_step1 + hour_step2
 
-                    offset1 = min(5, 0.15 * hour)
-                    offset2 = min(10, 0.3 * hour)
+                    offset1 = max(5, 0.15 * hour)
+                    offset2 = max(10, 0.3 * hour)
 
                     hour_diff = abs(
                         (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1])) -
@@ -426,8 +425,8 @@ class Neo4jDAO:
                     hour_step3 = matrix[2][3]
                     hour = hour_step1 + hour_step2 + hour_step3
 
-                    offset1 = min(5, 0.15 * hour)
-                    offset2 = min(10, 0.3 * hour)
+                    offset1 = max(5, 0.15 * hour)
+                    offset2 = max(10, 0.3 * hour)
 
                     hour_diff = abs(
                         (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1])) -
