@@ -201,7 +201,7 @@ def get_total_km():
         return json.dumps(ret)
 
 
-@api.route('/api/get_km_from_subroute', methods=['POST'])
+@api.route('/api/get_km_price_from_subroute', methods=['POST'])
 def get_km_price_from_subroute():
     print("REQUEST" + str(request))
     request_value = request.get_json()

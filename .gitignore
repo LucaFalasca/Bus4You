@@ -8,7 +8,7 @@ frontend/login/entity/__pycache__/
 frontend/login/utils/__pycache__/
 .venv/
 db-service/dbService/dao/__pycache__/
-make-root-service/__pycache__/
+make-route-service/__pycache__/
 booking-service/__pycache__/
 notify-service/notifyService/credentials/credentials.json
 notify-service/notifyService/credentials/token.pickle

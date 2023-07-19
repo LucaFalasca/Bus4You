@@ -22,7 +22,6 @@ services:
   mysqlDb:
     image: mysql:latest
     container_name: mysqlDb
-    restart: always
     volumes:
       - ./mysql/data:/docker-entrypoint-initdb.d
     environment:
@@ -113,11 +112,11 @@ services:
       mysqlDb:
         condition: service_healthy
 
-  make-root-service:
-    build: ./make-root-service
-    container_name: make-root-service
+  make-route-service:
+    build: ./make-route-service
+    container_name: make-route-service
     volumes:
-      - ./make-root-service:/app
+      - ./make-route-service:/app
     depends_on:
       rabbitMq:
         condition: service_healthy
