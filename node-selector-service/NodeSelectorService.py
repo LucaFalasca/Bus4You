@@ -41,6 +41,7 @@ def send_nodes_for_computation(channel):
         nodes_4j = get_random_cluster_with_limits(10)  # max
         print(nodes_4j)
         l = len(nodes_4j)
+    #delete_nodes_after_get_cluster()
     print("Ho scelto i nodi:")
     print(nodes_4j)
     # nodes_4j = get_cluster_with_limits(15, 3)
@@ -160,11 +161,15 @@ def delete_nodes_from_list(list):
     dao.delete_nodes_from_list(list)
     dao.close()
 
+def delete_nodes_after_get_cluster(list):
+    ids = [d["id"] for d in list]
+    delete_nodes_from_list(ids)
+
 
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    #print(get_random_cluster_with_limits(2))
+    print(get_random_cluster_with_limits(10))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    send_nodes_for_computation(queue_channel)
+    #send_nodes_for_computation(queue_channel)
     # while True:
     #    pass

@@ -247,7 +247,7 @@ class Neo4jDAO:
             "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings, s1 "
             "UNWIND all_bookings as booking "
             "MATCH (booking)-[:END_STOP]->(s2:Stop) MATCH (booking)<-[:BOOKS]-(u:User)"
-            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
+            "RETURN DISTINCT id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
             "id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, "
             "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
             "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
