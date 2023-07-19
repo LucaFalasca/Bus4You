@@ -267,7 +267,9 @@ def json_to_route_info(json_input):
     # supplemento del costo dovuto al fatto che il 50% del costo è profitto
     supplement_due_profit = 1.5
 
-    total_price = total_distance / 1000 * price_per_km * supplement_due_refuse * supplement_due_profit
+    fixed_price = 0.30
+
+    total_price = (total_distance / 1000 * price_per_km * supplement_due_refuse + fixed_price) * supplement_due_profit
     print("Total distance: " + str(total_distance))
     print("Total metres: " + str(total_metres))
     print("Total price: " + str(total_price))

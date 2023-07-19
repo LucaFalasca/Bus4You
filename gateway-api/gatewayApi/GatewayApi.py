@@ -233,7 +233,7 @@ def get_km_price_from_subroute():
     print("TOTAL PRICE" + str(total_price))
 
     weight = distance / (float(total_km) * 1000 + distance)
-    price = float(total_price) * weight
+    price = float(total_price) * weight + 0.3
 
     final_ret = {"price": round(price, 2),
                  "distance": distance}
