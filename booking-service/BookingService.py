@@ -79,18 +79,19 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
     print("BOOKING_ID_PERA" + str(booking_id))
 
     if dao.search_for_compatibility_type_1(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
 
 
 def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                               position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
+
     position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
     position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
 
@@ -103,8 +104,9 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
     print("BOOKING_ID_PERA" + str(booking_id))
 
+
     if dao.search_for_compatibility_type_1(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
         dao.get_compatible_time_bookings()
@@ -114,48 +116,6 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
         return booking_id
 
 
-def some_calls():
-    # Esempio 1
-    create_booking_type_end("Alice", "Termini", "Piazza Venezia", "2023-07-23", "10:15",
-                            41.900473, 12.500650, 41.894342, 12.481170)
-
-    # Esempio 2
-    create_booking_type_start("Bob", "Colosseo", "San Giovanni", "2023-07-23", "8:30",
-                              41.889927, 12.494197, 41.885616, 12.509768)
-
-    # Esempio 3
-    create_booking_type_end("Charlie", "Villa Borghese", "Piazza del Popolo", "2023-07-23", "17:45",
-                            41.912492, 12.477485, 41.911860, 12.475263)
-
-
-    # Esempio 4
-    create_booking_type_start("Dave", "Ostia Antica", "Fiumicino Airport", "2023-07-23", "14:00",
-                            41.7553, 12.2922, 41.7966, 12.2366)
-
-    # Esempio 5
-    create_booking_type_end("Eve", "Castel Sant'Angelo", "Ponte Milvio", "2023-07-23", "12:30",
-                            41.9028, 12.4669, 41.9311, 12.4719)
-
-    # Esempio 6
-    create_booking_type_start("Frank", "Cinecittà", "Villa Ada", "2023-07-23", "09:45",
-                            41.8513, 12.5731, 41.9321, 12.5028)
-
-    # Esempio 7
-    create_booking_type_end("Gina", "Villa d'Este", "Tivoli", "2023-07-23", "16:20",
-                            41.9624, 12.7949, 41.9679, 12.8006)
-
-    # Esempio 8
-    create_booking_type_start("Harry", "Terme di Caracalla", "Aventino", "2023-07-23", "18:00",
-                            41.8799, 12.4925, 41.8824, 12.4761)
-
-    # Esempio 9
-    create_booking_type_end("Ian", "Villa Adriana", "Villa d'Este", "2023-07-23", "11:15",
-                            41.9387, 12.7971, 41.9624, 12.7949)
-
-    # Esempio 10
-    create_booking_type_start("Julia", "Catacombe di Priscilla", "Parco degli Acquedotti", "2023-07-23",
-                            "14:45",
-                            41.9271, 12.4997, 41.8532, 12.5636)
 
 
 
@@ -215,6 +175,7 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
                    time):
     id_book = None
     if start_or_finish == "start":
+        print("Ciao dovrei stare qui dentro")
         with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
             it_id = json.loads(proxy.insert_it_req(date + " " + time, 0.0, user, start_lat, start_lng, end_lat, end_lng, 1))
         id_book = create_booking_type_start(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
@@ -227,6 +188,7 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
         print("id_book: " + str(id_book))
         if(id_book != None):
             proxy.send_nodes_for_computation(id_book)
+    print("Funziono?")
     return True
 
 
@@ -371,7 +333,7 @@ if __name__ == "__main__":
 
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     #some_calls()
-
+    #print(dao.get_start_end_bookings_with_limit(8,10))
     dao.close()
 
 

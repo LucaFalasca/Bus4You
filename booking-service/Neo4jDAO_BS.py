@@ -260,6 +260,8 @@ class Neo4jDAO:
         session.close()
         return bookings
 
+
+    '''
     def get_start_end_bookings_with_limit(self, booking_id, limit):
         query = (
             "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
@@ -298,20 +300,72 @@ class Neo4jDAO:
 
         # Restituzione della lista di prenotazioni
         return bookings
+    '''
+
+
+    #Chiedere se aggiungere comunque gli stop_id per le API
+    def get_start_end_bookings_with_limit(self, booking_id, limit):
+        query = (
+            "MATCH (startNode:Booking) "
+            "WHERE id(startNode) = $booking_id "
+            "CALL apoc.path.spanningTree(startNode, { "
+            "  relationshipFilter: 'COMPATIBLE', "
+            "  labelFilter: 'Booking', "
+            " maxLevel: $limit, "
+            "  limit: $limit "
+            "}) "
+            "YIELD path "
+            "UNWIND nodes(path) AS bookingNode "
+            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
+            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
+            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
+            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
+            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
+                )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["b_id"],
+                    "date": record["b_day"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "type": record["b_type"]
+                }
+                if record["b_type"] == "start":
+                    booking["hour"] = (record["b_hs"], None)
+                else:
+                    booking["hour"] = (None, record["b_he"])
+                bookings.append(booking)
+
+            # Consuma tutti i record prima di restituire il risultato
+            result.consume()
+        # Restituzione della lista di prenotazioni
+        return bookings
+
+
+
+
 
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
 
-    def get_compatible_time_bookings(self):
+    def get_compatible_time_bookings(self, booking_id):
         with self.driver.session() as session:
             result = session.run(
                 "MATCH (b:Booking)-[:COMPATIBLE]->(other_booking:Booking) "
+                "WHERE id(b) = $booking_id "
                 "RETURN id(b) AS id, b.type AS type, b.hour_start AS hour_start, b.hour_end AS hour_end, "
                 "b.position_start_stop AS position_start_stop, b.position_end_stop AS position_end_stop, "
                 "id(other_booking) AS other_id, other_booking.type AS other_type, "
                 "other_booking.hour_start AS other_hour_start, other_booking.hour_end AS other_hour_end, "
                 "other_booking.position_start_stop AS other_position_start_stop, "
-                "other_booking.position_end_stop AS other_position_end_stop"
+                "other_booking.position_end_stop AS other_position_end_stop", booking_id = booking_id
             )
             nodes = []
             for record in result:

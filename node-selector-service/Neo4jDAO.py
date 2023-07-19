@@ -277,19 +277,17 @@ class Neo4jDAO:
             for record in result:
                 booking = {
                     "id": record["b_id"],
-                    "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
+                    "date": record["b_day"],
                     "name_start_stop": record["start_stop"],
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
                     "position_end_stop": record["position_end_stop"],
-                    "type": record["b_type"],
-                    "user": record["u_name"],
-                    "it_id": record["it_id"]
+                    "type": record["b_type"]
                 }
                 if record["b_type"] == "start":
-                    booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
+                    booking["hour"] = (record["b_hs"], None)
                 else:
-                    booking["hour"] = (None, datetime.strptime(record["b_he"], "%H:%M").time())
+                    booking["hour"] = (None, record["b_he"])
                 bookings.append(booking)
 
             # Consuma tutti i record prima di restituire il risultato
@@ -300,16 +298,21 @@ class Neo4jDAO:
 
     def get_start_end_bookings_with_limit(self, booking_id, limit):
         query = (
-            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking) "
-            "WHERE id(b) = $booking_id "
-            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings "
-            "UNWIND all_bookings as booking "
-            "MATCH (booking)<-[:BOOKS]-(u:User)"
-            "RETURN DISTINCT id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
-            "booking.name_start_stop AS start_stop, "
-            "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
-            "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
-            "u.name as u_name LIMIT $limit"
+            "MATCH (startNode:Booking) "
+            "WHERE id(startNode) = $booking_id "
+            "CALL apoc.path.spanningTree(startNode, { "
+            "  relationshipFilter: 'COMPATIBLE', "
+            "  labelFilter: 'Booking', "
+            " maxLevel: $limit, "
+            "  limit: $limit "
+            "}) "
+            "YIELD path "
+            "UNWIND nodes(path) AS bookingNode "
+            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
+            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
+            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
+            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
+            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
         )
 
         with self.driver.session() as session:
@@ -317,8 +320,6 @@ class Neo4jDAO:
 
             bookings = []
             for record in result:
-
-                print(record["b_day"])
                 booking = {
                     "id": record["b_id"],
                     "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
@@ -338,9 +339,9 @@ class Neo4jDAO:
 
             # Consuma tutti i record prima di restituire il risultato
             result.consume()
-
         # Restituzione della lista di prenotazioni
         return bookings
+
 
 
     def get_end_type_bookings(self):

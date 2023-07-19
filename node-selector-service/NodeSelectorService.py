@@ -40,11 +40,12 @@ def publish_message_on_queue(message_json, queue, channel):
 
 def send_nodes_for_computation(id):
     l = 0
-    nodes_4j = get_cluster_with_limits(id, 10)  # max
+    print("-id scelto: " + id)
+    nodes_4j = get_cluster_with_limits(id, 4)
     l = len(nodes_4j)
     print("numero nodi presi" + str(l))
     print(nodes_4j)
-    if l >= 4:  # min
+    if 3 < l <= 10:  # min
         delete_nodes_after_get_cluster(nodes_4j)
         print("Ho scelto i nodi:")
         print(nodes_4j)
