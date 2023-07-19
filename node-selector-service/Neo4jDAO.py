@@ -242,13 +242,13 @@ class Neo4jDAO:
 
     def get_start_end_bookings_with_limit(self, booking_id, limit):
         query = (
-            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
+            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking) "
             "WHERE id(b) = $booking_id "
-            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings, s1 "
+            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings "
             "UNWIND all_bookings as booking "
-            "MATCH (booking)-[:END_STOP]->(s2:Stop) MATCH (booking)<-[:BOOKS]-(u:User)"
+            "MATCH (booking)<-[:BOOKS]-(u:User)"
             "RETURN DISTINCT id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
-            "id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, "
+            "booking.name_start_stop AS start_stop, "
             "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
             "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
             "u.name as u_name LIMIT $limit"
@@ -264,8 +264,6 @@ class Neo4jDAO:
                 booking = {
                     "id": record["b_id"],
                     "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
-                    "id_s1": record["s1_id"],
-                    "id_s2": record["s2_id"],
                     "name_start_stop": record["start_stop"],
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
