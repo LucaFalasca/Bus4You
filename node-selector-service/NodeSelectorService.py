@@ -40,10 +40,11 @@ def publish_message_on_queue(message_json, queue, channel):
 
 def send_nodes_for_computation(id):
     l = 0
-
-    if l < 4:  # min
-        nodes_4j = get_cluster_with_limits(id, 10)  # max
-        l = len(nodes_4j)
+    nodes_4j = get_cluster_with_limits(id, 10)  # max
+    l = len(nodes_4j)
+    print("numero nodi presi" + str(l))
+    print(nodes_4j)
+    if l >= 4:  # min
         delete_nodes_after_get_cluster(nodes_4j)
         print("Ho scelto i nodi:")
         print(nodes_4j)
@@ -139,6 +140,7 @@ def send_nodes_for_computation(id):
         message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix, "user_routes": user_routes, "points_location": points_location}
         print("Sending message: " + str(message))
         publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, queue_channel)
+    return 0
 
 
 def get_booking_from_db():

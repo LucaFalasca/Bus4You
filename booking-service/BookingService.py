@@ -76,6 +76,7 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
     booking_id = dao.create_booking_type_end(it_id, username, name_start_stop, name_end_stop, date, hour_end,
                                              position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
+    print("BOOKING_ID_PERA" + str(booking_id))
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings()
@@ -100,6 +101,7 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
     booking_id = dao.create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                                                position_start_stop, position_end_stop)
     dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
+    print("BOOKING_ID_PERA" + str(booking_id))
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings()
