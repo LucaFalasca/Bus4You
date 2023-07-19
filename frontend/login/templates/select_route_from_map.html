@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-9">
                             <!-- campo per l'inserimento del punto di partenza -->
-                            <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
+                            <input type="text" readonly="readonly" id="starting_point" name="starting_point" placeholder="Starting point">
                             <input type="hidden" id="start_lat" name="start_lat">
                             <input type="hidden" id="start_lng" name="start_lng">
                         </div>
@@ -50,7 +50,7 @@
                     <div class="row">
                         <div class="col-9">
                             <!-- campo per l'inserimento del punto di arrivo -->
-                            <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
+                            <input type="text" readonly="readonly" id="ending_point" name="ending_point" placeholder="Ending point">
                             <input type="hidden" id="end_lat" name="end_lat">
                             <input type="hidden" id="end_lng" name="end_lng">
                         </div>
@@ -69,6 +69,10 @@
                         <div class="col-12">
                             <!-- campo per l'inserimento della data -->
                             <input type="date" id="date" name="date" placeholder="Date">
+                            <script>
+                              var today = new Date().toISOString().split('T')[0];
+                              document.getElementById("date").setAttribute("min", today);
+                            </script>
                         </div>
                     </div>
 
