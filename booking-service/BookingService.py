@@ -230,7 +230,9 @@ def json_to_route_info(json_input):
     nodes = [0 for q in json_input['steps']]
     print(nodes)
 
-    route_expiration = datetime.datetime.strptime(json_input['steps'][0]['date'], '%Y-%m-%d')
+    route_expiration = datetime.datetime.now() + datetime.timedelta(hours = 12)
+    print("route_expiration default: " + str(route_expiration))
+
 
     
     for step in json_input['steps']:
@@ -266,6 +268,7 @@ def json_to_route_info(json_input):
 
     print("nodes: " + str(nodes))
     print(json_input['user_routes'])
+    min_time = datetime.datetime.strptime(json_input['steps'][0]['date'] + " " + json_input['steps'][0]['time'], '%Y-%m-%d %H:%M:%S')
     for tour in json_input['user_routes']:
         start_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][0])
         end_stop = get_step_from_node_number(json_input['steps'], tour["nodes"][1])
@@ -276,6 +279,8 @@ def json_to_route_info(json_input):
         it_id = tour["it_id"]
         weight = metres / total_metres
         price = total_price * weight
+        if(datetime.datetime.strptime(start_stop['date'] + " " + start_stop['time'], '%Y-%m-%d %H:%M:%S') < min_time):
+            min_time = datetime.datetime.strptime(start_stop['date'] + " " + start_stop['time'], '%Y-%m-%d %H:%M:%S')
         print()
         it_list.append([
             round(price, 2),                                                #prezzo
@@ -286,6 +291,10 @@ def json_to_route_info(json_input):
             start_stop['location'][1], start_stop['location'][0],           #lat e lng di partenza
             end_stop['location'][1], end_stop['location'][0]])              #lat e lng di arrivo
 
+    delta = (min_time - datetime.datetime.now()) / 2
+    print("delta: " + str(delta))
+    route_expiration = min(route_expiration, min_time - delta)
+    print("route_expiration: " + str(route_expiration))
     return str(route_expiration), order_list, it_list,
 
 def get_step_from_node_number(steps, node_number):

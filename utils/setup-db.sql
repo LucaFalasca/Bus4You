@@ -110,6 +110,12 @@ fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-0
  insert into b4y_user_db.itinerario_richiesto(ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
 fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 12:30:00", 5, 10, "prova@gmail.com",
  41.660835, 12.411013, 41.665523, 12.404817);
+insert into b4y_user_db.itinerario_richiesto(ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
+fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 12:30:00", 5, 10, "prova2@gmail.com",
+ 41.660835, 12.411013, 41.665523, 12.404817);
+insert into b4y_user_db.itinerario_richiesto(ora_fine, costo_max, distanza, utente, fermata_lat_partenza,
+fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo) values ("2022-07-07 12:30:00", 5, 10, "prova3@gmail.com",
+ 41.660835, 12.411013, 41.665523, 12.404817);
 
 #Percorso pending
 insert into  b4y_user_db.percorso(id,scadenza, tmstmp) values(1,"2024-12-12", now());
