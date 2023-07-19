@@ -37,11 +37,11 @@ def publish_message_on_queue(message_json, queue, channel):
 
 def send_nodes_for_computation(channel):
     l = 0
-    while l < 4:  # min
+    while l < 3:  # min
         nodes_4j = get_random_cluster_with_limits(10)  # max
         print(nodes_4j)
         l = len(nodes_4j)
-    #delete_nodes_after_get_cluster()
+    delete_nodes_after_get_cluster(nodes_4j)
     print("Ho scelto i nodi:")
     print(nodes_4j)
     # nodes_4j = get_cluster_with_limits(15, 3)
@@ -163,13 +163,15 @@ def delete_nodes_from_list(list):
 
 def delete_nodes_after_get_cluster(list):
     ids = [d["id"] for d in list]
+    print("Ecco la lista: ")
+    print(ids)
     delete_nodes_from_list(ids)
 
 
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    print(get_random_cluster_with_limits(10))
+    #print(get_random_cluster_with_limits(10))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    #send_nodes_for_computation(queue_channel)
+    send_nodes_for_computation(queue_channel)
     # while True:
     #    pass
