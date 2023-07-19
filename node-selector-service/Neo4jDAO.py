@@ -224,6 +224,22 @@ class Neo4jDAO:
         session.close()
         return bookings
 
+    def get_random_booking_it_id(self):
+        query = (
+            "MATCH (b:Booking) "
+            "WITH b, rand() AS r "
+            "ORDER BY r "
+            "LIMIT 1 "
+            "RETURN b.it_id AS b_id"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query)
+
+            for record in result:
+                # Restituzione dell'id del nodo Booking selezionato casualmente
+                return record["b_id"]
+
     def get_random_booking(self):
         query = (
             "MATCH (b:Booking) "
@@ -239,6 +255,48 @@ class Neo4jDAO:
             for record in result:
                 # Restituzione dell'id del nodo Booking selezionato casualmente
                 return record["b_id"]
+
+    def get_start_end_bookings_with_limit_stripped(self, booking_id, limit):
+        query = (
+            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking) "
+            "WHERE b.it_id = $booking_id "
+            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings "
+            "UNWIND all_bookings as booking "
+            "MATCH (booking)<-[:BOOKS]-(u:User)"
+            "RETURN DISTINCT id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
+            "booking.name_start_stop AS start_stop, "
+            "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
+            "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
+            "u.name as u_name LIMIT $limit"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+
+            bookings = []
+            for record in result:
+                booking = {
+                    "id": record["b_id"],
+                    "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "type": record["b_type"],
+                    "user": record["u_name"],
+                    "it_id": record["it_id"]
+                }
+                if record["b_type"] == "start":
+                    booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
+                else:
+                    booking["hour"] = (None, datetime.strptime(record["b_he"], "%H:%M").time())
+                bookings.append(booking)
+
+            # Consuma tutti i record prima di restituire il risultato
+            result.consume()
+
+        # Restituzione della lista di prenotazioni
+        return bookings
 
     def get_start_end_bookings_with_limit(self, booking_id, limit):
         query = (
@@ -286,8 +344,6 @@ class Neo4jDAO:
 
 
     def get_end_type_bookings(self):
-
-
         # Query per selezionare i nodi di tipo "Booking" con valore "start"
         query = (
             "MATCH (b:Booking) "

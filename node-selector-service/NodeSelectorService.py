@@ -60,7 +60,7 @@ def send_nodes_for_computation(id):
         c = 0
 
         for itinerario in nodes_4j:
-            it_id = itinerario["it_id"] #TODO LUCA
+            it_id = itinerario["it_id"]
             date = itinerario["date"]
             coord_start = [itinerario["position_start_stop"][0], itinerario["position_start_stop"][1]]
             # print(coord_start)
@@ -124,10 +124,10 @@ def send_nodes_for_computation(id):
                             node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
 
             user_routes.append({
-                "user" : itinerario["user"],
-                "it_id" : it_id,
-                "date" : str(date),
-                "nodes" : [str(k_start), str(k_end)]
+                "user": itinerario["user"],
+                "it_id": it_id,
+                "date": str(date),
+                "nodes": [str(k_start), str(k_end)]
             })
 
         # print(points_location)
@@ -137,7 +137,8 @@ def send_nodes_for_computation(id):
 
         input_ors = [q[::-1] for q in list(points_location.values())]
         dist_matrix = OrsDao.getMatrix(input_ors)
-        message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix, "user_routes": user_routes, "points_location": points_location}
+        message = {"node_limit": node_limit, "prec_hash": prec_hash, "dist_matrix": dist_matrix,
+                   "user_routes": user_routes, "points_location": points_location}
         print("Sending message: " + str(message))
         publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, queue_channel)
     return 0
@@ -158,19 +159,60 @@ def get_random_cluster_with_limits(limit):
     booking_id = dao.get_random_booking()
     print("Booking id pescato:")
     print(booking_id)
-    dao.close()
     return dao.get_start_end_bookings_with_limit(booking_id, limit)
+
+
+def get_cluster_with_limits_stripped(booking_id, limit):
+    dao = Neo4jDAO("neo4j://localhost:7687", "neo4j", "123456789")
+    ret = []
+    nodes = dao.get_start_end_bookings_with_limit(booking_id, limit)
+    dao.close()
+    for elem in nodes:
+        tmp_date = elem['date']
+        elem['date'] = tmp_date.strftime("%Y-%m-%d")
+        tmp_time = elem['hour']
+        elem['hour'] = tmp_time[0].strftime("%H:%M")
+        tmp_start_point = elem['position_start_stop']
+        tmp_end_point = elem['position_end_stop']
+        elem['position_start_stop'] = [tmp_start_point.latitude, tmp_start_point.longitude]
+        elem['position_end_stop'] = [tmp_end_point.latitude, tmp_end_point.longitude]
+        ret.append(elem)
+    return ret
+
+
+def get_random_cluster_with_limits_stripped(limit):
+    dao = Neo4jDAO("neo4j://localhost:7687", "neo4j", "123456789")
+    booking_id = dao.get_random_booking_it_id()
+    ret = []
+    print("Booking id pescato:")
+    print(booking_id)
+    nodes = dao.get_start_end_bookings_with_limit(booking_id, limit)
+    dao.close()
+    for elem in nodes:
+        tmp_date = elem['date']
+        elem['date'] = tmp_date.strftime("%Y-%m-%d")
+        tmp_time = elem['hour']
+        elem['hour'] = tmp_time[0].strftime("%H:%M")
+        tmp_start_point = elem['position_start_stop']
+        tmp_end_point = elem['position_end_stop']
+        elem['position_start_stop'] = [tmp_start_point.latitude, tmp_start_point.longitude]
+        elem['position_end_stop'] = [tmp_end_point.latitude, tmp_end_point.longitude]
+        ret.append(elem)
+    return ret
+
 
 def delete_nodes_from_list(list):
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     dao.delete_nodes_from_list(list)
     dao.close()
 
+
 def delete_nodes_after_get_cluster(list):
     ids = [d["id"] for d in list]
     print("Ecco la lista: ")
     print(ids)
     delete_nodes_from_list(ids)
+
 
 def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
@@ -179,11 +221,12 @@ def serverRPCThread():
     server.register_function(send_nodes_for_computation, "send_nodes_for_computation")
     server.serve_forever()
 
+
 if __name__ == "__main__":
     # create queues for rabbitMq the channel has to be passed as parameter to publish function
-    #print(get_random_cluster_with_limits(10))
+    # print(get_random_cluster_with_limits(10))
     queue_channel = init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
-    #send_nodes_for_computation(queue_channel)
+    # send_nodes_for_computation(queue_channel)
     # while True:
     #    pass
 
