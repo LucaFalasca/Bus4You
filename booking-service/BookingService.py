@@ -79,13 +79,13 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
 
 
 def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
@@ -103,13 +103,13 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
         dao.get_compatible_time_bookings()
-        return
+        return booking_id
 
 
 def some_calls():
@@ -211,15 +211,20 @@ def test_rabbitMq(channel):
 
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish,
                    time):
+    id_book = None
     if start_or_finish == "start":
         with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
             it_id = json.loads(proxy.insert_it_req(date + " " + time, 0.0, user, start_lat, start_lng, end_lat, end_lng, 1))
-        create_booking_type_start(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
+        id_book = create_booking_type_start(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat,
                                   end_lng)
     else:
         with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
             it_id = json.loads(proxy.insert_it_req(date + " " + time, 0.0, user, start_lat, start_lng, end_lat, end_lng, 0))
-        create_booking_type_end(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
+        id_book = create_booking_type_end(it_id, user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng)
+    with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
+        print("id_book: " + str(id_book))
+        if(id_book != None):
+            proxy.send_nodes_for_computation(id_book)
     return True
 
 
