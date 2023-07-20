@@ -111,7 +111,7 @@ class Neo4jDAO:
         )
         return result.single()["distance"]
 
-    def search_for_compatibility_type_1(self, booking_id):
+    def search_for_compatibility_type_2(self, booking_id):
         with self.driver.session() as session:
             result = session.run(
                 "MATCH (b:Booking)-[:START_STOP]->(s:Stop) "
@@ -131,7 +131,7 @@ class Neo4jDAO:
             else:
                 return False
 
-    def search_for_compatibility_type_2(self, booking_id):
+    def search_for_compatibility_type_1(self, booking_id):
         with self.driver.session() as session:
             result = session.run(
                 "MATCH (b:Booking)-[:END_STOP]->(s:Stop) "
@@ -261,47 +261,6 @@ class Neo4jDAO:
         return bookings
 
 
-    '''
-    def get_start_end_bookings_with_limit(self, booking_id, limit):
-        query = (
-            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
-            "WHERE id(b) = $booking_id "
-            "WITH collect(DISTINCT booking) as all_bookings, s1 "
-            "UNWIND all_bookings as booking "
-            "MATCH (booking)-[:END_STOP]->(s2:Stop) "
-            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, booking.position_start_stop AS position_start_stop, booking.type AS b_type "
-            "LIMIT $limit"
-        )
-
-        with self.driver.session() as session:
-            result = session.run(query, booking_id=booking_id, limit=limit)
-
-            bookings = []
-            for record in result:
-                booking = {
-                    "id": record["b_id"],
-                    "date": date(record["b_day"].year, record["b_day"].month, record["b_day"].day),
-                    "id_s1": record["s1_id"],
-                    "id_s2": record["s2_id"],
-                    "name_start_stop": record["start_stop"],
-                    "name_end_stop": record["end_stop"],
-                    "position_start_stop": record["position_start_stop"],
-                    "position_end_stop": record["position_end_stop"],
-                    "type": record["b_type"]
-                }
-                if record["b_type"] == "start":
-                    booking["hour"] = (time(hour=record["b_hs"].hour, minute=record["b_hs"].minute), None)
-                else:
-                    booking["hour"] = (None, time(hour=record["b_he"].hour, minute=record["b_he"].minute))
-                bookings.append(booking)
-
-            # Consuma tutti i record prima di restituire il risultato
-            result.consume()
-
-        # Restituzione della lista di prenotazioni
-        return bookings
-    '''
-
 
     #Chiedere se aggiungere comunque gli stop_id per le API
     def get_start_end_bookings_with_limit(self, booking_id, limit):
@@ -355,22 +314,24 @@ class Neo4jDAO:
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
 
-    def get_compatible_time_bookings(self, booking_id):
+    '''def get_compatible_time_bookings(self, booking_id):
         with self.driver.session() as session:
             result = session.run(
-                "MATCH (b:Booking)-[:COMPATIBLE]->(other_booking:Booking) "
+                "MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                 "WHERE id(b) = $booking_id "
                 "RETURN id(b) AS id, b.type AS type, b.hour_start AS hour_start, b.hour_end AS hour_end, "
                 "b.position_start_stop AS position_start_stop, b.position_end_stop AS position_end_stop, "
                 "id(other_booking) AS other_id, other_booking.type AS other_type, "
                 "other_booking.hour_start AS other_hour_start, other_booking.hour_end AS other_hour_end, "
                 "other_booking.position_start_stop AS other_position_start_stop, "
-                "other_booking.position_end_stop AS other_position_end_stop", booking_id = booking_id
+                "other_booking.position_end_stop AS other_position_end_stop, "
+                "r.type_spatial AS type_spatial", booking_id = booking_id
             )
             nodes = []
             for record in result:
                 node = {
                     "id": record["id"],
+                    "type_spatial": record["type_spatial"],
                     "type": record["type"],
                     "hour_start": record["hour_start"],
                     "hour_end": record["hour_end"],
@@ -402,13 +363,13 @@ class Neo4jDAO:
                         (int(node["other_hour_start"].split(":")[0]) * 60 + int(
                             node["other_hour_start"].split(":")[1])))
 
-                    '''
+                    
                     print(offset1)
                     print(offset2)
                     print(hour)
                     print(hour_diff)
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
-                    '''
+                    
 
                     if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
@@ -426,13 +387,13 @@ class Neo4jDAO:
                         (int(node["other_hour_start"].split(":")[0]) * 60 + int(node["other_hour_start"].split(":")[1])) -
                         (int(node["hour_end"].split(":")[0]) * 60 + int(
                              node["hour_end"].split(":")[1])))
-                    '''
+                    
                     print(offset1)
                     print(offset2)
                     print(hour)
                     print(hour_diff)
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
-                    '''
+                    
 
                     if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
@@ -455,13 +416,14 @@ class Neo4jDAO:
                         (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1])) -
                         (int(node["other_hour_end"].split(":")[0]) * 60 + int(
                             node["other_hour_end"].split(":")[1])))
-                    '''
+
+                    print("facciamo delle prove...")
                     print(offset1)
                     print(offset2)
                     print(hour)
                     print(hour_diff)
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
-                    '''
+
 
                     if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
@@ -486,20 +448,149 @@ class Neo4jDAO:
                         (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1])) -
                         (int(node["other_hour_end"].split(":")[0]) * 60 + int(
                             node["other_hour_end"].split(":")[1])))
-                    '''
+                    
                     print(offset1)
                     print(offset2)
                     print(hour)
                     print(hour_diff)
                     print(f"{hour - offset1} < {hour_diff} < {hour + offset2}")
-                    '''
+                    
 
 
                     if not (hour - offset1 <= hour_diff <= hour + offset2):
                         session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
                                     "WHERE id(b) = $id AND id(other_booking) = $other_id "
+                                    "DELETE r", id=node["id"], other_id=node["other_id"])'''
+
+    def get_compatible_time_bookings(self, booking_id):
+        with self.driver.session() as session:
+            result = session.run(
+                "MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
+                "WHERE id(b) = $booking_id "
+                "RETURN id(b) AS id, b.type AS type, b.hour_start AS hour_start, b.hour_end AS hour_end, "
+                "b.position_start_stop AS position_start_stop, b.position_end_stop AS position_end_stop, "
+                "id(other_booking) AS other_id, other_booking.type AS other_type, "
+                "other_booking.hour_start AS other_hour_start, other_booking.hour_end AS other_hour_end, "
+                "other_booking.position_start_stop AS other_position_start_stop, "
+                "other_booking.position_end_stop AS other_position_end_stop, "
+                "r.type AS type_spatial", booking_id = booking_id
+            )
+            nodes = []
+
+            for record in result:
+                node = {
+                    "id": record["id"],
+                    "type_spatial": record["type_spatial"],
+                    "type": record["type"],
+                    "hour_start": record["hour_start"],
+                    "hour_end": record["hour_end"],
+                    "position_start_stop": [record["position_start_stop"].latitude,
+                                            record["position_start_stop"].longitude],
+                    "position_end_stop": [record["position_end_stop"].latitude, record["position_end_stop"].longitude],
+                    "other_id": record["other_id"],
+                    "other_type": record["other_type"],
+                    "other_hour_start": record["other_hour_start"],
+                    "other_hour_end": record["other_hour_end"],
+                    "other_position_start_stop": [record["other_position_start_stop"].latitude,
+                                                  record["other_position_start_stop"].longitude],
+                    "other_position_end_stop": [record["other_position_end_stop"].latitude,
+                                                record["other_position_end_stop"].longitude]
+                }
+                nodes.append(node)
+
+            for node in nodes:
+                hour_node1 = 0
+                hour_node2 = 0
+                matrix = getMatrix([[node["position_start_stop"][0], node["position_start_stop"][1]],
+                                    [node["position_end_stop"][0], node["position_end_stop"][1]],
+                                    [node["other_position_start_stop"][0], node["other_position_start_stop"][1]],
+                                    [node["other_position_end_stop"][0], node["other_position_end_stop"][1]]])
+                #TYPE 1
+                if (node["type_spatial"] == 1):
+                    if (node["type"] == "start"): hour_node1 = (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1])) + matrix[0][1]
+                    if (node["type"] == "end"):  hour_node1 = (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1]))
+                    if (node["other_type"] == "end"): hour_node2 = (int(node["other_hour_end"].split(":")[0]) * 60 + int(node["other_hour_end"].split(":")[1])) - matrix[3][2]
+                    if (node["other_type"] == "start"): hour_node2 = (int(node["other_hour_start"].split(":")[0]) * 60 + int(node["other_hour_start"].split(":")[1]))
+
+
+                    time_to_travel = abs(hour_node1 - hour_node2)
+                    time_to_travel_ors = matrix[0][3]
+                    offset1 = max(5, 0.15 * time_to_travel_ors)
+                    offset2 = max(10, 0.3 * time_to_travel_ors)
+
+                    print("-----------------")
+                    print("Hour Start: " + str(hour_node1))
+                    print("Hour End: " + str(hour_node2))
+                    print(f"{time_to_travel_ors - offset1} < {time_to_travel} < {time_to_travel_ors + offset2}")
+                    print("-----------------")
+
+                    if not (time_to_travel_ors - offset1 <= time_to_travel <= time_to_travel_ors + offset2):
+                        session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
+                                    "WHERE id(b) = $id AND id(other_booking) = $other_id "
+                                    "DELETE r", id=node["id"], other_id=node["other_id"])
+                #TYPE 2
+                if(node["type_spatial"] == 2):
+
+                    print("Pronto 1 ?")
+                    if (node["type"] == "start"):
+                        hour_node1 = (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1]))
+                        print("Pronto 2 ?")
+                    if (node["type"] == "end"):
+                        hour_node1 = (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1])) - matrix[0][1]
+                        print("Pronto 3 ?")
+                    if (node["other_type"] == "end"):
+                        hour_node2 = (int(node["other_hour_end"].split(":")[0]) * 60 + int(node["other_hour_end"].split(":")[1]))
+                        print("Pronto 4 ?")
+                    if (node["other_type"] == "start"):
+                        print("Pronto 4.5 ?")
+                        print(node)
+                        hour_node2 = (int(node["other_hour_start"].split(":")[0]) * 60 + int(node["other_hour_start"].split(":")[1])) + matrix[3][2]
+                        print("Pronto 5 ?")
+
+                    print("Pronto 6 ?")
+                    print("Hour Start: " + str(hour_node1))
+                    print("Hour End: " + str(hour_node2))
+                    time_to_travel = abs(hour_node1 - hour_node2)
+                    time_to_travel_ors = matrix[0][3]
+                    offset1 = max(5, 0.15 * time_to_travel_ors)
+                    offset2 = max(10, 0.3 * time_to_travel_ors)
+
+
+
+                    print("-----------------")
+                    print("Hour Start: " + str(hour_node1))
+                    print("Hour End: " + str(hour_node2))
+                    print(f"{time_to_travel_ors - offset1} < {time_to_travel} < {time_to_travel_ors + offset2}")
+                    print("-----------------")
+
+                    if not (time_to_travel_ors - offset1 <= time_to_travel <= time_to_travel_ors + offset2):
+                        session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
+                                    "WHERE id(b) = $id AND id(other_booking) = $other_id "
                                     "DELETE r", id=node["id"], other_id=node["other_id"])
 
+                 # TYPE 3
+                if (node["type_spatial"] == 3):
+                    print("AAAOOOOOOOOOO")
+                    if (node["type"] == "start"): hour_node1 = (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1]))
+                    if (node["type"] == "end"):  hour_node1 = (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1])) - matrix[1][0]
+                    if (node["other_type"] == "end"): hour_node2 = (int(node["other_hour_end"].split(":")[0]) * 60 + int(node["other_hour_end"].split(":")[1])) - matrix[3][2]
+                    if (node["other_type"] == "start"): hour_node2 = (int(node["other_hour_start"].split(":")[0]) * 60 + int(node["other_hour_start"].split(":")[1]))
+
+                    time_to_travel = abs(hour_node1 - hour_node2)
+                    time_to_travel_ors = matrix[0][2]
+                    offset1 = max(5, 0.15 * time_to_travel_ors)
+                    offset2 = max(10, 0.3 * time_to_travel_ors)
+
+                    print("-----------------")
+                    print("Hour Start: " + str(hour_node1))
+                    print("Hour End: " + str(hour_node2))
+                    print(f"{time_to_travel_ors - offset1} < {time_to_travel} < {time_to_travel_ors + offset2}")
+                    print("-----------------")
+
+                    if not (time_to_travel_ors - offset1 <= time_to_travel <= time_to_travel_ors + offset2):
+                        session.run("MATCH (b:Booking)-[r:COMPATIBLE]->(other_booking:Booking) "
+                                    "WHERE id(b) = $id AND id(other_booking) = $other_id "
+                                    "DELETE r", id=node["id"], other_id=node["other_id"])
 
 
     '''def get_person_by_name(self, name):
