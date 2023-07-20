@@ -1,0 +1,224 @@
+.accordion {
+    width: 80% !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+    padding-left: 20px !important;
+}
+
+#gigaDiv {
+    padding-top: 20px;
+}
+
+#gigaH2 {
+    color: white !important;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+.accordion-collapse {
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+.accordion.accordion-background-active .accordion-header .accordion-button[aria-expanded=true] {
+    /* background-color: #06c; */
+    color: #fff;
+    border-color: #4CAF50;
+    background-color: #4CAF50;
+}
+
+.accordion-button {
+    color: white !important;
+    border-radius: 12px !important;
+    border: transparent !important;
+}
+
+.accordion-button:hover, .accordion-button:active, .accordion-button:not(.collapsed) {
+    background-color: #4CAF50 !important;
+}
+
+button[id^="btnAcc"]:hover, button[id^="btnAcc"]:active, button[id^="btnAcc"]:not(.collapsed) button[id^="btnAcc"]:focus {
+    background-color: #4CAF50 !important;
+}
+
+#btnAttive, #btnPast {
+    font-size: 28px !important;
+    height: 70px !important;
+    background-color: #152733 !important;
+    width: 40% !important;
+}
+
+.accordion-item {
+    border-color: #4CAF50 !important;
+    border-radius: 15px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px !important;
+    background-color: #312626;
+}
+
+div[id^="divAcc"] {
+    border-color: #4CAF50 !important;
+}
+
+.map {
+    height: 100%;
+    min-height: 300px;
+    border-radius: 7px;
+    border: 1px solid #000000;
+}
+
+input[type=text] {
+    border-radius: 7px !important;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+input[type=submit] {
+    padding: 6px;
+    border-radius: 7px !important;
+    border-color: #4CAF50;
+!important;
+    margin-top: 5px;
+    margin-bottom: 10px;
+!important;
+    margin-right: 20px;
+!important;
+    color: black;
+!important;
+    outline: none;
+!important;
+    border-style: solid;
+!important;
+}
+
+#btn_start_point, #btn_end_point {
+    padding: 6px;
+    border-radius: 7px !important;
+    margin-bottom: 10px;
+!important;
+    margin-left: 20px;
+!important;
+    border-color: #4CAF50;
+!important;
+    color: black;
+!important;
+    outline: none;
+!important;
+    border-style: solid;
+!important;
+}
+
+label {
+    color: white;
+}
+
+button[id^="btnModalConfirmClose"] {
+    text-align: center;
+    width: 40%;
+    background-color: #152733;
+    color: #4a9b4d;
+    padding: 8px 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4a9b4d;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+    border-width: 2px;
+}
+
+input[id^="btnModalConfirm"] {
+    text-align: center !important;
+    width: 40% !important;
+    background-color: #4a9b4d !important;
+    color: white !important;
+    padding: 8px 8px !important;
+    margin-top: 8px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    transition-duration: 0.4s !important;
+    cursor: pointer !important;
+    border-color: #3e7e3f !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    border-style: solid !important;
+    border-width: 2px;
+}
+
+button[id^="btnModalConfirmClose"]:hover {
+    background-color: #142431;
+    border-color: #3e7e3f;
+    color: #3e7e3f;
+}
+
+input[id^="btnModalConfirm"]:hover {
+    background-color: #3e7e3f !important;
+    border-color: #3e7e3f !important;
+}
+
+.modal-content, .modal-header, .modal-body, .modal-footer {
+    color: white !important;
+    background-color: #152733 !important;
+    border-radius: 12px !important;
+}
+
+button[id^="btnJoin"]:hover {
+    background-color: #3e7e3f;
+    border-color: #3e7e3f;
+}
+
+button[id^="btnJoin"]:focus {
+    border-color: #3e7e3f !important;
+}
+
+button[id^="btnJoin"] {
+    text-align: center;
+    width: 100%;
+    background-color: #4a9b4d;
+    color: white;
+    padding: 8px 8px;
+    margin-top: 6%;
+    margin-right: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-color: #4CAF50;
+    border-radius: 12px;
+    outline: none;
+    border-style: solid;
+}
+
+#btnReset {
+    text-align: center;
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 6%;
+    border-style: solid;
+    border-color: #c5c5c5;
+    transition-duration: 0.4s;
+    padding: 8px 8px;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+}
+
+#btnReset:hover {
+    background-color: #c5c5c5;
+    border-color: #c5c5c5;
+}
+
+
+
+
+
+

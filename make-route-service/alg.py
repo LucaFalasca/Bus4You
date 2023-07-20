@@ -1,18 +1,15 @@
-
+import datetime
+import json
 import random
+import threading
 import time
 import xmlrpc.server
 from collections import deque
-import json
-import queue
-import datetime
-import threading
 
 import pika
 
 import compact as alg2
-
-
+import queue
 
 
 def two_opt(route, dist_matrix, prec_hash, node_limit):
@@ -72,6 +69,8 @@ def check_prec(route, prec_hash):
 
 
 def is_better(new, old):
+    if len(new) == 0:
+        return True
     if new[0] < old[0]:
         return True
     elif new[0] > old[0]:
@@ -170,8 +169,9 @@ def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
         final_ruote = result[0]
         user_travel_time = {}
         ruote_dict = {tup[0]: tup[1] for tup in final_ruote}
-        for user in user_routes:
-            user_travel_time[user] = str(datetime.timedelta(minutes=round((float(ruote_dict[user_routes[user][1]]) - float(ruote_dict[user_routes[user][0]])), 0)))
+        for route in user_routes:
+            user_travel_time[route["it_id"]] = str(datetime.timedelta(
+                minutes=round((float(ruote_dict[route["nodes"][1]]) - float(ruote_dict[route["nodes"][0]])), 0)))
         return result, user_travel_time
 
 
@@ -184,7 +184,7 @@ def prepared_routes_callback(ch, method, properties, body):
     prec_hash = message["prec_hash"]
     dist_matrix = message["dist_matrix"]
     user_routes = message["user_routes"]
-    date_string = message["date"]
+    date_string = user_routes[0]["date"]
     date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     result = calculate_route(dist_matrix, prec_hash, node_limit, user_routes)
     print("Result : " + str(result))
@@ -207,15 +207,17 @@ def prepared_routes_callback(ch, method, properties, body):
         step_json["location"] = message["points_location"][str(step[0])][::-1]
         steps.append(step_json)
     result_json["steps"] = steps
-    result_json["travel_time"] = str(datetime.timedelta(minutes = round(float(result[0][1]),0)))
+    result_json["travel_time"] = str(datetime.timedelta(minutes=round(float(result[0][1]), 0)))
     result_json["n_tardy"] = result[0][2]
-    result_json["mean_unacceptable_deviance"] = str(datetime.timedelta(minutes = round(result[0][3])))
+    result_json["mean_unacceptable_deviance"] = str(datetime.timedelta(minutes=round(result[0][3])))
     result_json["users_travel_time"] = result[1]
     result_json["user_routes"] = user_routes
     queue.publish_message_on_queue(json.dumps(result_json), queue.PROPOSE_ROUTE_QUEUE, queue_channel_pub)
 
+
 def rabbitMQThreadConsumer():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
+                                                                   blocked_connection_timeout=3600))
     channel = connection.channel()
     # Create a queue, if already exist nothing happens
     channel.queue_declare(queue=queue.MAKE_ROUTE_STOP_DATA_QUEUE_1, durable=True)
@@ -226,6 +228,7 @@ def rabbitMQThreadConsumer():
     print("I'm waiting for messages on queue [" + queue.MAKE_ROUTE_STOP_DATA_QUEUE_1 + "]...")
     channel.start_consuming()
 
+
 def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Server RPC is ON on port 8000")
@@ -233,15 +236,15 @@ def serverRPCThread():
     server.register_function(calculate_route, "calculate_route")
     server.serve_forever()
 
+
 if __name__ == "__main__":
     queue_channel_pub = queue.init_rabbit_mq_queues()  # queue_connection va ammmazzata quando non serve piu
 
     queueConsumerThread = threading.Thread(target=rabbitMQThreadConsumer)
     serverRPCThread = threading.Thread(target=serverRPCThread)
-    
+
     queueConsumerThread.start()
     serverRPCThread.start()
 
     queueConsumerThread.join()
     serverRPCThread.join()
-    

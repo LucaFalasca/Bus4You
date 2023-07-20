@@ -9,5 +9,6 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "-u", "./notifyService/NotifyService.py"]
+
+CMD ["python3", "-u" ,"./login/main.py"]
 

@@ -28,8 +28,11 @@ CREATE TABLE `cashback` (
   `saldo` decimal(6,2) NOT NULL,
   `tmstmp` datetime NOT NULL,
   `utente` varchar(128) NOT NULL,
-  PRIMARY KEY (`utente`),
+  `percorso` bigint NOT NULL,
+  PRIMARY KEY (`utente`,`tmstmp`,`percorso`),
   KEY `fk_utente_cb_idx` (`utente`),
+  KEY `fk_percorso_cb_idx` (`percorso`),
+  CONSTRAINT `fk_percorso_cb` FOREIGN KEY (`percorso`) REFERENCES `percorso` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_cb` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -113,9 +116,26 @@ CREATE TABLE `itinerario_proposto` (
 
 LOCK TABLES `itinerario_proposto` WRITE;
 /*!40000 ALTER TABLE `itinerario_proposto` DISABLE KEYS */;
-INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(6,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(7,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(8,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(25,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,4,41.648593,12.431090,41.658425,12.422922),(26,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(27,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(28,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(29,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(30,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(31,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(32,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817);
+INSERT INTO `itinerario_proposto` VALUES (1,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,1,41.648593,12.431090,41.658425,12.422922),(2,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(3,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(4,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(5,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(6,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(7,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(8,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,1,41.660835,12.411013,41.665523,12.404817),(9,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,2,41.648593,12.431090,41.658425,12.422922),(10,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(11,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(12,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(13,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(14,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(15,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(16,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,2,41.660835,12.411013,41.665523,12.404817),(17,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,3,41.648593,12.431090,41.658425,12.422922),(18,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(19,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(20,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(21,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(22,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(23,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(24,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,3,41.660835,12.411013,41.665523,12.404817),(25,5.00,10.0000,'2022-07-07 10:00:00','2022-07-07 10:30:00',NULL,NULL,'pending','prova@gmail.com',1,4,41.648593,12.431090,41.658425,12.422922),(26,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'pending','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(27,10.00,5.0000,'2024-12-12 09:00:00','2024-12-12 09:15:00',NULL,NULL,'pending','prova@gmail.com',1,150,41.648593,12.431090,41.656737,12.416982),(27,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(28,11.00,6.0000,'2024-12-12 09:10:00','2024-12-12 09:25:00',NULL,NULL,'pending','prova@gmail.com',1,150,41.654548,12.427688,41.657195,12.416498),(28,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(29,12.00,7.0000,'2024-12-12 09:15:00','2024-12-12 09:35:00',NULL,NULL,'pending','prova@gmail.com',1,150,41.658228,12.414757,41.658425,12.422922),(29,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'rejected','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(30,13.00,8.0000,'2024-12-12 11:00:00','2024-12-12 11:25:00',NULL,NULL,'pending','prova@gmail.com',1,151,41.660835,12.411013,41.664962,12.405092),(30,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(31,14.00,9.0000,'2024-12-12 11:40:00','2024-12-12 12:00:00',NULL,NULL,'pending','prova@gmail.com',1,151,41.660897,12.410602,41.665523,12.404817),(31,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817),(32,5.00,10.0000,'2022-07-07 12:00:00','2022-07-07 12:30:00',NULL,NULL,'confirmed','prova@gmail.com',2,4,41.660835,12.411013,41.665523,12.404817);
 /*!40000 ALTER TABLE `itinerario_proposto` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `itinerario_proposto_AFTER_UPDATE` AFTER UPDATE ON `itinerario_proposto` FOR EACH ROW BEGIN
+call scadenza_precoce(new.percorso);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `itinerario_richiesto`
@@ -129,7 +149,7 @@ CREATE TABLE `itinerario_richiesto` (
   `ora_inizio` datetime DEFAULT NULL,
   `ora_fine` datetime DEFAULT NULL,
   `costo_max` decimal(6,2) DEFAULT NULL,
-  `distanza` decimal(8,4),
+  `distanza` decimal(8,4) DEFAULT NULL,
   `utente` varchar(128) NOT NULL,
   `fermata_lat_partenza` decimal(8,6) NOT NULL,
   `fermata_lon_partenza` decimal(8,6) NOT NULL,
@@ -142,7 +162,7 @@ CREATE TABLE `itinerario_richiesto` (
   CONSTRAINT `fk_itinerario_richiesto_fermata1` FOREIGN KEY (`fermata_lat_partenza`, `fermata_lon_partenza`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_itinerario_richiesto_fermata2` FOREIGN KEY (`fermata_lat_arrivo`, `fermata_lon_arrivo`) REFERENCES `fermata` (`lat`, `lon`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente_req` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,7 +171,7 @@ CREATE TABLE `itinerario_richiesto` (
 
 LOCK TABLES `itinerario_richiesto` WRITE;
 /*!40000 ALTER TABLE `itinerario_richiesto` DISABLE KEYS */;
-INSERT INTO `itinerario_richiesto` VALUES (1,'2022-07-07 10:00:00','2022-07-07 10:30:00',5.00,10.0000,'prova@gmail.com',41.648593,12.431090,41.658425,12.422922),(2,'2022-07-07 12:00:00','2022-07-07 12:30:00',5.00,10.0000,'prova@gmail.com',41.660835,12.411013,41.665523,12.404817);
+INSERT INTO `itinerario_richiesto` VALUES (1,'2022-07-07 10:00:00',NULL,5.00,10.0000,'prova@gmail.com',41.648593,12.431090,41.658425,12.422922),(2,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova@gmail.com',41.660835,12.411013,41.665523,12.404817),(3,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova2@gmail.com',41.660835,12.411013,41.665523,12.404817),(4,NULL,'2022-07-07 12:30:00',5.00,10.0000,'prova3@gmail.com',41.660835,12.411013,41.665523,12.404817);
 /*!40000 ALTER TABLE `itinerario_richiesto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +201,7 @@ CREATE TABLE `ordinamento` (
 
 LOCK TABLES `ordinamento` WRITE;
 /*!40000 ALTER TABLE `ordinamento` DISABLE KEYS */;
-INSERT INTO `ordinamento` VALUES (1,1,41.648593,12.431090),(3,1,41.658425,12.422922),(2,1,41.660835,12.411013),(4,1,41.665523,12.404817),(1,2,41.648593,12.431090),(3,2,41.658425,12.422922),(2,2,41.660835,12.411013),(4,2,41.665523,12.404817),(1,3,41.648593,12.431090),(3,3,41.658425,12.422922),(2,3,41.660835,12.411013),(4,3,41.665523,12.404817),(1,4,41.648593,12.431090),(3,4,41.658425,12.422922),(2,4,41.660835,12.411013),(4,4,41.665523,12.404817);
+INSERT INTO `ordinamento` VALUES (1,1,41.648593,12.431090),(3,1,41.658425,12.422922),(2,1,41.660835,12.411013),(4,1,41.665523,12.404817),(1,2,41.648593,12.431090),(3,2,41.658425,12.422922),(2,2,41.660835,12.411013),(4,2,41.665523,12.404817),(1,3,41.648593,12.431090),(3,3,41.658425,12.422922),(2,3,41.660835,12.411013),(4,3,41.665523,12.404817),(1,4,41.648593,12.431090),(3,4,41.658425,12.422922),(2,4,41.660835,12.411013),(4,4,41.665523,12.404817),(1,150,41.648593,12.431090),(2,150,41.654548,12.427688),(3,150,41.656737,12.416982),(4,150,41.657195,12.416498),(5,150,41.658228,12.414757),(6,150,41.658425,12.422922),(1,151,41.660835,12.411013),(2,151,41.660897,12.410602),(3,151,41.664962,12.405092),(4,151,41.665523,12.404817);
 /*!40000 ALTER TABLE `ordinamento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,17 +216,14 @@ CREATE TABLE `pagamento` (
   `tmstmp` datetime DEFAULT NULL,
   `file_fattura` blob,
   `percorso` bigint NOT NULL,
-  `itinerario_richiesto` bigint NOT NULL,
   `utente` varchar(128) NOT NULL,
   `itinerario_proposto` bigint NOT NULL,
-  PRIMARY KEY (`itinerario_proposto`,`utente`,`itinerario_richiesto`,`percorso`),
+  PRIMARY KEY (`itinerario_proposto`,`utente`,`percorso`),
   KEY `fk_itinerario_proposto_id_pay_idx` (`itinerario_proposto`) /*!80000 INVISIBLE */,
-  KEY `fk_itinerario_proposto_req_pay_idx` (`itinerario_richiesto`),
   KEY `fk_itinerario_proposto_route_pay_idx` (`percorso`) /*!80000 INVISIBLE */,
   KEY `fk_itinerario_proposto_user_pay` (`utente`),
   CONSTRAINT `fk_itinerario_proposto_id_pay` FOREIGN KEY (`itinerario_proposto`) REFERENCES `itinerario_proposto` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_itinerario_proposto_req_pay` FOREIGN KEY (`itinerario_richiesto`) REFERENCES `itinerario_proposto` (`itinerario_richiesto`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_itinerario_proposto_route_pay` FOREIGN KEY (`percorso`) REFERENCES `itinerario_proposto` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_itinerario_proposto_route_pay` FOREIGN KEY (`percorso`) REFERENCES `itinerario_proposto` (`percorso`) ON UPDATE CASCADE,
   CONSTRAINT `fk_utente` FOREIGN KEY (`utente`) REFERENCES `utente` (`mail`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -235,7 +252,7 @@ CREATE TABLE `percorso` (
   `tmstmp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_archiviato_route` (`archiviato`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +261,7 @@ CREATE TABLE `percorso` (
 
 LOCK TABLES `percorso` WRITE;
 /*!40000 ALTER TABLE `percorso` DISABLE KEYS */;
-INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-10 20:06:48'),(2,'2024-12-12 00:00:00',0,'confirmed','2023-07-10 20:06:48'),(3,'2024-12-12 00:00:00',1,'rejected','2023-07-10 20:06:48'),(4,'2024-12-12 00:00:00',1,'confirmed','2023-07-10 20:06:48');
+INSERT INTO `percorso` VALUES (1,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(2,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(3,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(4,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(5,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(6,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(7,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(8,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(9,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(10,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(11,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(12,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(13,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(14,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(15,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(16,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(17,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(18,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(19,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(20,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(21,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(22,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(23,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(24,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(25,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(26,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(27,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(28,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(29,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(30,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(31,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(32,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(33,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(34,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(35,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(36,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(37,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(38,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(39,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(40,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(41,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(42,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(43,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(44,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(45,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(46,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(47,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(48,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(49,'2024-12-12 00:00:00',0,'pending','2023-07-19 17:39:35'),(50,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(51,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(52,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(53,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(54,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(55,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(56,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(57,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(58,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(59,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(60,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(61,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(62,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:35'),(63,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(64,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(65,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(66,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(67,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(68,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(69,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(70,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(71,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(72,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(73,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(74,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(75,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(76,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(77,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(78,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(79,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(80,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(81,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(82,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(83,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(84,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(85,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(86,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(87,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(88,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(89,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(90,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(91,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(92,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(93,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(94,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(95,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(96,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(97,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(98,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(99,'2024-12-12 00:00:00',0,'confirmed','2023-07-19 17:39:36'),(100,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(101,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(102,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(103,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(104,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(105,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(106,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(107,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(108,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(109,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(110,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(111,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(112,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(113,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(114,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(115,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(116,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(117,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(118,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(119,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(120,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(121,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(122,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(123,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(124,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(125,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(126,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(127,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(128,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(129,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(130,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(131,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(132,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(133,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(134,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(135,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(136,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(137,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(138,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(139,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(140,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(141,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(142,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(143,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(144,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(145,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(146,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(147,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(148,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(149,'2024-12-12 00:00:00',1,'rejected','2023-07-19 17:39:36'),(150,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(151,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(152,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(153,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(154,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(155,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(156,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(157,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(158,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(159,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(160,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(161,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(162,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(163,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(164,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(165,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(166,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(167,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(168,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(169,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(170,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(171,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(172,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(173,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(174,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(175,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(176,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(177,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(178,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(179,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(180,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(181,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(182,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(183,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(184,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(185,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(186,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(187,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(188,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(189,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(190,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(191,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(192,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(193,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(194,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(195,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(196,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(197,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(198,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36'),(199,'2024-12-12 00:00:00',1,'confirmed','2023-07-19 17:39:36');
 /*!40000 ALTER TABLE `percorso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +290,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES ('prova@gmail.com','1234','prova','prova','prova','2022-07-07',0.00);
+INSERT INTO `utente` VALUES ('prova10@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova11@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova12@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova13@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova14@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova15@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova16@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova17@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova18@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova19@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova1@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova20@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova21@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova22@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova23@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova24@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova25@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova26@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova27@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova28@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova29@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova2@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova30@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova31@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova32@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova33@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova34@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova35@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova36@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova37@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova38@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova39@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova3@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova40@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova41@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova42@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova43@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova44@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova45@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova46@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova47@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova48@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova49@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova4@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova50@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova51@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova52@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova53@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova54@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova55@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova56@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova57@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova58@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova59@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova5@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova60@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova61@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova62@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova63@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova64@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova65@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova66@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova67@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova68@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova69@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova6@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova70@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova71@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova72@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova73@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova74@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova75@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova76@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova77@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova78@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova79@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova7@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova80@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova81@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova82@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova83@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova84@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova85@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova86@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova87@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova88@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova89@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova8@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova90@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova91@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova92@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova93@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova94@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova95@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova96@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova97@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova98@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova99@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova9@gmail.com','1234','prova','prova','prova','2022-07-07',500.00),('prova@gmail.com','1234','prova','prova','prova','2022-07-07',500.00);
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,9 +313,79 @@ UNLOCK TABLES;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `confirm_it`(in id BIGINT)
 BEGIN
+set transaction isolation level read committed;
+start transaction;
 UPDATE b4y_user_db.itinerario_proposto
 SET itinerario_proposto.stato='confirmed'
 WHERE itinerario_proposto.id=id;
+select utente, costo, percorso from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo, @percorso;
+call pay(@utente, @costo, @percorso, id);
+commit;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_future_confirmed_routes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_future_confirmed_routes`()
+BEGIN
+	DROP VIEW IF EXISTS route_ids;
+	CREATE VIEW route_ids AS
+	SELECT DISTINCT percorso.id
+			FROM percorso, ordinamento, itinerario_proposto
+			WHERE percorso.stato = 'confirmed'
+				AND ordinamento.percorso = percorso.id
+				AND ordinamento.numero = 1
+				AND itinerario_proposto.fermata_lat_partenza = ordinamento.fermata_lat
+				AND itinerario_proposto.fermata_lon_partenza = ordinamento.fermata_lon
+				AND itinerario_proposto.percorso = percorso.id
+				AND itinerario_proposto.orario_partenza_proposto > NOW();
+
+	SELECT it1.percorso,
+			o1.numero, 
+            ANY_VALUE(fermata.nome),
+			ANY_VALUE(o1.fermata_lat),
+			ANY_VALUE(o1.fermata_lon),
+			ANY_VALUE(it1.orario_partenza_proposto) as timestamp_node,
+			COUNT(it1.id) as climb_up,
+			0 as climb_down
+	FROM itinerario_proposto as it1, ordinamento as o1, fermata
+	WHERE it1.percorso in (SELECT * FROM route_ids)
+		AND it1.fermata_lat_partenza = o1.fermata_lat
+		AND it1.fermata_lon_partenza = o1.fermata_lon
+		AND o1.percorso in (SELECT * FROM route_ids)
+        AND fermata.lat = o1.fermata_lat
+		AND fermata.lon = o1.fermata_lon 
+	GROUP BY o1.numero, o1.percorso, it1.percorso
+	UNION ALL
+	SELECT it1.percorso,
+			o1.numero, 
+            ANY_VALUE(fermata.nome),
+			ANY_VALUE(o1.fermata_lat),
+			ANY_VALUE(o1.fermata_lon),
+			ANY_VALUE(it1.orario_arrivo_proposto) as timestamp_node,
+			0 as climb_up,
+			COUNT(it1.id) as climb_down
+	FROM itinerario_proposto as it1, ordinamento as o1, fermata
+	WHERE it1.percorso in (SELECT * FROM route_ids)
+		AND it1.fermata_lat_arrivo = o1.fermata_lat
+		AND it1.fermata_lon_arrivo = o1.fermata_lon
+		AND o1.percorso in (SELECT * FROM route_ids)
+        AND fermata.lat = o1.fermata_lat
+		AND fermata.lon = o1.fermata_lon 
+	GROUP BY o1.numero, o1.percorso, it1.percorso
+    order by numero asc;
+    DROP VIEW IF EXISTS route_ids;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -370,6 +457,25 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_route_distance` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_route_distance`(in route_id BIGINT)
+BEGIN
+select sum(distanza), sum(costo) from b4y_user_db.itinerario_proposto where percorso=route_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `get_stops` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -385,6 +491,40 @@ BEGIN
 SELECT *
 FROM 
     b4y_user_db.fermata;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_stops_from_it` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_stops_from_it`(IN id_it BIGINT)
+BEGIN
+	SELECT ordinamento.numero, ordinamento.fermata_lat, ordinamento.fermata_lon
+    FROM percorso, itinerario_proposto as it, ordinamento
+    WHERE it.id = id_it AND
+		it.percorso = percorso.id AND
+        ordinamento.percorso = percorso.id AND
+        ordinamento.numero >= (SELECT distinct o2.numero 
+								FROM ordinamento as o2
+                                WHERE o2.percorso = percorso.id AND
+									o2.fermata_lat = it.fermata_lat_partenza AND
+                                    o2.fermata_lon = it.fermata_lon_partenza) 
+		AND ordinamento.numero <= (SELECT distinct o3.numero 
+								FROM ordinamento as o3
+                                WHERE o3.percorso = percorso.id AND
+									o3.fermata_lat = it.fermata_lat_arrivo AND
+                                    o3.fermata_lon = it.fermata_lon_arrivo)
+	ORDER BY ordinamento.numero;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -407,6 +547,44 @@ SELECT *
 FROM b4y_user_db.fermata as fermata
 WHERE fermata.lat < x AND fermata.lat > x - height
 AND fermata.lon > y AND fermata.lon < y + width;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_stop_name_from_coordinates` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_stop_name_from_coordinates`(in lat decimal(8,6), in lon decimal(8,6))
+BEGIN
+select nome from b4y_user_db.fermata as f where f.lat=lat and f.lon=lon;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_user_balance` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_balance`(in user_mail VARCHAR(128))
+BEGIN
+select saldo from b4y_user_db.utente where mail=user_mail;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -462,6 +640,90 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_it_proposed_joined` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_it_proposed_joined`(in costo DECIMAL(6,2), in distanza DECIMAL(8,4), 
+in orario_partenza_proposto DATETIME, in orario_arrivo_proposto DATETIME, in utente VARCHAR(128),
+in id_it_requested BIGINT, in id_route BIGINT, in fermata_lat_partenza DECIMAL(8,6), 
+in fermata_lon_partenza DECIMAL(8,6), in fermata_lat_arrivo DECIMAL(8,6), in fermata_lon_arrivo DECIMAL(8,6))
+BEGIN
+insert into b4y_user_db.itinerario_proposto(costo, distanza, orario_partenza_proposto, orario_arrivo_proposto,
+stato, utente, itinerario_richiesto, percorso, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
+fermata_lon_arrivo) values (costo, distanza, orario_partenza_proposto, orario_arrivo_proposto, 'confirmed', utente,
+id_it_requested, id_route, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo, fermata_lon_arrivo);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_it_req` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_it_req`(in orario DATETIME, in costo_max DECIMAL(6,2), in utente VARCHAR(128), in fermata_lat_partenza DECIMAL(8,6),
+in fermata_lon_partenza DECIMAL(8,6), in fermata_lat_arrivo DECIMAL(8,6), in fermata_lon_arrivo DECIMAL(8,6), in isStartHour TINYINT)
+BEGIN
+	IF isStartHour = 1 THEN 
+		insert into b4y_user_db.itinerario_richiesto(ora_inizio, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max) values(orario, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max);
+	ELSE
+		insert into b4y_user_db.itinerario_richiesto(ora_fine, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max) values(orario, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max);
+	END IF;
+	select last_insert_id();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_it_req_into` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_it_req_into`(in orario DATETIME, in costo_max DECIMAL(6,2), in utente VARCHAR(128), in fermata_lat_partenza DECIMAL(8,6),
+in fermata_lon_partenza DECIMAL(8,6), in fermata_lat_arrivo DECIMAL(8,6), in fermata_lon_arrivo DECIMAL(8,6), in isStartHour TINYINT,
+out it_req_id BIGINT)
+BEGIN
+	IF isStartHour = 1 THEN 
+		insert into b4y_user_db.itinerario_richiesto(ora_inizio, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max) values(orario, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max);
+	ELSE
+		insert into b4y_user_db.itinerario_richiesto(ora_fine, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max) values(orario, utente, fermata_lat_partenza, fermata_lon_partenza,
+		fermata_lat_arrivo, fermata_lon_arrivo, costo_max);
+	END IF;
+	select last_insert_id() into it_req_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `insert_order` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -503,6 +765,54 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `join_recommended_route` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `join_recommended_route`(in route_id BIGINT, in start_lat DECIMAL(8,6), 
+in start_lng DECIMAL(8,6), in end_lat DECIMAL(8,6), in end_lng DECIMAL(8,6), 
+in start_date DATETIME, in end_date DATETIME, price DECIMAL(6,2), distance DECIMAL(8,4), 
+mail VARCHAR(128))
+BEGIN
+#Cashback agli altri utenti
+declare done INT DEFAULT FALSE;
+declare it_req_id BIGINT;
+declare user_refund decimal(6,2);
+declare other_users_mail varchar(128);
+declare other_users_num int;
+declare it_prop_id bigint;
+declare curs cursor for select distinct utente from b4y_user_db.itinerario_proposto where percorso=route_id;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+select count(distinct utente) from b4y_user_db.itinerario_proposto where percorso=route_id into other_users_num;
+select  cast(price/other_users_num as decimal(6,2)) into user_refund;
+OPEN curs;
+read_loop: LOOP
+fetch curs into other_users_mail;
+IF done THEN
+      LEAVE read_loop;
+END IF;
+call refund(other_users_mail, user_refund, route_id);
+END LOOP;
+close curs;
+
+#Insert dell'itinerario proposto e relativo pagamento, 1 a insert_it_req perche la metto come start hour semrpe
+call insert_it_req_into(start_date, 0.0, mail, start_lat, start_lng, end_lat, end_lng, 1, it_req_id);
+call insert_it_proposed_joined(price, distance, start_date, end_date, mail, it_req_id, route_id,
+start_lat, start_lng, end_lat, end_lng);
+select last_insert_id() into it_prop_id;
+call pay(mail, price, route_id, it_prop_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `login` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -527,6 +837,99 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pay` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pay`(in utente varchar(128), in payment decimal(6,2), in route_id BIGINT, in it_id BIGINT)
+BEGIN
+select saldo from b4y_user_db.utente where mail=utente into @saldo_attuale;
+update b4y_user_db.utente set saldo=@saldo_attuale-payment where mail=utente;
+insert into b4y_user_db.pagamento (tmstmp, percorso, itinerario_proposto, utente) values (now(), route_id, it_id, utente);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `perform_cashback` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `perform_cashback`(in refund decimal(6,2), in utente varchar(128), in route_id BIGINT)
+BEGIN
+insert into b4y_user_db.cashback values (refund, now(), utente, route_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `refund` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `refund`(in utente varchar(128), in refund decimal(6,2), in route_id BIGINT)
+BEGIN
+select saldo from b4y_user_db.utente where mail=utente into @saldo_attuale;
+update b4y_user_db.utente set saldo=@saldo_attuale+refund where mail=utente;
+call perform_cashback(refund, utente, route_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `refund_scadenza` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `refund_scadenza`(in route_id BIGINT)
+BEGIN
+DECLARE done INT DEFAULT FALSE;
+declare utente_mail varchar(128);
+declare refund decimal(6,2);
+DECLARE curs CURSOR FOR SELECT utente, costo FROM b4y_user_db.itinerario_proposto as i join b4y_user_db.percorso as p on i.percorso=p.id where p.id=route_id and i.stato='confirmed';
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+OPEN curs;
+read_loop: LOOP
+FETCH curs INTO utente_mail, refund;
+IF done THEN
+      LEAVE read_loop;
+END IF;
+call refund(utente_mail, refund);
+END LOOP;
+close curs;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `reject_it` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -539,9 +942,74 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `reject_it`(in id BIGINT)
 BEGIN
+set transaction isolation level read committed;
+start transaction;
+select utente, costo, stato, percorso from b4y_user_db.itinerario_proposto where itinerario_proposto.id=id into @utente, @costo, @stato, @route_id;
+  IF @stato='confirmed' THEN
+	call refund(@utente, @costo, @route_id);
+  END IF;
 UPDATE b4y_user_db.itinerario_proposto
 SET itinerario_proposto.stato='rejected'
 WHERE itinerario_proposto.id=id;
+commit;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `scadenza` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `scadenza`(in route_id BIGINT)
+BEGIN
+declare tot decimal(6,3);
+declare conf decimal(6,3);
+declare min_conf decimal(6,3);
+UPDATE percorso SET archiviato=1 WHERE percorso.id=route_id;
+select count(*) from itinerario_proposto where percorso=route_id into tot;
+select count(*) from itinerario_proposto where percorso=route_id and stato='confirmed' into conf;
+set min_conf = 0.65*tot;
+ IF conf > min_conf THEN
+	UPDATE percorso SET stato='confirmed' WHERE percorso.id=route_id;
+ELSE
+	UPDATE percorso SET stato='rejected' WHERE percorso.id=route_id;
+    call refund_scadenza(route_id);
+END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `scadenza_precoce` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `scadenza_precoce`(in route_id BIGINT)
+BEGIN
+declare tot decimal(6,3);
+declare conf decimal(6,3);
+declare min_conf decimal(6,3);
+select count(*) from itinerario_proposto where percorso=route_id into tot;
+select count(*) from itinerario_proposto where percorso=route_id and stato='confirmed' into conf;
+set min_conf = 0.65*tot;
+ IF conf > min_conf THEN
+	UPDATE percorso SET stato='confirmed' WHERE percorso.id=route_id;
+END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -577,4 +1045,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-10 20:07:14
+-- Dump completed on 2023-07-19 17:39:58

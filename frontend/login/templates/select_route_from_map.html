@@ -1,102 +1,110 @@
-
 <style>
-    #map { height: 100% }
+    #map {
+        height: 100%
+    }
 </style>
 {% extends 'base.html' %}
 
-{% block stylesheets%}
+{% block stylesheets %}
     <title>GatewayAPI - Select route from map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-     crossorigin=""/>
-     <!-- Make sure you put this AFTER Leaflet's CSS -->
+          integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+          crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-    crossorigin=""></script>
-    <input type="hidden" id="response" value= "{{ response }}">
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+            crossorigin=""></script>
+    <input type="hidden" id="response" value="{{ response }}">
     <link rel="stylesheet" type="text/css" href="../static/css/select_route_from_map.css">
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid h-80 h-100">
-      <div class="row g-0 h-80 h-100">
-        <div class="col-sm-4">
-            <form action="/select-route-from-map" method="GET">
-                <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
-                <div class="row">
-                  <div class="col-12">
-                      <label>Start Point</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-9">
-                      <!-- campo per l'inserimento del punto di partenza -->
-                      <input type="text" id="starting_point" name="starting_point" placeholder="Starting point">
-                      <input type="hidden" id="start_lat" name="start_lat">
-                      <input type="hidden" id="start_lng" name="start_lng">
-                  </div>
-                  <div class="col-3">
-                      <button type="button" id="btn_start_point" name="btn_start_point" onclick="set_starting_coord()">Select </button>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                      <label>End Point</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-9">
-                      <!-- campo per l'inserimento del punto di arrivo -->
-                      <input type="text" id="ending_point" name="ending_point" placeholder="Ending point">
-                      <input type="hidden" id="end_lat" name="end_lat">
-                      <input type="hidden" id="end_lng" name="end_lng">
-                  </div>
-                  <div class="col-3">
-                      <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">Select</button>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                      <label>Date</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                      <!-- campo per l'inserimento della data -->
-                      <input type="date" id="date" name="date" placeholder="Date">
-                  </div>
-                </div>
-
-                <div>
-                    <div class="form-check form-check-inline">
-                      <input name="start-finish" type="radio" id="start" value = "on" checked>
-                      <label for="start">Partenza dalle:</label>
+        <div class="row g-0 h-80 h-100">
+            <div class="col-sm-4">
+                <form action="/select-route-from-map" method="GET">
+                    <input type="hidden" id="username" name="user" value={{ session['usr'] }}><br>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Start Point</label>
+                        </div>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input name="start-finish" type="radio" id="finish" value = "off">
-                      <label for="finish">Arrivo entro le:</label>
+                    <div class="row">
+                        <div class="col-9">
+                            <!-- campo per l'inserimento del punto di partenza -->
+                            <input type="text" readonly="readonly" id="starting_point" name="starting_point" placeholder="Starting point">
+                            <input type="hidden" id="start_lat" name="start_lat">
+                            <input type="hidden" id="start_lng" name="start_lng">
+                        </div>
+                        <div class="col-3">
+                            <button type="button" id="btn_start_point" name="btn_start_point"
+                                    onclick="set_starting_coord()">Select
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                      <!-- campo per l'inserimento dell'ora di arrivo -->
-                      <input type="time" id="time" name="time" placeholder="Time">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-9">
-                  </div>
-                  <div class="col-3">
-                      <!-- pulsante di submit del form -->
-                      <input type="submit" value="Request">
-                  </div>
-                </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>End Point</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                            <!-- campo per l'inserimento del punto di arrivo -->
+                            <input type="text" readonly="readonly" id="ending_point" name="ending_point" placeholder="Ending point">
+                            <input type="hidden" id="end_lat" name="end_lat">
+                            <input type="hidden" id="end_lng" name="end_lng">
+                        </div>
+                        <div class="col-3">
+                            <button type="button" id="btn_end_point" name="btn_end_point" onclick="set_ending_coord()">
+                                Select
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Date</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- campo per l'inserimento della data -->
+                            <input type="date" id="date" name="date" placeholder="Date">
+                            <script>
+                              var today = new Date().toISOString().split('T')[0];
+                              document.getElementById("date").setAttribute("min", today);
+                            </script>
+                        </div>
+                    </div>
 
-
-            </form>
-        </div>
-        <div class="col-sm-8 pt-3">
-            <div id="map"></div></div>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input name="start-finish" type="radio" id="start" value="on" checked>
+                            <label for="start">Departure from:</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="start-finish" type="radio" id="finish" value="off">
+                            <label for="finish">Arrival by:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- campo per l'inserimento dell'ora di arrivo -->
+                            <input type="time" id="time" name="time" placeholder="Time">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                        </div>
+                        <div class="col-3">
+                            <!-- pulsante di submit del form -->
+                            <input type="submit" value="Request">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-8 pt-3">
+                <div id="map"></div>
+            </div>
         </div>
     </div>
     <script>
@@ -110,17 +118,16 @@
         }).addTo(map);
 
 
-        
         var busStopIcon = L.Icon.extend({
             options: {
-                iconSize:     [60, 60],
-                iconAnchor:   [30, 60]
+                iconSize: [60, 60],
+                iconAnchor: [30, 60]
             }
         });
 
-        var busStopIconRed = new busStopIcon({iconUrl: '/static/resources/bus-stop-red.png' });
-        var busStopIconGreen = new busStopIcon({iconUrl: '/static/resources/bus-stop-green.png' });
-        var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png' });
+        var busStopIconRed = new busStopIcon({iconUrl: '/static/resources/bus-stop-red.png'});
+        var busStopIconGreen = new busStopIcon({iconUrl: '/static/resources/bus-stop-green.png'});
+        var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png'});
 
         var bus_stops = {{ bus_stops | tojson }};
         console.log(bus_stops)
@@ -150,9 +157,9 @@
         var endingPoint;
         var point = null;
 
-        function markerOnClick(e){
-            if (point != null){
-                if(point == "start"){
+        function markerOnClick(e) {
+            if (point != null) {
+                if (point == "start") {
                     if (startingPoint != null)
                         startingPoint.setIcon(busStopIconBlue);
                     var clickedMarker = e.layer;
@@ -165,8 +172,7 @@
                     document.getElementById("start_lat").value = lat;
                     document.getElementById("start_lng").value = lng;
 
-                }
-                else if (point == "end"){
+                } else if (point == "end") {
                     if (endingPoint != null)
                         endingPoint.setIcon(busStopIconBlue);
                     var clickedMarker = e.layer;
@@ -183,15 +189,15 @@
         }
 
 
-        function set_starting_coord(){
+        function set_starting_coord() {
             point = "start";
         }
 
-        function set_ending_coord(){
+        function set_ending_coord() {
             point = "end";
         }
 
-        map.on('zoomend', function() {
+        map.on('zoomend', function () {
             // Controlla lo zoom corrente della mappa
             var currentZoom = map.getZoom();
             console.log(currentZoom)
@@ -207,60 +213,59 @@
         });
         var ao = '5';
 
-        map.on('dragend', function() {
+        map.on('dragend', function () {
             var currentZoom = map.getZoom();
             if (currentZoom >= 16) {
                 setMarkers();
             }
         });
 
-    function setMarkers(){
-        var bounds = map.getBounds();
-        var offset = (bounds.getNorth() - bounds.getSouth()) / 6
-        // Calcola l'altezza e la larghezza della zona visualizzata
-        var height =  (bounds.getNorth() - bounds.getSouth()) + 2 * offset;
-        var width =  (bounds.getEast() - bounds.getWest()) + 2 * offset;
+        function setMarkers() {
+            var bounds = map.getBounds();
+            var offset = (bounds.getNorth() - bounds.getSouth()) / 6
+            // Calcola l'altezza e la larghezza della zona visualizzata
+            var height = (bounds.getNorth() - bounds.getSouth()) + 2 * offset;
+            var width = (bounds.getEast() - bounds.getWest()) + 2 * offset;
 
-        // Calcola le coordinate dell'angolo nord-ovest
-        var ne = bounds.getNorthWest()
+            // Calcola le coordinate dell'angolo nord-ovest
+            var ne = bounds.getNorthWest()
 
-        var x = ne.lat + offset;
-        var y = ne.lng - offset;
+            var x = ne.lat + offset;
+            var y = ne.lng - offset;
 
-        console.log("x: " + x + " y: " + y + " height: " + height + " width: " + width)
-        var url = "/_get_stops_rect?x=" + x +"&y=" + y + "&height=" + height + "&width=" + width
-        //local_bus_stops = {{ url_for("get_stops_rect", x = ao, y = y, height = height, width = width)|tojson }};
+            console.log("x: " + x + " y: " + y + " height: " + height + " width: " + width)
+            var url = "/_get_stops_rect?x=" + x + "&y=" + y + "&height=" + height + "&width=" + width
+            //local_bus_stops = {{ url_for("get_stops_rect", x = ao, y = y, height = height, width = width)|tojson }};
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                // data is a parsed JSON object
-                console.log(data.result)
-                markersLayer.clearLayers();
-                data.result.forEach(function(bus_stop) {
-                    var marker = L.marker([bus_stop["lat"], bus_stop["lang"]], {
-                        icon: busStopIconBlue,
-                        title: "(" + bus_stop["lat"] + "," + bus_stop["lang"] + ")"
-                    }).addTo(map);
-                    if(startingPoint != null && marker.getLatLng().toString() == startingPoint.getLatLng().toString()){
-                        marker.setIcon(busStopIconGreen);
-                    }
-                    else if(endingPoint != null && marker.getLatLng().toString() == endingPoint.getLatLng().toString()){
-                        marker.setIcon(busStopIconRed);
-                    }
-                    marker.bindTooltip(bus_stop["name"], {
-                        offset: L.point(0, -50)
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // data is a parsed JSON object
+                    console.log(data.result)
+                    markersLayer.clearLayers();
+                    data.result.forEach(function (bus_stop) {
+                        var marker = L.marker([bus_stop["lat"], bus_stop["lang"]], {
+                            icon: busStopIconBlue,
+                            title: "(" + bus_stop["lat"] + "," + bus_stop["lang"] + ")"
+                        }).addTo(map);
+                        if (startingPoint != null && marker.getLatLng().toString() == startingPoint.getLatLng().toString()) {
+                            marker.setIcon(busStopIconGreen);
+                        } else if (endingPoint != null && marker.getLatLng().toString() == endingPoint.getLatLng().toString()) {
+                            marker.setIcon(busStopIconRed);
+                        }
+                        marker.bindTooltip(bus_stop["name"], {
+                            offset: L.point(0, -50)
+                        });
+                        marker.addTo(markersLayer);
                     });
-                    marker.addTo(markersLayer);
-                });
-        })
-    }
+                })
+        }
 
-    if(document.getElementById("response").value == "True")
-        alert("Your request has been successfully sent!")
-        
+        if (document.getElementById("response").value == "True")
+            alert("Your request has been successfully sent!")
+
 
     </script>
-    
+
 
 {% endblock %}

@@ -14,25 +14,26 @@ services:
       - ./rabbitMq/data:/var/lib/rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+      interval: 3s
+      timeout: 60s
+      retries: 20
+      start_period: 6s
 
   mysqlDb:
     image: mysql:latest
     container_name: mysqlDb
-    restart: always
     volumes:
       - ./mysql/data:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_DATABASE: 'b4y_userDb'
+      MYSQL_DATABASE: 'b4y_user_db'
+      TZ: 'GMT-2:00'
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
-      timeout: 30s
-      retries: 10
-      start_period: 3s
+      timeout: 60s
+      retries: 20
+      start_period: 6s
 
   neo4jDb:
     # Docker image to be used
@@ -60,14 +61,15 @@ services:
 
     healthcheck:
       test: wget http://localhost:7474 || exit 1
-      interval: 1s
-      timeout: 10s
+      interval: 3s
+      timeout: 60s
       retries: 20
-      start_period: 3s
+      start_period: 6s
 
   notify-service:
     build: ./notify-service
-    container_name: notify-service
+    deploy:
+      replicas: 3
     volumes:
       - ./notify-service:/app
     depends_on:
@@ -87,7 +89,8 @@ services:
 
   booking_service:
     build: ./booking-service
-    container_name: booking_service
+    deploy:
+      replicas: 3
     volumes:
       - ./booking-service:/app
     depends_on:
@@ -111,11 +114,12 @@ services:
       mysqlDb:
         condition: service_healthy
 
-  make-root-service:
-    build: ./make-root-service
-    container_name: make-root-service
+  make-route-service:
+    build: ./make-route-service
+    deploy:
+      replicas: 3
     volumes:
-      - ./make-root-service:/app
+      - ./make-route-service:/app
     depends_on:
       rabbitMq:
         condition: service_healthy
@@ -124,14 +128,17 @@ services:
 
   node-selector-service:
     build: ./node-selector-service
-    container_name: node-selector-service
+    deploy:
+      replicas: 3
     volumes:
       - ./node-selector-service:/app
     depends_on:
+      booking_service:
+        condition: service_started
       ors-app:
         condition: service_started
-      vroom:
-        condition: service_started
+      #vroom:
+        #condition: service_started
       rabbitMq:
         condition: service_healthy
       neo4jDb:
@@ -164,18 +171,18 @@ services:
       - "JAVA_OPTS=-Djava.awt.headless=true -server -XX:TargetSurvivorRatio=75 -XX:SurvivorRatio=64 -XX:MaxTenuringThreshold=3 -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:ParallelGCThreads=4 -Xms1g -Xmx2g"
       - "CATALINA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9001 -Dcom.sun.management.jmxremote.rmi.port=9001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost"
 
-  vroom:
-    image: vroomvrp/vroom-docker:v1.13.0
-    container_name: vroom
-    volumes:
-      - ./vroom/conf:/conf
-    environment:
-      - VROOM_ROUTER=ors
-    ports:
-      - "3000:3000"
-    depends_on:
-      ors-app:
-        condition: service_started
+  #vroom:
+  #  image: vroomvrp/vroom-docker:v1.13.0
+  #  container_name: vroom
+  #  volumes:
+  #    - ./vroom/conf:/conf
+  #  environment:
+  #    - VROOM_ROUTER=ors
+  #  ports:
+  #    - "3000:3000"
+  #  depends_on:
+  #    ors-app:
+  #      condition: service_started
 
   ors-dao:
     build: ./ors-dao
@@ -184,6 +191,26 @@ services:
       - ./ors-dao:/app
     depends_on:
       ors-app:
+        condition: service_started
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      gateway-api:
+        condition: service_started
+
+  reccomend-service:
+    build: ./reccomend-service
+    container_name: reccomend-service
+    volumes:
+      - ./reccomend-service:/app
+    depends_on:
+      db-service:
         condition: service_started
 #networks:
   #backend-net:

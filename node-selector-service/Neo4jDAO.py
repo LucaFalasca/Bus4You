@@ -1,8 +1,8 @@
-from datetime import date
+from datetime import time, datetime
 from datetime import time
-from datetime import datetime
 
 from neo4j import GraphDatabase
+
 
 class Neo4jDAO:
     def __init__(self, uri, username, password):
@@ -56,16 +56,18 @@ class Neo4jDAO:
             booking_id = result.single()[0]
         return booking_id
 
-    def create_booking_type_start(self, username, name_start_stop, name_end_stop, date, hour_start, position_start_stop,
-                                position_end_stop):
+    def create_booking_type_start(self, it_id, username, name_start_stop, name_end_stop, date, hour_start,
+                                  position_start_stop,
+                                  position_end_stop):
         with self.driver.session() as session:
             result = session.run(
                 "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'start', name_end_stop: $name_end_stop, date: $date,"
                 "hour_start: $hour_start, position_start_stop: $position_start_stop,"
-                "position_end_stop: $position_end_stop})"
+                "position_end_stop: $position_end_stop, it_id: $it_id })"
                 "RETURN id(b)",
                 name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
-                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop
+                hour_start=hour_start, position_start_stop=position_start_stop, position_end_stop=position_end_stop,
+                it_id=it_id
             )
             booking_id = result.single()[0]
         return booking_id
@@ -222,6 +224,22 @@ class Neo4jDAO:
         session.close()
         return bookings
 
+    def get_random_booking_it_id(self):
+        query = (
+            "MATCH (b:Booking) "
+            "WITH b, rand() AS r "
+            "ORDER BY r "
+            "LIMIT 1 "
+            "RETURN b.it_id AS b_id"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query)
+
+            for record in result:
+                # Restituzione dell'id del nodo Booking selezionato casualmente
+                return record["b_id"]
+
     def get_random_booking(self):
         query = (
             "MATCH (b:Booking) "
@@ -238,30 +256,28 @@ class Neo4jDAO:
                 # Restituzione dell'id del nodo Booking selezionato casualmente
                 return record["b_id"]
 
-    def get_start_end_bookings_with_limit(self, booking_id, limit):
+    def get_start_end_bookings_with_limit_stripped(self, booking_id, limit):
         query = (
-            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking)-[:START_STOP]->(s1:Stop) "
-            "WHERE id(b) = $booking_id "
-            "WITH collect(DISTINCT booking) as all_bookings, s1 "
+            "MATCH (b:Booking)-[:COMPATIBLE*]-(booking:Booking) "
+            "WHERE b.it_id = $booking_id "
+            "WITH collect(DISTINCT b) + collect(DISTINCT booking) as all_bookings "
             "UNWIND all_bookings as booking "
-            "MATCH (booking)-[:END_STOP]->(s2:Stop) "
-            "RETURN id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, id(s1) AS s1_id, id(s2) AS s2_id, booking.name_start_stop AS start_stop, booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, booking.position_start_stop AS position_start_stop, booking.type AS b_type "
-            "LIMIT $limit"
+            "MATCH (booking)<-[:BOOKS]-(u:User)"
+            "RETURN DISTINCT id(booking) AS b_id, booking.hour_start AS b_hs, booking.hour_end AS b_he, booking.date AS b_day, "
+            "booking.name_start_stop AS start_stop, "
+            "booking.name_end_stop AS end_stop, booking.position_end_stop AS position_end_stop, "
+            "booking.position_start_stop AS position_start_stop, booking.type AS b_type, booking.it_id as it_id, "
+            "u.name as u_name LIMIT $limit"
         )
 
         with self.driver.session() as session:
             result = session.run(query, booking_id=booking_id, limit=limit)
 
             bookings = []
-            print("AO")
             for record in result:
-                
-                print(record["b_day"])
                 booking = {
                     "id": record["b_id"],
-                    "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
-                    "id_s1": record["s1_id"],
-                    "id_s2": record["s2_id"],
+                    "date": record["b_day"],
                     "name_start_stop": record["start_stop"],
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
@@ -269,9 +285,9 @@ class Neo4jDAO:
                     "type": record["b_type"]
                 }
                 if record["b_type"] == "start":
-                    booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
+                    booking["hour"] = (record["b_hs"], None)
                 else:
-                    booking["hour"] = (None, datetime.strptime(record["b_he"], "%H:%M").time())
+                    booking["hour"] = (None, record["b_he"])
                 bookings.append(booking)
 
             # Consuma tutti i record prima di restituire il risultato
@@ -280,10 +296,61 @@ class Neo4jDAO:
         # Restituzione della lista di prenotazioni
         return bookings
 
+    def get_start_end_bookings_with_limit(self, booking_id, limit):
+        query = (
+            "MATCH (startNode:Booking) "
+            "WHERE id(startNode) = $booking_id "
+            "CALL apoc.path.spanningTree(startNode, { "
+            "  relationshipFilter: 'COMPATIBLE', "
+            "  labelFilter: 'Booking', "
+            " maxLevel: $limit, "
+            "  limit: $limit "
+            "}) "
+            "YIELD path "
+            "UNWIND nodes(path) AS bookingNode "
+            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
+            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
+            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
+            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
+            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
+        )
+        
+        with self.driver.session() as session:
+            print(1)
+            result = session.run(query, booking_id=booking_id, limit=limit)
+            print(2)
+            bookings = []
+            for record in result:
+                print(3)
+                print(record)
+                booking = {
+                    "id": record["b_id"],
+                    "date": record["b_day"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": record["position_start_stop"],
+                    "position_end_stop": record["position_end_stop"],
+                    "it_id": record["it_id"],
+                    "user": record["user_name"],
+                    "type": record["b_type"]
+                }
+                print(3.5)
+                if record["b_type"] == "start":
+                    booking["hour"] = (record["b_hs"], None)
+                else:
+                    booking["hour"] = (None, record["b_he"])
+                    print(3.6)
+                bookings.append(booking)
+            print(4)
+            # Consuma tutti i record prima di restituire il risultato
+            result.consume()
+            print(5)
+        # Restituzione della lista di prenotazioni
+        return bookings
+
+
 
     def get_end_type_bookings(self):
-
-
         # Query per selezionare i nodi di tipo "Booking" con valore "start"
         query = (
             "MATCH (b:Booking) "
@@ -319,6 +386,15 @@ class Neo4jDAO:
 
     def get_all_bookings(self):
         return self.get_start_end_bookings() + self.get_end_type_bookings()
+
+    def delete_nodes_from_list(self, booking_ids):
+        query = (
+            "MATCH (b:Booking)-[r]-() "
+            "WHERE id(b) in $booking_ids "
+            "DETACH DELETE b, r"
+        )
+        with self.driver.session() as session:
+            session.run(query, booking_ids=booking_ids)
 
 
 

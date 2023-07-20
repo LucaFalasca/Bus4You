@@ -1,6 +1,3 @@
-import xmlrpc
-
-
 class Node:
 
     def __init__(self, starting_point, ending_point, data, arrival_time, booking, travel_time="30:00"):
@@ -45,7 +42,7 @@ def calculate_pred_hash(nodes_list):
     print("*********")
     pred_hash = calculate_pred_hash(nodes_list)
 
-    with xmlrpc.client.ServerProxy("http://make-root-service:8000/") as proxy:
+    with xmlrpc.client.ServerProxy("http://make-route-service:8000/") as proxy:
         print(pred_hash)
         result = proxy.calculate_route(dist_matrix, pred_hash, [], {})
         return result'''

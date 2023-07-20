@@ -10,6 +10,7 @@ from email.mime.multipart import MIMEMultipart
 # for dealing with attachement MIME types
 from email.mime.text import MIMEText
 from mimetypes import guess_type as guess_mime_type
+
 import pika
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -119,7 +120,8 @@ def prepared_routes_callback(ch, method, properties, body):
 
 
 if __name__ == "__main__":
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitMq', heartbeat=3600,
+                                                                   blocked_connection_timeout=3600))
     channel = connection.channel()
     # Create a queue, if already exist nothing happens
     channel.queue_declare(queue='preparedRoutes1', durable=True)

@@ -1,6 +1,7 @@
 import hashlib
-from dao.user_db.UserDbDao import UserDbDao
 import xmlrpc.server
+
+from dao.user_db.UserDbDao import UserDbDao
 
 
 def serve():

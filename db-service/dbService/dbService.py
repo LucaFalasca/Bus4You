@@ -1,5 +1,7 @@
-from flask import json
 import xmlrpc.server
+
+from flask import json
+
 from dao.DbDao import DbDao
 
 
@@ -14,6 +16,13 @@ def serve():
     server.register_function(reject_it, "reject_it")
     server.register_function(insert_route_info, "insert_route_info")
     server.register_function(get_retry_info, "get_retry_info")
+    server.register_function(get_stops_from_it, "get_stops_from_it")
+    server.register_function(insert_it_req, "insert_it_req")
+    server.register_function(get_user_balance, "get_user_balance")
+    server.register_function(get_future_confirmed_routes, "get_future_confirmed_routes")
+    server.register_function(get_stop_name_from_coords, 'get_stop_name_from_coords')
+    server.register_function(get_total_km, 'get_total_km')
+    server.register_function(join_recommended_route, 'join_recommended_route')
     server.serve_forever()
 
 
@@ -62,6 +71,7 @@ def reject_it(it_id):
     else:
         return {"status": "error"}
 
+
 '''
 route_expiration(DATETIME) è la data di scadenza del percorso
 
@@ -77,6 +87,8 @@ orario_arrivo_proposto(DATETIME), mail_utente(VARCHAR(128)), id_itinerario_richi
 fermata_lat_partenza(DECIMAL(8,6)), fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), 
 fermata_lon_arrivo(DECIMAL(8,6))], ...] -> id_itinerario_richiesto va preso dal db precedentemente
 '''
+
+
 def insert_route_info(route_expiration, order_list, it_list):
     usr_db = DbDao()
     conn = usr_db.connect()
@@ -96,12 +108,83 @@ def get_retry_info(it_id):
     return json.dumps(it_req_info)
 
 
+def get_stops_from_it(it_id):
+    print("HEYLA")
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    stops = usr_db.get_stops_from_it_query(conn, it_id)
+    conn.close()
+    print(stops)
+    return json.dumps(stops)
+
+
+'''
+Query per inserire su db un itinerario richiesto, ritorna l'id autoincrementale generato dalla insert
+orario(DATETIME), costo_max(DECIMAL(6,2)), mail_utente(VARCHAR(128)), fermata_lat_partenza(DECIMAL(8,6)),
+fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), fermata_lon_arrivo(DECIMAL(8,6)), 
+isStartHour(BOOLEAN) 0 se è orario di arrivo, 1 se è orario di partenza
+'''
+def insert_it_req(orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
+                  fermata_lon_arrivo, is_start_hour):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    it_req_id = usr_db.insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
+                                     fermata_lat_arrivo, fermata_lon_arrivo, is_start_hour)
+    conn.close()
+    return json.dumps(it_req_id)
+
+
+def get_user_balance(mail):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    balance = usr_db.get_user_balance(conn, mail)
+    conn.close()
+    return json.dumps(balance)
+
+
+def get_future_confirmed_routes():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    routes = usr_db.get_future_confirmed_routes_query(conn)
+    conn.close()
+    return json.dumps(routes)
+
+
+def get_stop_name_from_coords(lat, lon):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    stop_name = usr_db.get_stop_name_from_coords(conn, lat, lon)
+    conn.close()
+    return json.dumps(stop_name)
+
+
+def get_total_km(route_id):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.get_total_km_query(conn, route_id)
+    print(res)
+    conn.close()
+    return json.dumps(res)
+
+
+def join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
+                                           price, distance, mail):
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.join_recommended_route(conn, route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                                             end_date, price, distance, mail)
+    conn.close()
+    if res == 0:
+        return {"status": "ok"}
+    else:
+        return {"status": "error"}
+
+
 if __name__ == "__main__":
     '''order_list = [[1, 41.648593, 12.431090], [2, 41.654548, 12.427688]]
     it_list = [[1.5, 5.52, "2023-05-05 12:00:00", "2023-05-05 12:30:00", "prova@gmail.com", 1, 41.648593, 12.431090,
                 41.654548, 12.427688], [10.5, 20.52, "2023-05-05 12:00:00", "2023-05-05 12:30:00", "prova@gmail.com",
                                         2, 41.648593, 12.431090, 41.654548, 12.427688]]
-    insert_route_info("2030-05-05 00:00:00", order_list, it_list)'''
+    insert_route_info("2023-07-11 19:28:00", order_list, it_list)'''
+    #print(get_future_confirmed_routes())
     serve()
-
-

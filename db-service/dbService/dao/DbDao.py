@@ -76,7 +76,7 @@ class DbDao:
             for result in curs.stored_results():
                 res = result.fetchall()
             curs.close()
-            #print(len(res))
+            # print(len(res))
             for elem in res:
                 '''
                 costo, orario partenza proposto, orario arrivo proposto, stato itinerario proposto, flag percorso passato,
@@ -136,11 +136,21 @@ class DbDao:
                     res = result.fetchall()
                 route_id = res[0][0]
                 print("Returned route id: ", route_id)
+                # Create a cursor object to execute queries
+
+                # Create the trigger SQL statement
+                trigger_sql = "CREATE EVENT scadenza_route_" + str(route_id) + " ON SCHEDULE AT '" \
+                              + route_expiration + "' DO call scadenza(" + str(route_id) + ");"
+                print(trigger_sql)
+                # Execute the trigger SQL statement
+                curs.execute(trigger_sql)
 
                 # insert order list
                 print("Inserisco gli ordini")
+                c = 1
                 for order in order_list:
-                    args = (order[0], route_id, order[1], order[2])
+                    args = (c, route_id, order[1], order[2])
+                    c += 1
                     print(args)
                     curs.callproc('insert_order', args)
 
@@ -189,6 +199,148 @@ class DbDao:
                 ret.append([elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7], elem[8], elem[9], elem[10],
                             elem[11]])
             return ret
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_stops_from_it_query(conn, it):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            curs.callproc('get_stops_from_it', (it,))
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1], elem[2]])
+            print(ret)
+            return ret
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def insert_it_req(conn, orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza,
+                      fermata_lat_arrivo, fermata_lon_arrivo, is_start_hour):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # insert request it
+            args = (orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
+                    fermata_lon_arrivo, is_start_hour)
+            curs.callproc('insert_it_req', args)
+            res = None
+            # get output parameter value which is the auto incremental generated route id
+            for result in curs.stored_results():
+                res = result.fetchall()
+            req_id = res[0][0]
+            print("Returned route id: ", req_id)
+            conn.commit()
+            return req_id
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_user_balance(conn, mail):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # get balance
+            args = (mail,)
+            curs.callproc('get_user_balance', args)
+            res = None
+
+            for result in curs.stored_results():
+                res = result.fetchall()
+            balance = res[0][0]
+            conn.commit()
+            return balance
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_future_confirmed_routes_query(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            curs.callproc('get_future_confirmed_routes')
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1], elem[2], elem[3], elem[4], elem[5], elem[6], elem[7]])
+            return ret
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_stop_name_from_coords(conn, lat, lon):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+
+            # get balance
+            args = (lat, lon)
+            curs.callproc('get_stop_name_from_coordinates', args)
+            res = None
+
+            for result in curs.stored_results():
+                res = result.fetchall()
+            stop_name = res[0][0]
+            conn.commit()
+            return stop_name
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def get_total_km_query(conn, route_id):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            ret = []
+
+            # get balance
+            args = (route_id,)
+            curs.callproc('get_route_distance', args)
+            res = None
+            conn.commit()
+            for result in curs.stored_results():
+                res = result.fetchall()
+            curs.close()
+            for elem in res:
+                ret.append([elem[0], elem[1]])
+
+            return ret
+
+        else:
+            print("Connection with db failed")
+            return -1
+
+    @staticmethod
+    def join_recommended_route(conn, route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                               end_date, price, distance, mail):
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            args = (route_id, start_lat, start_lng, end_lat, end_lng, start_date,
+                    end_date, price, distance, mail)
+            curs.callproc('join_recommended_route', args)
+            conn.commit()
+            curs.close()
+            return 0
         else:
             print("Connection with db failed")
             return -1

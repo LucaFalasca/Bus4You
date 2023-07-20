@@ -1,0 +1,486 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/recommendedRoutes.css">
+{% endblock %}
+{% block body %}
+    <div id="gigaDiv">
+        <h2 id="gigaH2">RECCOMENDED ROUTES</h2>
+        {% for route in recommended_routes %}
+            <script>
+                var route = {{ route | tojson }};
+                console.log(route);
+            </script>
+            <div id="divAccordion" class="accordion accordion-background-hover accordion-background-active">
+                <div id="divAcc{{ recommended_routes.index(route) }}" class="accordion-item">
+                    <h2 class="accordion-header" id="head{{ recommended_routes.index(route) }}">
+                        <button id="btnAcc{{ recommended_routes.index(route) }}" class="accordion-button collapsed"
+                                type="button" data-bs-toggle="collapse"
+                                data-bs-target="#acc{{ recommended_routes.index(route) }}" aria-expanded="true"
+                                aria-controls="acc{{ recommended_routes.index(route) }}">
+                            ROUTE
+                            <script> document.write(route["route"]);</script>
+                        </button>
+                    </h2>
+                    <div id="acc{{ recommended_routes.index(route) }}" class="accordion-collapse collapse show"
+                         data-bs-parent="#divAcc" role="region"
+                         aria-labelledby="head{{ recommended_routes.index(route) }}">
+                        <div class="accordion-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        Steps:<br>
+                                        <form action="/join_recommended_route" method="POST">
+                                            <script>
+                                                for (var i = 0; i < route["steps"].length; i++) {
+                                                    var date = route["steps"][i]["timestamp"];
+                                                    document.write("[" + route["steps"][i]["step"] + "]<br>");
+                                                    document.write(" \t|\t\t Stop Name: " + route["steps"][i]["name"] + "<br>");
+                                                    document.write(" \t|\t\t Schedule Time: " + route["steps"][i]["timestamp"] + "<br>");
+                                                    document.write("<input id='date{{ recommended_routes.index(route) }}" + i + "' type='hidden' value='" + date + "'>");
+
+                                                }
+
+
+                                            </script>
+
+                                            <input class="form-control" type="hidden" id="username" name="user"
+                                                   value={{ session['usr'] }}><br>
+                                            <input class="form-control" type="hidden"
+                                                   id="route{{ recommended_routes.index(route) }}"
+                                                   name="route{{ recommended_routes.index(route) }}"
+                                                   value={{ route["route"] }}>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label>Start Point</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <!-- campo per l'inserimento del punto di partenza -->
+                                                    <input class="form-control" type="text" readonly="readonly"
+                                                           id="starting_point{{ recommended_routes.index(route) }}"
+                                                           name="starting_point{{ recommended_routes.index(route) }}"
+                                                           placeholder="Starting point" value="">
+                                                    <input class="form-control" type="hidden"
+                                                           id="start_lat{{ recommended_routes.index(route) }}"
+                                                           name="start_lat{{ recommended_routes.index(route) }}">
+                                                    <input class="form-control" type="hidden"
+                                                           id="start_lng{{ recommended_routes.index(route) }}"
+                                                           name="start_lng{{ recommended_routes.index(route) }}">
+                                                </div>
+                                                <div class="col-3">
+                                                    <button type="button" id="btn_start_point" name="btn_start_point"
+                                                            onclick="set_starting_coord{{ recommended_routes.index(route) }}()">
+                                                        Select
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label>End Point</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <!-- campo per l'inserimento del punto di arrivo -->
+                                                    <input class="form-control" type="text" readonly="readonly"
+                                                           id="ending_point{{ recommended_routes.index(route) }}"
+                                                           name="ending_point{{ recommended_routes.index(route) }}"
+                                                           placeholder="Ending point" value="">
+                                                    <input class="form-control" type="hidden"
+                                                           id="end_lat{{ recommended_routes.index(route) }}"
+                                                           name="end_lat{{ recommended_routes.index(route) }}">
+                                                    <input class="form-control" type="hidden"
+                                                           id="end_lng{{ recommended_routes.index(route) }}"
+                                                           name="end_lng{{ recommended_routes.index(route) }}">
+                                                </div>
+                                                <div class="col-3">
+                                                    <button type="button" id="btn_end_point" name="btn_end_point"
+                                                            onclick="set_ending_coord{{ recommended_routes.index(route) }}()">
+                                                        Select
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <!-- campo per l'inserimento del punto di arrivo -->
+                                                    <input class="form-control" type="text" readonly="readonly"
+                                                           id="price{{ recommended_routes.index(route) }}"
+                                                           name="price{{ recommended_routes.index(route) }}"
+                                                           placeholder="0€">
+                                                    <input class="form-control" type="hidden"
+                                                           id="km{{ recommended_routes.index(route) }}"
+                                                           name="km{{ recommended_routes.index(route) }}">
+                                                    <input class="form-control" type="hidden"
+                                                           id="start_date{{ recommended_routes.index(route) }}"
+                                                           name="start_date{{ recommended_routes.index(route) }}">
+                                                    <input class="form-control" type="hidden"
+                                                           id="end_date{{ recommended_routes.index(route) }}"
+                                                           name="end_date{{ recommended_routes.index(route) }}">
+                                                </div>
+                                                <div class="col-3">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div id="divReset" class="col-3">
+                                                    <button type="button" id="btnReset"
+                                                            onclick="reset{{ recommended_routes.index(route) }}()">Reset
+                                                    </button>
+                                                </div>
+                                                <div class="col-3"></div>
+                                                <div id="joinDiv" class="col-3">
+                                                    <button type="button"
+                                                            id="btnJoin{{ recommended_routes.index(route) }}"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#confirmModal{{ recommended_routes.index(route) }}">
+                                                        Join Route
+                                                    </button>
+                                                    <!-- Modal Confirm -->
+                                                    <div class="modal fade" tabindex="-1" role="dialog"
+                                                         id="confirmModal{{ recommended_routes.index(route) }}"
+                                                         aria-labelledby="confirmModalTitle"
+                                                         aria-describedby="confirmModalDescription">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body">
+                                                                    <h5>Are you sure you want to join the route?</h5>
+                                                                    <p></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button id="btnModalConfirmClose{{ recommended_routes.index(route) }}"
+                                                                            class="btn btn-primary btn-sm" type="button"
+                                                                            data-bs-dismiss="modal">Close
+                                                                    </button>
+                                                                    <input type=submit
+                                                                           id="btnModalConfirm{{ recommended_routes.index(route) }}"
+                                                                           class="btn btn-primary btn-sm"
+                                                                           value="Confirm and Pay">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="map" id="map{{ recommended_routes.index(route) }}"></div>
+                                        <script>
+
+                                            function reset{{ recommended_routes.index(route) }}() {
+                                                set_all_marker_default{{ recommended_routes.index(route) }}();
+                                                reset_boxes{{ recommended_routes.index(route) }}();
+                                            }
+
+                                            function reset_boxes{{ recommended_routes.index(route) }}() {
+                                                document.getElementById("starting_point{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("ending_point{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("price{{ recommended_routes.index(route) }}").value = "0€";
+                                                document.getElementById("km{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("start_date{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("end_date{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("start_lat{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("start_lng{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("end_lat{{ recommended_routes.index(route) }}").value = "";
+                                                document.getElementById("end_lng{{ recommended_routes.index(route) }}").value = "";
+                                            }
+
+                                            reset_boxes{{ recommended_routes.index(route) }}();
+
+                                            var map{{ recommended_routes.index(route) }} = L.map('map{{ recommended_routes.index(route) }}').setView([41.85578716505089, 12.62212090183184], 17);
+
+
+                                            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                            }).addTo(map{{ recommended_routes.index(route) }});
+
+                                            var busStopIcon = L.Icon.extend({
+                                                options: {
+                                                    iconSize: [60, 60],
+                                                    iconAnchor: [30, 60]
+                                                }
+                                            });
+
+                                            var busStopIconRed = new busStopIcon({iconUrl: '/static/resources/bus-stop-red.png'});
+                                            var busStopIconGreen = new busStopIcon({iconUrl: '/static/resources/bus-stop-green.png'});
+                                            var busStopIconBlue = new busStopIcon({iconUrl: '/static/resources/bus-stop-blue.png'});
+                                            var busStopIconGray = new busStopIcon({iconUrl: '/static/resources/bus-stop-gray.png'});
+
+                                            //var path{{ recommended_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ recommended_routes.index(route) }});
+
+                                            km_total{{ recommended_routes.index(route) }} = 0;
+
+                                            fetch('/_get_total_km_trips?id=' + route["route"])
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    km_total{{ recommended_routes.index(route) }} = data.result;
+                                                    console.log("KM_RESULT: " + km_total{{ recommended_routes.index(route) }});
+                                                });
+
+                                            //map{{ recommended_routes.index(route) }}.fitBounds(path{{ recommended_routes.index(route) }}.getBounds());
+
+                                            var myCollapsiblemap = document.getElementById('acc{{ recommended_routes.index(route) }}');
+                                            myCollapsiblemap.addEventListener('shown.bs.collapse', function () {
+                                                map{{ recommended_routes.index(route) }}.invalidateSize();
+                                            });
+
+
+                                            var markersLayer{{ recommended_routes.index(route) }} = L.featureGroup().addTo(map{{ recommended_routes.index(route) }});
+                                            markersLayer{{ recommended_routes.index(route) }}.on("click", markerOnClick{{ recommended_routes.index(route) }});
+
+
+                                            var nodes_disabled_for_starting{{ recommended_routes.index(route) }} = get_disabled_nodes_for_starting{{ recommended_routes.index(route) }}();
+                                            var nodes_disabled_for_ending{{ recommended_routes.index(route) }} = get_disabled_nodes_for_ending{{ recommended_routes.index(route) }}();
+
+                                            var startingPoint{{ recommended_routes.index(route) }};
+                                            var endingPoint{{ recommended_routes.index(route) }};
+                                            var point{{ recommended_routes.index(route) }} = null;
+
+                                            function set_starting_coord{{ recommended_routes.index(route) }}() {
+                                                point{{ recommended_routes.index(route) }} = "start";
+                                                set_all_marker_default{{ recommended_routes.index(route) }}();
+                                                disable_node{{ recommended_routes.index(route) }}(bus_stops{{ recommended_routes.index(route) }}.length - 1);
+                                                nodes_disabled_for_starting{{ recommended_routes.index(route) }}.forEach(function (node) {
+                                                    disable_node{{ recommended_routes.index(route) }}(node);
+                                                });
+                                                if (endingPoint{{ recommended_routes.index(route) }} != null) {
+                                                    end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
+                                                    a = nodes_disabled_for_ending{{ recommended_routes.index(route) }}.filter(function (element) {
+                                                        return element <= end_index;
+                                                    });
+                                                    max = Math.max(a);
+                                                    if (end_index > max) {
+                                                        for (var i = 0; i < max; i++) {
+                                                            disable_node{{ recommended_routes.index(route) }}(i);
+                                                        }
+                                                    }
+                                                    for (var i = end_index; i < route["steps"].length; i++) {
+                                                        disable_node{{ recommended_routes.index(route) }}(i);
+                                                    }
+                                                }
+                                                able_start_end_point{{ recommended_routes.index(route) }}();
+                                            }
+
+                                            function set_ending_coord{{ recommended_routes.index(route) }}() {
+                                                point{{ recommended_routes.index(route) }} = "end";
+                                                set_all_marker_default{{ recommended_routes.index(route) }}();
+                                                disable_node{{ recommended_routes.index(route) }}(0);
+                                                nodes_disabled_for_ending{{ recommended_routes.index(route) }}.forEach(function (node) {
+                                                    disable_node{{ recommended_routes.index(route) }}(node);
+                                                });
+                                                if (startingPoint{{ recommended_routes.index(route) }} != null) {
+                                                    start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
+                                                    a = nodes_disabled_for_starting{{ recommended_routes.index(route) }}.filter(function (element) {
+                                                        return element >= start_index;
+                                                    });
+                                                    min = Math.min(a);
+                                                    if (start_index < min) {
+                                                        for (var i = min + 1; i < route["steps"].length; i++) {
+                                                            disable_node{{ recommended_routes.index(route) }}(i);
+                                                        }
+                                                    }
+                                                    for (var i = 0; i < start_index; i++) {
+                                                        disable_node{{ recommended_routes.index(route) }}(i);
+                                                    }
+                                                }
+                                                able_start_end_point{{ recommended_routes.index(route) }}();
+                                            }
+
+                                            function able_start_end_point{{ recommended_routes.index(route) }}() {
+                                                if (startingPoint{{ recommended_routes.index(route) }} != null) {
+                                                    startingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconGreen);
+                                                }
+                                                if (endingPoint{{ recommended_routes.index(route) }} != null) {
+                                                    endingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconRed);
+                                                }
+
+                                            }
+
+
+                                            function get_disabled_nodes_for_starting{{ recommended_routes.index(route) }}() {
+                                                nodes_disabled_for_starting{{ recommended_routes.index(route) }} = [];
+                                                for (var i = 0; i < route["segments"].length; i++) {
+                                                    if (route["segments"][i]["seat_available"] <= 0) {
+                                                        nodes_disabled_for_starting{{ recommended_routes.index(route) }}.push(i);
+                                                    }
+                                                }
+                                                return nodes_disabled_for_starting{{ recommended_routes.index(route) }};
+                                            }
+
+
+                                            function get_disabled_nodes_for_ending{{ recommended_routes.index(route) }}() {
+                                                nodes_disabled_for_ending{{ recommended_routes.index(route) }} = [];
+                                                for (var i = 0; i < route["segments"].length; i++) {
+                                                    if (route["segments"][i]["seat_available"] <= 0) {
+                                                        nodes_disabled_for_ending{{ recommended_routes.index(route) }}.push(i + 1);
+                                                    }
+                                                }
+                                                return nodes_disabled_for_ending{{ recommended_routes.index(route) }};
+                                            }
+
+                                            var disabled_nodes{{ recommended_routes.index(route) }} = []
+
+                                            function disable_node{{ recommended_routes.index(route) }}(index) {
+                                                var marker = get_stop_marker_from_index{{ recommended_routes.index(route) }}(index);
+                                                marker.setIcon(busStopIconGray);
+                                                disabled_nodes{{ recommended_routes.index(route) }}.push(index);
+                                            }
+
+                                            function get_stop_marker_from_index{{ recommended_routes.index(route) }}(index) {
+                                                var marker = markersLayer{{ recommended_routes.index(route) }}.getLayers()[index];
+                                                return marker;
+                                            }
+
+                                            function get_index_from_stop_marker{{ recommended_routes.index(route) }}(marker) {
+                                                for (var i = 0; i < markersLayer{{ recommended_routes.index(route) }}.getLayers().length; i++) {
+                                                    if (markersLayer{{ recommended_routes.index(route) }}.getLayers()[i] == marker) {
+                                                        return i;
+                                                    }
+                                                }
+                                            }
+
+                                            function set_all_marker_default{{ recommended_routes.index(route) }}() {
+                                                for (var i = 0; i < bus_stops{{ recommended_routes.index(route) }}.length; i++) {
+                                                    marker = get_stop_marker_from_index{{ recommended_routes.index(route) }}(i);
+                                                    marker.setIcon(busStopIconBlue);
+                                                }
+                                                disabled_nodes{{ recommended_routes.index(route) }} = [];
+                                            }
+
+                                            function markerOnClick{{ recommended_routes.index(route) }}(e) {
+                                                var clickedMarker = e.layer;
+                                                if (!(disabled_nodes{{ recommended_routes.index(route) }}.includes(get_index_from_stop_marker{{ recommended_routes.index(route) }}(clickedMarker)))) {
+                                                    if (point{{ recommended_routes.index(route) }} != null) {
+                                                        if (point{{ recommended_routes.index(route) }} == "start") {
+                                                            if (startingPoint{{ recommended_routes.index(route) }} != null)
+                                                                startingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconBlue);
+                                                            clickedMarker.setIcon(busStopIconGreen);
+                                                            startingPoint{{ recommended_routes.index(route) }} = clickedMarker;
+                                                            var bus_stop_name = clickedMarker.getTooltip().getContent();
+                                                            var lat = clickedMarker.getLatLng().lat;
+                                                            var lng = clickedMarker.getLatLng().lng;
+                                                            document.getElementById("starting_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
+                                                            document.getElementById("start_lat{{ recommended_routes.index(route) }}").value = lat;
+                                                            document.getElementById("start_lng{{ recommended_routes.index(route) }}").value = lng;
+                                                            start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
+                                                            console.log("START_INDEX OO: " + start_index);
+                                                            console.log(route)
+                                                            document.getElementById("start_date{{ recommended_routes.index(route) }}").value = document.getElementById("date{{ recommended_routes.index(route) }}" + start_index).value;
+
+                                                        } else if (point{{ recommended_routes.index(route) }} == "end") {
+                                                            if (endingPoint{{ recommended_routes.index(route) }} != null)
+                                                                endingPoint{{ recommended_routes.index(route) }}.setIcon(busStopIconBlue);
+                                                            endingPoint{{ recommended_routes.index(route) }} = clickedMarker
+                                                            clickedMarker.setIcon(busStopIconRed);
+                                                            bus_stop_name = clickedMarker.getTooltip().getContent()
+                                                            var lat = clickedMarker.getLatLng().lat;
+                                                            var lng = clickedMarker.getLatLng().lng;
+                                                            document.getElementById("ending_point{{ recommended_routes.index(route) }}").value = bus_stop_name;
+                                                            document.getElementById("end_lat{{ recommended_routes.index(route) }}").value = lat;
+                                                            document.getElementById("end_lng{{ recommended_routes.index(route) }}").value = lng;
+                                                            end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
+                                                            console.log("END_INDEX OO: " + end_index);
+                                                            document.getElementById("end_date{{ recommended_routes.index(route) }}").value = document.getElementById("date{{ recommended_routes.index(route) }}" + end_index).value;
+                                                        }
+                                                    }
+                                                }
+                                                if (startingPoint{{ recommended_routes.index(route) }} != null && endingPoint{{ recommended_routes.index(route) }} != null) {
+                                                    start_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(startingPoint{{ recommended_routes.index(route) }});
+                                                    end_index = get_index_from_stop_marker{{ recommended_routes.index(route) }}(endingPoint{{ recommended_routes.index(route) }});
+                                                    console.log("START_INDEX: " + start_index);
+                                                    console.log("END_INDEX: " + end_index);
+                                                    price = compute_price{{ recommended_routes.index(route) }}(start_index, end_index);
+                                                    console.log("PRICE: " + price);
+
+                                                }
+                                            }
+
+                                            var bus_stops{{ recommended_routes.index(route) }} = [];
+                                            var bus_stop_names{{ recommended_routes.index(route) }} = [];
+                                            for (var i = 0; i < route["steps"].length; i++) {
+                                                bus_stops{{ recommended_routes.index(route) }}.push(route["steps"][i]["position"]);
+                                                bus_stop_names{{ recommended_routes.index(route) }}.push(route["steps"][i]["name"]);
+                                            }
+
+                                            console.log("BUS STOPS" + bus_stops{{ recommended_routes.index(route) }});
+                                            console.log("BUS STOPS 000" + bus_stops{{ recommended_routes.index(route) }}.slice(0, 3));
+
+                                            var c = 0;
+                                            bus_stops{{ recommended_routes.index(route) }}.forEach(function (bus_stop) {
+
+                                                var marker = L.marker([bus_stop[0], bus_stop[1]], {
+                                                    icon: busStopIconBlue,
+                                                    title: "(" + bus_stop[0] + "," + bus_stop[1] + ")"
+                                                }).addTo(map{{ recommended_routes.index(route) }});
+                                                marker.bindTooltip(c + 1 + " - " + bus_stop_names{{ recommended_routes.index(route) }}[c], {
+                                                    offset: L.point(0, -50)
+                                                });
+                                                c++;
+                                                marker.addTo(markersLayer{{ recommended_routes.index(route) }});
+                                            });
+
+                                            var url = "";
+
+                                            function compute_price{{ recommended_routes.index(route) }}(start, end) {
+                                                console.log("START: " + parseInt(start));
+                                                console.log("END: " + parseInt(end));
+                                                console.log("QUEBEC" + JSON.stringify({
+                                                    "bus_stops": bus_stops{{ recommended_routes.index(route) }}.slice(start, end + 1),
+                                                    "route": route["route"]
+                                                }));
+                                                fetch('/_get_km_from_subroute', {
+                                                    method: 'POST',
+                                                    body: JSON.stringify({
+                                                        "bus_stops": bus_stops{{ recommended_routes.index(route) }}.slice(start, end + 1),
+                                                        "route": route["route"]
+                                                    }),
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    }
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        price = data.result["price"];
+                                                        km = data.result["distance"] / 1000;
+                                                        console.log("PRICE: " + price);
+                                                        document.getElementById("price{{ recommended_routes.index(route) }}").value = price + "€";
+                                                        document.getElementById("km{{ recommended_routes.index(route) }}").value = km;
+                                                    });
+                                            }
+
+                                            fetch('/_get_path_from_stops', {
+                                                method: 'POST',
+                                                body: JSON.stringify(bus_stops{{ recommended_routes.index(route) }}),
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    var path{{ recommended_routes.index(route) }} = L.polyline(data.result["coordinates"], {color: 'red'}).addTo(map{{ recommended_routes.index(route) }});
+
+                                                    map{{ recommended_routes.index(route) }}.invalidateSize();
+
+                                                    map{{ recommended_routes.index(route) }}.fitBounds(path{{ recommended_routes.index(route) }}.getBounds());
+
+                                                });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

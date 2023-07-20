@@ -1,55 +1,61 @@
 <html>
-  <head>
+<head>
     <title>Bus4You</title>
     <link rel="stylesheet" type="text/css" href="../static/css/login.css">
-  </head>
-  <body>
-    {% for msg in get_flashed_messages() %}
-      <h1>{{ msg }}</h1>
-      {% endfor %}
-    <div class="form-body">
-      <div class="row">
+</head>
+<body>
+{% for msg in get_flashed_messages() %}
+    <h1>{{ msg }}</h1>
+{% endfor %}
+<div class="form-body">
+    <div class="row">
         <div class="form-holder">
-          <div class="form-content">
-            <div class="form-items">
-              <h3>Sign Up</h3>
-              <form class="requires-validation" novalidate action="/signUp" method="POST">
+            <div class="form-content">
+                <div class="form-items">
+                    <h3>Sign Up</h3>
+                    <form class="requires-validation" novalidate action="/signUp" method="POST">
 
-                <div class="col-md-12">
-                  <input class="form-control" type="text" id="txtName" name="txtName" placeholder="Name*" required>
+                        <div class="col-md-12">
+                            <input class="form-control" type="text" id="txtName" name="txtName" placeholder="Name*"
+                                   required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="form-control" type="text" id="txtSurname" name="txtSurname"
+                                   placeholder="Surname*" required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="form-control" type="text" id="txtMail" name="txtMail" placeholder="Mail*"
+                                   required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="form-control" type="password" id="txtPwd" name="txtPwd"
+                                   placeholder="Password*" required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="form-control" type="password" id="txtPwdConf" name="txtPwdConf"
+                                   placeholder=" Confirm Password*" required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="form-control" type="date" id="txtDate" name="txtDate" required>
+                            <script>document.getElementById("txtDate").max = new Date().toISOString().split("T")[0];</script>
+                        </div>
+
+                        <br>
+
+                        <div class="form-button mt-3">
+                            <button id="btnSignUp" name="btnSignUp" type="submit" class="btn btn-primary">Sign Up
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="col-md-12">
-                  <input class="form-control" type="text" id="txtSurname" name="txtSurname" placeholder="Surname*" required>
-                </div>
-
-                <div class="col-md-12">
-                  <input class="form-control" type="text" id="txtMail" name="txtMail" placeholder="Mail*" required>
-                </div>
-
-                <div class="col-md-12">
-                  <input class="form-control" type="password" id="txtPwd" name="txtPwd" placeholder="Password*" required>
-                </div>
-
-                <div class="col-md-12">
-                  <input class="form-control" type="password" id="txtPwdConf" name="txtPwdConf" placeholder=" Confirm Password*" required>
-                </div>
-
-                <div class="col-md-12">
-                    <input class="form-control" type="date" id="txtDate" name="txtDate" required>
-                    <script>document.getElementById("txtDate").max = new Date().toISOString().split("T")[0];</script>
-                </div>
-
-                  <br>
-
-                <div class="form-button mt-3">
-                  <button id="btnSignUp" name="btnSignUp" type="submit" class="btn btn-primary">Sign Up</button>
-                </div>
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </body>
-  </html>
+</div>
+</body>
+</html>
