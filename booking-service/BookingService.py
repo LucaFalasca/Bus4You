@@ -80,13 +80,11 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
+    return booking_id
 
 
 def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
@@ -107,13 +105,11 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
 
     if dao.search_for_compatibility_type_1(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
         dao.get_compatible_time_bookings(booking_id)
-        return booking_id
+    return booking_id
 
 
 

@@ -121,7 +121,7 @@ class Neo4jDAO:
                 "WHERE id(other_booking) <> $booking_id AND b.date = other_booking.date "
                 "WITH s, other_stop, point.distance(s.position, other_stop.position) AS distance, b, other_booking "
                 "WHERE distance < 2500 AND NOT (b)-[:COMPATIBLE]-(other_booking) "
-                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 1}]->(other_booking)",
+                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 2}]->(other_booking)",
                 booking_id=booking_id
             )
             summary = result.consume()
@@ -141,7 +141,7 @@ class Neo4jDAO:
                 "WHERE id(other_booking) <> $booking_id AND b.date = other_booking.date "
                 "WITH s, other_stop, point.distance(s.position, other_stop.position) AS distance, b, other_booking "
                 "WHERE distance < 2500  AND NOT (b)-[:COMPATIBLE]-(other_booking) "
-                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 2}]->(other_booking) ",
+                "MERGE (b)-[r:COMPATIBLE {distance: distance, type: 1}]->(other_booking) ",
                 booking_id=booking_id
             )
             summary = result.consume()
@@ -507,6 +507,7 @@ class Neo4jDAO:
                                     [node["other_position_end_stop"][0], node["other_position_end_stop"][1]]])
                 #TYPE 1
                 if (node["type_spatial"] == 1):
+                    print("OIIIIIIIIIIIIII")
                     if (node["type"] == "start"): hour_node1 = (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1])) + matrix[0][1]
                     if (node["type"] == "end"):  hour_node1 = (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1]))
                     if (node["other_type"] == "end"): hour_node2 = (int(node["other_hour_end"].split(":")[0]) * 60 + int(node["other_hour_end"].split(":")[1])) - matrix[3][2]
@@ -570,7 +571,6 @@ class Neo4jDAO:
 
                  # TYPE 3
                 if (node["type_spatial"] == 3):
-                    print("AAAOOOOOOOOOO")
                     if (node["type"] == "start"): hour_node1 = (int(node["hour_start"].split(":")[0]) * 60 + int(node["hour_start"].split(":")[1]))
                     if (node["type"] == "end"):  hour_node1 = (int(node["hour_end"].split(":")[0]) * 60 + int(node["hour_end"].split(":")[1])) - matrix[1][0]
                     if (node["other_type"] == "end"): hour_node2 = (int(node["other_hour_end"].split(":")[0]) * 60 + int(node["other_hour_end"].split(":")[1])) - matrix[3][2]
