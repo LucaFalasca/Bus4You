@@ -322,19 +322,17 @@ class Neo4jDAO:
             for record in result:
                 booking = {
                     "id": record["b_id"],
-                    "date": datetime.strptime(record["b_day"], "%Y-%m-%d").date(),
+                    "date": record["b_day"],
                     "name_start_stop": record["start_stop"],
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
                     "position_end_stop": record["position_end_stop"],
-                    "type": record["b_type"],
-                    "user": record["u_name"],
-                    "it_id": record["it_id"]
+                    "type": record["b_type"]
                 }
                 if record["b_type"] == "start":
-                    booking["hour"] = (datetime.strptime(record["b_hs"], "%H:%M").time(), None)
+                    booking["hour"] = (record["b_hs"], None)
                 else:
-                    booking["hour"] = (None, datetime.strptime(record["b_he"], "%H:%M").time())
+                    booking["hour"] = (None, record["b_he"])
                 bookings.append(booking)
 
             # Consuma tutti i record prima di restituire il risultato

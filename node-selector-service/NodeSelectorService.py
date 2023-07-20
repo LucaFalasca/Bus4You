@@ -40,8 +40,9 @@ def publish_message_on_queue(message_json, queue, channel):
 
 def send_nodes_for_computation(id):
     l = 0
-    print("-id scelto: " + id)
+    print("-id scelto: " + str(id))
     nodes_4j = get_cluster_with_limits(id, 4)
+    print("Fatto!")
     l = len(nodes_4j)
     print("numero nodi presi" + str(l))
     print(nodes_4j)
