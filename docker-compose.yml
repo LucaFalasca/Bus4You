@@ -68,7 +68,8 @@ services:
 
   notify-service:
     build: ./notify-service
-    container_name: notify-service
+    deploy:
+      replicas: 3
     volumes:
       - ./notify-service:/app
     depends_on:
@@ -88,7 +89,8 @@ services:
 
   booking_service:
     build: ./booking-service
-    container_name: booking_service
+    deploy:
+      replicas: 3
     volumes:
       - ./booking-service:/app
     depends_on:
@@ -114,7 +116,8 @@ services:
 
   make-route-service:
     build: ./make-route-service
-    container_name: make-route-service
+    deploy:
+      replicas: 3
     volumes:
       - ./make-route-service:/app
     depends_on:
@@ -125,7 +128,8 @@ services:
 
   node-selector-service:
     build: ./node-selector-service
-    container_name: node-selector-service
+    deploy:
+      replicas: 3
     volumes:
       - ./node-selector-service:/app
     depends_on:
