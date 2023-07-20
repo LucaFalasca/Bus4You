@@ -109,10 +109,10 @@ def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, d
         dao.get_compatible_time_bookings(booking_id)
         return booking_id
     if dao.search_for_compatibility_type_2(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
     if dao.search_for_compatibility_type_3(booking_id):
-        dao.get_compatible_time_bookings()
+        dao.get_compatible_time_bookings(booking_id)
         return booking_id
 
 
