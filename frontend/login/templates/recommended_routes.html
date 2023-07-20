@@ -11,7 +11,7 @@
 {% endblock %}
 {% block body %}
     <div id="gigaDiv">
-        <h2 id="gigaH2">Percorsi raccomandati</h2>
+        <h2 id="gigaH2">RECCOMENDED ROUTES</h2>
         {% for route in recommended_routes %}
             <script>
                 var route = {{ route | tojson }};
@@ -24,7 +24,7 @@
                                 type="button" data-bs-toggle="collapse"
                                 data-bs-target="#acc{{ recommended_routes.index(route) }}" aria-expanded="true"
                                 aria-controls="acc{{ recommended_routes.index(route) }}">
-                            PERCORSO
+                            ROUTE
                             <script> document.write(route["route"]);</script>
                         </button>
                     </h2>
@@ -41,8 +41,8 @@
                                                 for (var i = 0; i < route["steps"].length; i++) {
                                                     var date = route["steps"][i]["timestamp"];
                                                     document.write("[" + route["steps"][i]["step"] + "]<br>");
-                                                    document.write(" \t|\t\t Fermata: " + route["steps"][i]["name"] + "<br>");
-                                                    document.write(" \t|\t\t Orario: " + route["steps"][i]["timestamp"] + "<br>");
+                                                    document.write(" \t|\t\t Stop Name: " + route["steps"][i]["name"] + "<br>");
+                                                    document.write(" \t|\t\t Schedule Time: " + route["steps"][i]["timestamp"] + "<br>");
                                                     document.write("<input id='date{{ recommended_routes.index(route) }}" + i + "' type='hidden' value='" + date + "'>");
 
                                                 }
@@ -151,8 +151,7 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-body">
                                                                     <h5>Are you sure you want to join the route?</h5>
-                                                                    <p>Qui ci va il piccolo riepilogo, fermate che ha
-                                                                        selezionato + prezzo</p>
+                                                                    <p></p>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button id="btnModalConfirmClose{{ recommended_routes.index(route) }}"

@@ -27,7 +27,7 @@
             <h1 class="accordion-header " id="headingAttive">
                 <button id="btnAttive" class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAttive" aria-expanded="true" aria-controls="collapseAttive">
-                    PRENOTAZIONI ATTIVE
+                    ACTIVE BOOKINGS
                 </button>
             </h1>
             <div id="collapseAttive" class="accordion-collapse collapse show" data-bs-parent="#accAttive" role="region"
@@ -46,9 +46,9 @@
                                                 aria-expanded="false"
                                                 aria-controls="acc{{ present_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse"
@@ -58,16 +58,16 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                                        Costo: {{ route.getItCost() }}<br>
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
+                                                        Price: {{ route.getItCost() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="map"
@@ -163,9 +163,9 @@
                                                 aria-expanded="false"
                                                 aria-controls="acc{{ present_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse"
@@ -175,24 +175,24 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
 
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
 
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
 
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
 
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
 
-                                                        Costo: {{ route.getItCost() }}<br>
+                                                        Price: {{ route.getItCost() }}<br>
 
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
 
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
 
                                                         <button id="btnConfirm{{ present_routes.index(route) }}"
                                                                 data-bs-toggle="modal"
@@ -445,9 +445,9 @@
                                                 aria-expanded="false"
                                                 aria-controls="acc{{ present_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse"
@@ -457,24 +457,24 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
 
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
 
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
 
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
 
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
 
-                                                        Costo: {{ route.getItCost() }}<br>
+                                                        Price: {{ route.getItCost() }}<br>
 
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
 
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
 
                                                         {% if route.getItStatus()=='confirmed' %}
                                                             <button id="btnConfirmDis{{ present_routes.index(route) }}"
@@ -511,7 +511,8 @@
                                                                             <input type="checkbox"
                                                                                    id="chkBox{{ present_routes.index(route) }}"
                                                                                    name="chkBox{{ present_routes.index(route) }}"
-                                                                                   value="True">
+                                                                                   value="True"
+                                                                                   checked>
                                                                             <label id="lbChkBox{{ present_routes.index(route) }}"
                                                                                    for="chkBox{{ present_routes.index(route) }}">
                                                                                 Search another route</label><br>
@@ -732,13 +733,13 @@
                                         <button id="btnAccRej{{ present_routes.index(route) }}"
                                                 class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target="#acc{{ present_routes.index(route) }}"
+                                                data-bs-target="#acc{{ present_routes.ipresent_routesndex(route) }}"
                                                 aria-expanded="false"
                                                 aria-controls="acc{{ present_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ present_routes.index(route) }}" class="accordion-collapse collapse"
@@ -748,16 +749,15 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                                        Costo: {{ route.getItCost() }}<br>
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
-
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
+                                                        Price: {{ route.getItCost() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="map"
@@ -857,7 +857,7 @@
             <h1 class="accordion-header " id="headingPast">
                 <button id="btnPast" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePast" aria-expanded="true" aria-controls="collapsePast">
-                    PRENOTAZIONI PASSATE
+                    PAST BOOKINGS
                 </button>
             </h1>
             <div id="collapsePast" class="accordion-collapse collapse" data-bs-parent="#accPast" role="region"
@@ -874,9 +874,9 @@
                                                 data-bs-target="#acc{{ past_routes.index(route) }}"
                                                 aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse"
@@ -886,16 +886,16 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                                        Costo: {{ route.getItCost() }}<br>
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
+                                                        Price: {{ route.getItCost() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="map"
@@ -990,9 +990,9 @@
                                                 data-bs-target="#acc{{ past_routes.index(route) }}"
                                                 aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse"
@@ -1002,16 +1002,16 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                                        Costo: {{ route.getItCost() }}<br>
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
+                                                        Price: {{ route.getItCost() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="map"
@@ -1109,9 +1109,9 @@
                                                 data-bs-target="#acc{{ past_routes.index(route) }}"
                                                 aria-expanded="false" aria-controls="acc{{ past_routes.index(route) }}">
                                             {{ route.getStartStop() }} -> {{ route.getEndStop() }} -
-                                            Data: {{ route.getItPropStart()[0:10] }} -
-                                            Partenza: {{ route.getItPropStart()[11:] }} -
-                                            Arrivo: {{ route.getItPropEnd()[11:] }}
+                                            Date: {{ route.getItPropStart()[0:10] }} -
+                                            Departure: {{ route.getItPropStart()[11:] }} -
+                                            Arrival: {{ route.getItPropEnd()[11:] }}
                                         </button>
                                     </h2>
                                     <div id="acc{{ past_routes.index(route) }}" class="accordion-collapse collapse"
@@ -1121,16 +1121,16 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        Data: {{ route.getItPropStart()[0:10] }} <br>
-                                                        Orario Partenza: {{ route.getItPropStart()[11:] }} <br>
-                                                        Orario Arrivo: {{ route.getItPropEnd()[11:] }} <br>
-                                                        Fermata Partenza: {{ route.getStartStop() }} <br>
-                                                        Fermata Arrivo: {{ route.getEndStop() }} <br>
-                                                        Costo: {{ route.getItCost() }}<br>
-                                                        Stato Itinerario: {{ route.getItStatus() }}<br>
-                                                        Stato Percorso: {{ route.getRouteStatus() }}<br>
+                                                        Date: {{ route.getItPropStart()[0:10] }} <br>
+                                                        Departure Time: {{ route.getItPropStart()[11:] }} <br>
+                                                        Arrival Time: {{ route.getItPropEnd()[11:] }} <br>
+                                                        Departure Stop: {{ route.getStartStop() }} <br>
+                                                        Arrival Stop: {{ route.getEndStop() }} <br>
+                                                        Price: {{ route.getItCost() }}<br>
+                                                        Itinerary Status: {{ route.getItStatus() }}<br>
+                                                        Route Status: {{ route.getRouteStatus() }}<br>
 
-                                                        Scadenza Percorso: {{ route.getRouteExpire() }}<br>
+                                                        Route Deadline: {{ route.getRouteExpire() }}<br>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="map"
