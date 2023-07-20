@@ -6,6 +6,7 @@ import OrsDao
 from Neo4jDAO import *
 import threading
 import xmlrpc.server
+import datetime
 
 MAKE_ROUTE_STOP_DATA_QUEUE_1 = 'make_route_stop_data_1'
 queue_channel = None
@@ -39,14 +40,15 @@ def publish_message_on_queue(message_json, queue, channel):
 
 
 def send_nodes_for_computation(id):
+    print("Inizio elaborazione")
     l = 0
     print("-id scelto: " + str(id))
-    nodes_4j = get_cluster_with_limits(id, 4)
+    nodes_4j = get_cluster_with_limits(id, 10)
     print("Fatto!")
     l = len(nodes_4j)
     print("numero nodi presi" + str(l))
     print(nodes_4j)
-    if 3 < l <= 10:  # min
+    if l >= 3:  # min
         delete_nodes_after_get_cluster(nodes_4j)
         print("Ho scelto i nodi:")
         print(nodes_4j)
@@ -62,35 +64,48 @@ def send_nodes_for_computation(id):
         c = 0
 
         for itinerario in nodes_4j:
+            print("ciclo")
             it_id = itinerario["it_id"]
+            print("ciclo1")
             date = itinerario["date"]
+            print("ciclo2")
             coord_start = [itinerario["position_start_stop"][0], itinerario["position_start_stop"][1]]
+            print("ciclo3")
             # print(coord_start)
             if itinerario["hour"][0] is not None:
-                limit0 = itinerario["hour"][0].hour * 60 + itinerario["hour"][0].minute
+                print("ciclo4")
+                print(itinerario["hour"][0])
+                time = datetime.datetime.strptime(itinerario["hour"][0], '%H:%M').time()
+                print(time)
+                limit0 = time.hour * 60 + time.minute
             else:
                 limit0 = None
             if itinerario["hour"][1] is not None:
-                limit1 = itinerario["hour"][1].hour * 60 + itinerario["hour"][1].minute
+                print("ciclo5")
+                time = datetime.datetime.strptime(itinerario["hour"][1], '%H:%M').time()
+                limit1 = time.hour * 60 + time.minute
             else:
                 limit1 = None
             limit = [limit0, limit1]
+            print("ciclo6")
 
             if coord_start not in points_location.values():
                 k_start = c
                 points_location[str(k_start)] = coord_start
                 c += 1
-
+                print("ciclo7")
             else:
                 for key, value in points_location.items():
                     if value == coord_start:
+                        print("ciclo7.5")
                         k_start = key
                         points_location[str(k_start)] = coord_start
                         break
-
+            print("ciclo8")
             coord_end = [itinerario["position_end_stop"][0], itinerario["position_end_stop"][1]]
             # print(coord_end)
             if coord_end not in points_location.values():
+                print("ciclo9")
                 k_end = c
                 points_location[str(k_end)] = coord_end
                 c += 1
@@ -100,13 +115,15 @@ def send_nodes_for_computation(id):
                         k_end = key
                         points_location[str(k_end)] = coord_end
                         break
+            print("ciclo10")
             if str(k_start) not in prec_hash.keys():
                 prec_hash[str(k_start)] = [str(k_end)]
             else:
                 prec_hash[str(k_start)].append(str(k_end))
             if str(k_end) not in prec_hash.keys():
                 prec_hash[str(k_end)] = []
-
+            
+            print("ciclo11")
             if limit is not None:
                 if limit[0] is not None:
                     if str(k_start) not in node_limit.keys():
@@ -124,13 +141,14 @@ def send_nodes_for_computation(id):
                             node_limit[str(k_end)][1] = limit[1]
                         else:
                             node_limit[str(k_end)][1] = max(node_limit[str(k_end)][1], limit[1])
-
+            print("ciclo12")
             user_routes.append({
                 "user": itinerario["user"],
                 "it_id": it_id,
                 "date": str(date),
                 "nodes": [str(k_start), str(k_end)]
             })
+            print("ciclo13")
 
         # print(points_location)
         # print(prec_hash)
@@ -143,6 +161,7 @@ def send_nodes_for_computation(id):
                    "user_routes": user_routes, "points_location": points_location}
         print("Sending message: " + str(message))
         publish_message_on_queue(json.dumps(message), MAKE_ROUTE_STOP_DATA_QUEUE_1, queue_channel)
+    print("Fine elaborazione")
     return 0
 
 

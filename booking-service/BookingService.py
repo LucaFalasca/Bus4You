@@ -187,7 +187,9 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
     with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
         print("id_book: " + str(id_book))
         if(id_book != None):
+            print("sto per fare la richiesta rpc")
             proxy.send_nodes_for_computation(id_book)
+            print("ho fatto la richiesta rpc")
     print("Funziono?")
     return True
 
@@ -229,7 +231,7 @@ def json_to_route_info(json_input):
     # supplemento del costo dovuto al fatto che il 50% del costo è profitto
     supplement_due_profit = 1.5
 
-    fixed_price = 0.30
+    fixed_price = 0.50
 
     total_price = (total_distance / 1000 * price_per_km * supplement_due_refuse + fixed_price) * supplement_due_profit
     print("Total distance: " + str(total_distance))

@@ -314,12 +314,15 @@ class Neo4jDAO:
             "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
             "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
         )
-
+        
         with self.driver.session() as session:
+            print(1)
             result = session.run(query, booking_id=booking_id, limit=limit)
-
+            print(2)
             bookings = []
             for record in result:
+                print(3)
+                print(record)
                 booking = {
                     "id": record["b_id"],
                     "date": record["b_day"],
@@ -327,16 +330,21 @@ class Neo4jDAO:
                     "name_end_stop": record["end_stop"],
                     "position_start_stop": record["position_start_stop"],
                     "position_end_stop": record["position_end_stop"],
+                    "it_id": record["it_id"],
+                    "user": record["user_name"],
                     "type": record["b_type"]
                 }
+                print(3.5)
                 if record["b_type"] == "start":
                     booking["hour"] = (record["b_hs"], None)
                 else:
                     booking["hour"] = (None, record["b_he"])
+                    print(3.6)
                 bookings.append(booking)
-
+            print(4)
             # Consuma tutti i record prima di restituire il risultato
             result.consume()
+            print(5)
         # Restituzione della lista di prenotazioni
         return bookings
 
