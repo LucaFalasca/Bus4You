@@ -48,7 +48,7 @@ def send_nodes_for_computation(id):
     l = len(nodes_4j)
     print("numero nodi presi" + str(l))
     print(nodes_4j)
-    if l >= 20:  # min
+    if l >= 7:  # min
         delete_nodes_after_get_cluster(nodes_4j)
         print("Ho scelto i nodi:")
         print(nodes_4j)
