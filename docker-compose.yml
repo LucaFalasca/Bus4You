@@ -150,7 +150,7 @@ services:
     ports:
       - "8080:8080"
       - "9001:9001"
-    image: openrouteservice/openrouteservice:latest
+    image: openrouteservice/openrouteservice:v7.0.1
     user: "${UID:-0}:${GID:-0}"
   #    build:
   #      context: ./
