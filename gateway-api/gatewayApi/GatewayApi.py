@@ -3,7 +3,7 @@ import time
 import xmlrpc.client
 
 import requests
-from flask import Flask, json, request
+from flask import Flask, json, request, Response, jsonify
 
 api = Flask(__name__)
 
@@ -258,6 +258,16 @@ def join_recommended_route():
                                            price, distance, mail)
         print(ret)
         return json.dumps(ret)
+
+
+@api.route('/api/get_token', methods=['GET', 'POST'])
+def get_token():
+    with xmlrpc.client.ServerProxy("http://login-service:8000/") as proxy:
+        ret = proxy.rpc_get_token()
+    if ret['status'] == 'ok':
+        return Response(json.dumps(ret), status=200, mimetype='application/json')
+    else:
+        return Response(status=400, mimetype='application/json')
 
 
 if __name__ == '__main__':

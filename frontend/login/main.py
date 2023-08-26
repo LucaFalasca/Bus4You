@@ -33,7 +33,7 @@ def login():
             session['logged'] = True
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
-            session['token'] = response['token']
+            #session['token'] = response['token']
             return redirect(url_for('request_route'))
         else:
             flash('Login failed incorrect mail or password', category='info')
