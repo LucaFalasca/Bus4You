@@ -33,17 +33,22 @@ class DbDao:
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            curs.callproc('get_stops')
-            conn.commit()
-            for result in curs.stored_results():
-                res = result.fetchall()
-            curs.close()
-            for elem in res:
-                ret.append([elem[0], elem[1], elem[2]])
-            return ret
+            try:
+                curs.callproc('get_stops')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    ret.append([elem[0], elem[1], elem[2]])
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_token ", e)
+                return []
+            finally:
+                curs.close()
         else:
             print("Connection with db failed")
-            return -1
+            return []
 
     @staticmethod
     def stop_query_rect(conn, x, y, height, width):

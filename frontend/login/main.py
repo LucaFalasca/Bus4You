@@ -97,7 +97,7 @@ def request_route():
     print(end_lat)
     print(end_lng)
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops'
-    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()["stop_list"]
 
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None \
             or start_lat is None or start_lng is None or end_lat is None or end_lng is None:

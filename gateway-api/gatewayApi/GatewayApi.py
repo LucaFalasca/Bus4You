@@ -83,12 +83,18 @@ def load_user_routes():
 @api.route('/api/get_bus_stops', methods=['GET'])
 def get_bus_stops():
     ret = []
-    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        bus_stops = json.loads(proxy.get_stops())
-    for elem in bus_stops:
-        stop = {"name": elem[0], "lat": elem[1], "lang": elem[2]}
-        ret.append(stop)
-    return json.dumps(ret)
+    try:
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            bus_stops = json.loads(proxy.get_stops())
+        for elem in bus_stops:
+            stop = {"name": elem[0], "lat": elem[1], "lang": elem[2]}
+            ret.append(stop)
+        if not ret:
+            return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+        else:
+            return Response(json.dumps({"status": "ok", "stop_list": ret}), status=200, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
 @api.route('/api/get_bus_stops_rect', methods=['GET'])
@@ -271,8 +277,17 @@ def get_token():
     if ret['status'] == 'ok':
         return Response(json.dumps(ret), status=200, mimetype='application/json')
     else:
-        return Response(status=400, mimetype='application/json')
+        return Response(json.dumps(ret), status=400, mimetype='application/json')
 
+
+'''@api.route('/api/get_bus_stops', methods=['GET', 'POST'])
+def get_bus_stops_api():
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = json.loads(proxy.get_stops())
+    if not ret:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+    else:
+        return Response(json.dumps({"status": "ok", "stop_list": ret}), status=200, mimetype='application/json')'''
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
