@@ -140,7 +140,7 @@ def get_stops_rect():
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
     print(gateway_get_bus_stops_url)
     # print(requests.get(gateway_get_bus_stops_url))
-    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()["data"]
     return jsonify(result=bus_stops)
 
 
