@@ -49,7 +49,7 @@ def route_from_map():
             result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
                                         start_or_finish, time)
             print(result)
-            return Response(json.dumps({"status": "ok", "data": result}), status=200, mimetype='application/json')
+            return Response(json.dumps({"status": "ok", "it_req_id": result}), status=200, mimetype='application/json')
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
