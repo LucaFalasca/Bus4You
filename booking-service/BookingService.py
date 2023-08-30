@@ -187,7 +187,7 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
             proxy.send_nodes_for_computation(id_book)
             print("ho fatto la richiesta rpc")
     print("Funziono?")
-    return True
+    return it_id
 
 
 def json_to_route_info(json_input):

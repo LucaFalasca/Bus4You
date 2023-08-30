@@ -32,24 +32,26 @@ def signUp():
 
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
-    user = request.args.get('user')
-    starting_point = request.args.get('starting_point')
-    start_lat = request.args.get('start_lat')
-    start_lng = request.args.get('start_lng')
-    ending_point = request.args.get('ending_point')
-    end_lat = request.args.get('end_lat')
-    end_lng = request.args.get('end_lng')
-    date = request.args.get('date')
-    start_or_finish = request.args.get('start-finish')
-    print("SOF" + start_or_finish)
-    time = request.args.get('time')
-    print(user, starting_point, ending_point, date, start_or_finish, time, start_lat, start_lng, end_lat, end_lng)
-    with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
-        result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
-                                      start_or_finish, time)
-        print(result)
-        return json.dumps(result)
-
+    try:
+        user = request.args.get('user')
+        starting_point = request.args.get('starting_point')
+        start_lat = request.args.get('start_lat')
+        start_lng = request.args.get('start_lng')
+        ending_point = request.args.get('ending_point')
+        end_lat = request.args.get('end_lat')
+        end_lng = request.args.get('end_lng')
+        date = request.args.get('date')
+        start_or_finish = request.args.get('start-finish')
+        print("SOF" + start_or_finish)
+        time = request.args.get('time')
+        print(user, starting_point, ending_point, date, start_or_finish, time, start_lat, start_lng, end_lat, end_lng)
+        with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
+            result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
+                                        start_or_finish, time)
+            print(result)
+            return Response(json.dumps({"status": "ok", "data": result}), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())

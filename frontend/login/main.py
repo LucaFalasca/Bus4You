@@ -109,7 +109,10 @@ def request_route():
     else:
         gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
-        response = requests.get(gateway_request_route_url).json()
+        status = requests.get(gateway_request_route_url).json()["status"]
+        response = False
+        if status == 'ok':
+            response = True
         session['user_routes'] = response
         return render_template("select_route_from_map.html", bus_stops=bus_stops, response=response)
 
@@ -258,7 +261,7 @@ def reject_book():
                                         '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
                                         '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
             print(gateway_request_route_url)
-            response = requests.get(gateway_request_route_url).json()
+            response = requests.get(gateway_request_route_url).json()["data"]
             session['user_routes'] = response
             flash("Book requeued correctly", category='info')
 
