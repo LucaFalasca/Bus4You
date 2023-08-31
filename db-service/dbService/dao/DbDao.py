@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import mysql.connector
 from mysql.connector import Error
 
@@ -349,3 +351,41 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def get_itinerari_richiesti(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_itinerari_richiesti')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    '''
+                    it_id, ora_inizio, ora_fine, utente, nome_fermata_partenza, lat_fermata_partenza, lon_fermata_partenza, 
+                    nome_fermata_arrivo, lat_fermata_arrivo, lon_fermata_arrivo
+                    '''
+                    if elem[1] is None:
+                        ret.append(OrderedDict({"it_id": elem[0], "ora_inizio": elem[2], "utente": elem[3], "starting_point": elem[4],
+                                    "start_lat": elem[5], "start_lon": elem[6], "ending_point": elem[7],
+                                    "ending_lat": elem[8], "ending_lon": elem[9]}))
+                    else:
+                        ret.append(OrderedDict({"it_id": elem[0], "ora_fine": elem[1], "utente": elem[3], "starting_point": elem[4],
+                                    "start_lat": elem[5], "start_lon": elem[6], "ending_point": elem[7],
+                                    "ending_lat": elem[8], "ending_lon": elem[9]}))
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_token ", e)
+                return []
+            finally:
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return []
+
+
+

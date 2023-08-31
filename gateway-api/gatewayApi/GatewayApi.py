@@ -1,6 +1,7 @@
 import random
 import time
 import xmlrpc.client
+from collections import OrderedDict
 
 import requests
 from flask import Flask, json, request, Response, jsonify
@@ -295,6 +296,17 @@ def get_bus_stops_api():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
     else:
         return Response(json.dumps({"status": "ok", "stop_list": ret}), status=200, mimetype='application/json')'''
+
+
+@api.route('/api/get_itinerari_richiesti', methods=['GET', 'POST'])
+def get_itinerari_richiesti():
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        ret = json.loads(proxy.get_itinerari_richiesti())
+    if ret['status'] == 'ok':
+        return Response(json.dumps(ret, sort_keys=False), status=200, mimetype='application/json')
+    else:
+        return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
+
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
