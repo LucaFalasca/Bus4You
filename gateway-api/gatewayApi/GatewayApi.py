@@ -257,21 +257,24 @@ def get_km_price_from_subroute():
 
 @api.route('/api/join_recommended_route', methods=['GET', 'POST'])
 def join_recommended_route():
-    route_id = request.args.get('route_id')
-    start_lat = request.args.get('start_lat')
-    start_lng = request.args.get('start_lng')
-    end_lat = request.args.get('end_lat')
-    end_lng = request.args.get('end_lng')
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
-    price = request.args.get('price')
-    distance = request.args.get('distance')
-    mail = request.args.get('user')
-    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
-                                           price, distance, mail)
-        print(ret)
-        return json.dumps(ret)
+    try:
+        route_id = request.args.get('route_id')
+        start_lat = request.args.get('start_lat')
+        start_lng = request.args.get('start_lng')
+        end_lat = request.args.get('end_lat')
+        end_lng = request.args.get('end_lng')
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        price = request.args.get('price')
+        distance = request.args.get('distance')
+        mail = request.args.get('user')
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
+                                            price, distance, mail)
+            print(ret)
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
 @api.route('/api/get_token', methods=['GET', 'POST'])
