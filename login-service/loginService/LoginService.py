@@ -50,9 +50,10 @@ def rpc_get_token():
     usr_db = UserDbDao()
     conn = usr_db.connect()
     token = usr_db.get_token(conn)
+    if conn is not None:
+        conn.close()
     if token is None:
         return {"status": "error"}
-    conn.close()
     return {"status": "ok", "token": token}
 
 
