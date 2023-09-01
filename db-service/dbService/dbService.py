@@ -24,6 +24,7 @@ def serve():
     server.register_function(get_total_km, 'get_total_km')
     server.register_function(join_recommended_route, 'join_recommended_route')
     server.register_function(get_itinerari_richiesti, 'get_itinerari_richiesti')
+    server.register_function(get_itinerari_proposti, 'get_itinerari_proposti')
     server.serve_forever()
 
 
@@ -192,6 +193,17 @@ def get_itinerari_richiesti():
     if len(res) == 0:
         return json.dumps({"status": "error"})
     return json.dumps({"status": "ok", "itinerari_richiesti_list": res})
+
+
+def get_itinerari_proposti():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.get_itinerari_proposti(conn)
+    if conn is not None:
+        conn.close()
+    if len(res) == 0:
+        return json.dumps({"status": "error"})
+    return json.dumps({"status": "ok", "itinerari_proposti_list": res})
 
 
 if __name__ == "__main__":

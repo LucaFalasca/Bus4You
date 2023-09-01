@@ -47,12 +47,14 @@ def route_from_map():
         time = request.args.get('time')
         print(user, starting_point, ending_point, date, start_or_finish, time, start_lat, start_lng, end_lat, end_lng)
         with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
-            result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
-                                        start_or_finish, time)
+            result = proxy.insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng,
+                                          date,
+                                          start_or_finish, time)
             print(result)
             return Response(json.dumps({"status": "ok", "it_req_id": result}), status=200, mimetype='application/json')
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
 
 def generate_dist_matrix(size, max_val):
     random.seed(time.time())
@@ -116,7 +118,6 @@ def get_bus_stops_rect():
         return Response(json.dumps({"status": "ok", "data": ret}), status=200, mimetype='application/json')
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
-    
 
 
 @api.route('/api/get_path', methods=['POST'])
@@ -249,12 +250,14 @@ def get_km_price_from_subroute():
         price = float(total_price) * weight + 0.3
 
         final_ret = {"price": round(price, 2),
-                    "distance": distance}
+                     "distance": distance}
         print(final_ret)
-        return Response(json.dumps({"status": "ok", "price": final_ret["price"], "distance": final_ret["distance"]}), status=200, mimetype='application/json')
+        return Response(json.dumps({"status": "ok", "price": final_ret["price"], "distance": final_ret["distance"]}),
+                        status=200, mimetype='application/json')
     except Exception as e:
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
 
 @api.route('/api/join_recommended_route', methods=['GET', 'POST'])
 def join_recommended_route():
@@ -271,7 +274,7 @@ def join_recommended_route():
         mail = request.args.get('user')
         with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
             ret = proxy.join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
-                                            price, distance, mail)
+                                               price, distance, mail)
             print(ret)
             return Response(json.dumps(ret), status=200, mimetype='application/json')
     except:
@@ -280,12 +283,15 @@ def join_recommended_route():
 
 @api.route('/api/get_token', methods=['GET', 'POST'])
 def get_token():
-    with xmlrpc.client.ServerProxy("http://login-service:8000/") as proxy:
-        ret = proxy.rpc_get_token()
-    if ret['status'] == 'ok':
-        return Response(json.dumps(ret), status=200, mimetype='application/json')
-    else:
-        return Response(json.dumps(ret), status=400, mimetype='application/json')
+    try:
+        with xmlrpc.client.ServerProxy("http://login-service:8000/") as proxy:
+            ret = proxy.rpc_get_token()
+        if ret['status'] == 'ok':
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps(ret), status=400, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
 '''@api.route('/api/get_bus_stops', methods=['GET', 'POST'])
@@ -300,12 +306,28 @@ def get_bus_stops_api():
 
 @api.route('/api/get_itinerari_richiesti', methods=['GET', 'POST'])
 def get_itinerari_richiesti():
-    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
-        ret = json.loads(proxy.get_itinerari_richiesti())
-    if ret['status'] == 'ok':
-        return Response(json.dumps(ret, sort_keys=False), status=200, mimetype='application/json')
-    else:
-        return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
+    try:
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            ret = json.loads(proxy.get_itinerari_richiesti())
+        if ret['status'] == 'ok':
+            return Response(json.dumps(ret, sort_keys=False), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
+@api.route('/api/get_itinerari_proposti', methods=['GET', 'POST'])
+def get_itinerari_proposti():
+    try:
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            ret = json.loads(proxy.get_itinerari_proposti())
+        if ret['status'] == 'ok':
+            return Response(json.dumps(ret, sort_keys=False), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
 if __name__ == '__main__':
