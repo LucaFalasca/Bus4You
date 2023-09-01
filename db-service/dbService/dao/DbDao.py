@@ -420,3 +420,31 @@ class DbDao:
         else:
             print("Connection with db failed")
             return []
+
+    @staticmethod
+    def get_routes(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_routes')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    '''
+                    route_id, expiration, archiviato, stato
+                    '''
+                    ret.append(OrderedDict(
+                        {"route_id": elem[0], "expiration": elem[1], "archiviato": elem[2], "stato": elem[3]}))
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_routes ", e)
+                return []
+            finally:
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return []

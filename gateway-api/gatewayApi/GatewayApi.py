@@ -330,5 +330,18 @@ def get_itinerari_proposti():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@api.route('/api/get_routes', methods=['GET', 'POST'])
+def get_routes():
+    try:
+        with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+            ret = json.loads(proxy.get_routes())
+        if ret['status'] == 'ok':
+            return Response(json.dumps(ret, sort_keys=False), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
