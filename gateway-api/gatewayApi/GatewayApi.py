@@ -341,6 +341,21 @@ def get_routes():
             return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+    
+@api.route('/api/make-route-raw', methods=['POST'])
+def make_route_raw():
+    try:
+        request_value = request.get_json()
+        dist_matrix = request_value["dist_matrix"]
+        prec_hash = request_value["prec_hash"]
+        node_limit = request_value["node_limit"]
+        user_routes = request_value["user_routes"]
+
+        with xmlrpc.client.ServerProxy("http://reccomend-service:8000/") as proxy:
+            ret = proxy.calculater_route(dist_matrix, prec_hash, node_limit, user_routes)
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
 if __name__ == '__main__':
