@@ -1,7 +1,8 @@
 import json
 import xmlrpc.server
+from circuitbreaker import circuit
 
-
+@circuit
 def get_future_confirmed_routes_by_db():
 
     with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:

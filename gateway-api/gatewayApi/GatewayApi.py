@@ -3,13 +3,14 @@ import time
 import xmlrpc.client
 import datetime
 from collections import OrderedDict
+from circuitbreaker import circuit
 
 import requests
 from flask import Flask, json, request, Response, jsonify
 
 api = Flask(__name__)
 
-
+@circuit
 @api.route('/api/login', methods=['GET'])
 def login():
     mail = request.args.get('usr')
@@ -18,7 +19,7 @@ def login():
         result = proxy.rpc_login(mail, password)
         return json.dumps(result)
 
-
+@circuit
 @api.route('/api/sign-up', methods=['GET'])
 def signUp():
     name = request.args.get('name')
@@ -31,7 +32,7 @@ def signUp():
         result = proxy.rpc_sign_up(name, surname, mail, password, birthdate, username)
         return json.dumps(result)
 
-
+@circuit
 @api.route('/api/route-from-map', methods=['GET'])
 def route_from_map():
     try:
@@ -71,7 +72,7 @@ def generate_dist_matrix(size, max_val):
         dist_matrix.append(row)
     return dist_matrix
 
-
+@circuit
 @api.route('/api/load_user_routes', methods=['GET'])
 def load_user_routes():
     mail = request.args.get('user')
@@ -85,7 +86,7 @@ def load_user_routes():
 
     return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_bus_stops', methods=['GET'])
 def get_bus_stops():
     ret = []
@@ -102,7 +103,7 @@ def get_bus_stops():
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/get_bus_stops_rect', methods=['GET'])
 def get_bus_stops_rect():
     try:
@@ -120,7 +121,7 @@ def get_bus_stops_rect():
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/get_path', methods=['POST'])
 def get_path():
     data = request.get_json()
@@ -143,7 +144,7 @@ def get_path():
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
 
-
+@circuit
 @api.route('/api/get_path_from_stops', methods=['POST'])
 def get_path_from_stops():
     stops = request.get_json()
@@ -162,7 +163,7 @@ def get_path_from_stops():
     final_ret = {"coordinates": coords_reversed, "stops": true_stops}
     return json.dumps(final_ret)
 
-
+@circuit
 @api.route('/api/confirm_it', methods=['GET'])
 def confirm_it():
     it_id = request.args.get('it_id')
@@ -171,7 +172,7 @@ def confirm_it():
         # print(ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/reject_it', methods=['GET'])
 def reject_it():
     it_id = request.args.get('it_id')
@@ -180,7 +181,7 @@ def reject_it():
         print(ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_retry_info', methods=['GET'])
 def get_retry_info():
     it_id = request.args.get('it_id')
@@ -189,7 +190,7 @@ def get_retry_info():
         # print(ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_user_balance', methods=['GET'])
 def get_user_balance():
     mail = request.args.get('user')
@@ -198,7 +199,7 @@ def get_user_balance():
         # print("Gateway balance",ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_future_confirmed_routes', methods=['GET'])
 def get_future_confirmed_routes():
     with xmlrpc.client.ServerProxy("http://reccomend-service:8000/") as proxy:
@@ -206,7 +207,7 @@ def get_future_confirmed_routes():
         print(ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_total_km', methods=['GET'])
 def get_total_km():
     route_id = request.args.get('route_id')
@@ -215,7 +216,7 @@ def get_total_km():
         print(ret)
         return json.dumps(ret)
 
-
+@circuit
 @api.route('/api/get_km_price_from_subroute', methods=['POST'])
 def get_km_price_from_subroute():
     try:
@@ -259,7 +260,7 @@ def get_km_price_from_subroute():
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/join_recommended_route', methods=['GET', 'POST'])
 def join_recommended_route():
     try:
@@ -281,7 +282,7 @@ def join_recommended_route():
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/get_token', methods=['GET', 'POST'])
 def get_token():
     try:
@@ -304,7 +305,7 @@ def get_bus_stops_api():
     else:
         return Response(json.dumps({"status": "ok", "stop_list": ret}), status=200, mimetype='application/json')'''
 
-
+@circuit
 @api.route('/api/get_itinerari_richiesti', methods=['GET', 'POST'])
 def get_itinerari_richiesti():
     try:
@@ -317,7 +318,7 @@ def get_itinerari_richiesti():
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/get_itinerari_proposti', methods=['GET', 'POST'])
 def get_itinerari_proposti():
     try:
@@ -330,7 +331,7 @@ def get_itinerari_proposti():
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
-
+@circuit
 @api.route('/api/get_routes', methods=['GET', 'POST'])
 def get_routes():
     try:
@@ -343,6 +344,7 @@ def get_routes():
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
     
+@circuit
 @api.route('/api/make-route-raw', methods=['POST'])
 def make_route_raw():
     try:
@@ -389,6 +391,7 @@ def make_route_raw():
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
+@circuit
 @api.route('/api/make-route', methods=['POST'])
 def make_route():
     try:

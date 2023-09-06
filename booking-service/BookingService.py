@@ -6,6 +6,7 @@ import xmlrpc.server
 
 import pika
 from neo4j._spatial import WGS84Point
+from circuitbreaker import circuit
 
 from Neo4jDAO_BS import *
 
@@ -166,7 +167,7 @@ def test_rabbitMq(channel):
     ]
     publish_message_on_queue(json.dumps(message), 'preparedRoutes1', channel)
 
-
+@circuit
 def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date, start_or_finish,
                    time):
     id_book = None
@@ -189,7 +190,7 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
     print("Funziono?")
     return it_id
 
-
+@circuit
 def json_to_route_info(json_input):
     print(json_input)
     order_list = []
@@ -272,7 +273,7 @@ def get_step_from_node_number(steps, node_number):
             return steps[i]
     return -1
 
-
+@circuit
 def propose_route_callback(ch, method, properties, body):
     json_return = json.loads(body.decode('utf-8'))
     print("Received prepared routes message: \n" + json.dumps(json_return))
