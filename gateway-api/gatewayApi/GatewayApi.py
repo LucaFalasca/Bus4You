@@ -377,7 +377,6 @@ def make_route_raw():
                 elif time > 1440:
                     step_json["date"] = str(date + datetime.timedelta(days=1))[0:10]
                     step_json["time"] = str(datetime.timedelta(minutes=time - 1440))
-                step_json["location"] = request_value["points_location"][str(step[0])][::-1]
                 steps.append(step_json)
             result_json["steps"] = steps
             result_json["travel_time"] = str(datetime.timedelta(minutes=round(float(result[0][1]), 0)))
@@ -390,6 +389,56 @@ def make_route_raw():
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
+@api.route('/api/make-route', methods=['POST'])
+def make_route():
+    try:
+        request_value = request.get_json()
+        print(request_value)
+        points_location = request_value["points_location"]
+        input_ors = [q[::-1] for q in list(points_location.values())]
+        with xmlrpc.client.ServerProxy("http://ors-dao:8000/", allow_none=True) as proxy:
+            dist_matrix = proxy.get_matrix(input_ors)
+        prec_hash = request_value["prec_hash"]
+        node_limit = request_value["node_limit"]
+        user_routes = request_value["user_routes"]
+        date_string = user_routes[0]["date"]
+        date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+        print(dist_matrix)
+        print(prec_hash)
+        print(node_limit)
+        print(user_routes)
+
+        with xmlrpc.client.ServerProxy("http://make-route-service:8000/", allow_none=True) as proxy:
+            result = proxy.calculate_route(dist_matrix, prec_hash, node_limit, user_routes)
+            result_json = {}
+            route = result[0][0]
+            steps = []
+            for step in route:
+                step_json = {}
+                step_json["id"] = step[0]
+                time = round(float(step[1]), 0)
+                if time > 0 and time < 1440:
+                    step_json["date"] = str(date)[0:10]
+                    step_json["time"] = str(datetime.timedelta(minutes=(time)))
+                elif time < 0:
+                    step_json["date"] = str(date + datetime.timedelta(days=-1))[0:10]
+                    step_json["time"] = str(datetime.timedelta(minutes=1440 + time))
+                elif time > 1440:
+                    step_json["date"] = str(date + datetime.timedelta(days=1))[0:10]
+                    step_json["time"] = str(datetime.timedelta(minutes=time - 1440))
+                step_json["location"] = request_value["points_location"][str(step[0])][::-1]
+                steps.append(step_json)
+            result_json["steps"] = steps
+            result_json["travel_time"] = str(datetime.timedelta(minutes=round(float(result[0][1]), 0)))
+            result_json["n_tardy"] = result[0][2]
+            result_json["mean_unacceptable_deviance"] = str(datetime.timedelta(minutes=round(result[0][3])))
+            result_json["users_travel_time"] = result[1]
+            result_json["user_routes"] = user_routes
+            return Response(json.dumps(result_json), status=200, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+    
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)
