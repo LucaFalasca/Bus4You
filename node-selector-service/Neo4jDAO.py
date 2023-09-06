@@ -1,5 +1,6 @@
 from datetime import time, datetime
 from datetime import time
+from random import random
 
 from neo4j import GraphDatabase
 
@@ -296,57 +297,7 @@ class Neo4jDAO:
         # Restituzione della lista di prenotazioni
         return bookings
 
-    def get_start_end_bookings_with_limit(self, booking_id, limit):
-        query = (
-            "MATCH (startNode:Booking) "
-            "WHERE id(startNode) = $booking_id "
-            "CALL apoc.path.spanningTree(startNode, { "
-            "  relationshipFilter: 'COMPATIBLE', "
-            "  labelFilter: 'Booking', "
-            " maxLevel: $limit, "
-            "  limit: $limit "
-            "}) "
-            "YIELD path "
-            "UNWIND nodes(path) AS bookingNode "
-            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
-            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
-            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
-            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
-            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
-        )
-        
-        with self.driver.session() as session:
-            print(1)
-            result = session.run(query, booking_id=booking_id, limit=limit)
-            print(2)
-            bookings = []
-            for record in result:
-                print(3)
-                print(record)
-                booking = {
-                    "id": record["b_id"],
-                    "date": record["b_day"],
-                    "name_start_stop": record["start_stop"],
-                    "name_end_stop": record["end_stop"],
-                    "position_start_stop": record["position_start_stop"],
-                    "position_end_stop": record["position_end_stop"],
-                    "it_id": record["it_id"],
-                    "user": record["user_name"],
-                    "type": record["b_type"]
-                }
-                print(3.5)
-                if record["b_type"] == "start":
-                    booking["hour"] = (record["b_hs"], None)
-                else:
-                    booking["hour"] = (None, record["b_he"])
-                    print(3.6)
-                bookings.append(booking)
-            print(4)
-            # Consuma tutti i record prima di restituire il risultato
-            result.consume()
-            print(5)
-        # Restituzione della lista di prenotazioni
-        return bookings
+
 
 
 
@@ -396,7 +347,110 @@ class Neo4jDAO:
         with self.driver.session() as session:
             session.run(query, booking_ids=booking_ids)
 
+    import json
 
+    def get_cluster_nodes_json(self, booking_id):
+        limit = 7  # Imposta il limite desiderato
+
+        query = (
+            "MATCH (startNode:Booking) "
+            "WHERE startNode.it_id = $booking_id "
+            "CALL apoc.path.spanningTree(startNode, { "
+            "  relationshipFilter: 'COMPATIBLE', "
+            "  labelFilter: 'Booking', "
+            "  maxLevel: $limit, "
+            "  limit: $limit "
+            "}) "
+            "YIELD path "
+            "UNWIND nodes(path) AS bookingNode "
+            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
+            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
+            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
+            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
+            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+            bookings = []
+            for record in result:
+                booking_id = record["b_id"]
+                compatible_bookings = session.run(
+                    "MATCH (booking:Booking)-[:COMPATIBLE]-(other:Booking) "
+                    "WHERE id(booking) = $booking_id "
+                    "RETURN id(other) as other_id, other.it_id as other_it_id",
+                    booking_id=booking_id
+                )
+                compatible_ids = [comp_record["other_it_id"] for comp_record in compatible_bookings]
+
+                booking = {
+                    "it_id": record["it_id"],
+                    "id_neo4j": booking_id,
+                    "date": record["b_day"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": str(record["position_start_stop"]),  # Converti in stringa
+                    "position_end_stop": str(record["position_end_stop"]),  # Converti in stringa
+                    "user": record["user_name"],
+                    "type": record["b_type"],
+                    "compatible_bookings": compatible_ids
+                }
+
+                if record["b_type"] == "start":
+                    booking["hour"] = (record["b_hs"], "None")
+                else:
+                    booking["hour"] = ("None", record["b_he"])
+
+                bookings.append(booking)
+
+        return bookings
+
+    def get_all_clusters_json(self):
+        # Ottieni tutti gli it_id dai nodi Booking nel database
+        with self.driver.session() as session:
+            result = session.run("MATCH (b:Booking) RETURN b.it_id AS it_id")
+            all_it_ids = [record["it_id"] for record in result]
+
+        # Inizializza un dizionario vuoto per i cluster
+        clusters = {}
+
+        # Il cluster_id serve per identificare i diversi cluster
+        cluster_id = 1
+
+        while all_it_ids:
+            # Preleva un it_id da all_it_ids
+            it_id = all_it_ids.pop()
+
+            # Ottieni il cluster per l'it_id corrente
+            cluster = self.get_cluster_nodes_json(it_id)
+
+            # Aggiungi il cluster al dizionario dei cluster
+            clusters[f"cluster {cluster_id}"] = cluster
+
+            # Incrementa l'identificativo del cluster
+            cluster_id += 1
+
+            # Rimuovi tutti gli it_id nel cluster corrente da all_it_ids
+            cluster_it_ids = [booking["it_id"] for booking in cluster]
+            all_it_ids = [it_id for it_id in all_it_ids if it_id not in cluster_it_ids]
+
+        # Ritorna il dizionario dei cluster
+        return clusters
+
+    import json
+    import random
+
+    import json
+    import random
+
+    def get_random_cluster_json(self):
+        # Ottieni un booking it_id casuale
+        random_booking_it_id = self.get_random_booking_it_id()
+
+        # Ottieni il cluster di nodi a partire dal booking it_id casuale
+        cluster_nodes = self.get_cluster_nodes_json(random_booking_it_id)
+
+        return cluster_nodes
 
     '''def get_person_by_name(self, name):
         with self.driver.session() as session:
