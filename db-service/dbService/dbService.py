@@ -23,6 +23,9 @@ def serve():
     server.register_function(get_stop_name_from_coords, 'get_stop_name_from_coords')
     server.register_function(get_total_km, 'get_total_km')
     server.register_function(join_recommended_route, 'join_recommended_route')
+    server.register_function(get_itinerari_richiesti, 'get_itinerari_richiesti')
+    server.register_function(get_itinerari_proposti, 'get_itinerari_proposti')
+    server.register_function(get_routes, 'get_routes')
     server.serve_forever()
 
 
@@ -124,6 +127,8 @@ orario(DATETIME), costo_max(DECIMAL(6,2)), mail_utente(VARCHAR(128)), fermata_la
 fermata_lon_partenza(DECIMAL(8,6)), fermata_lat_arrivo(DECIMAL(8,6)), fermata_lon_arrivo(DECIMAL(8,6)), 
 isStartHour(BOOLEAN) 0 se è orario di arrivo, 1 se è orario di partenza
 '''
+
+
 def insert_it_req(orario, costo_max, mail, fermata_lat_partenza, fermata_lon_partenza, fermata_lat_arrivo,
                   fermata_lon_arrivo, is_start_hour):
     usr_db = DbDao()
@@ -168,16 +173,49 @@ def get_total_km(route_id):
 
 
 def join_recommended_route(route_id, start_lat, start_lng, end_lat, end_lng, start_date, end_date,
-                                           price, distance, mail):
+                           price, distance, mail):
     usr_db = DbDao()
     conn = usr_db.connect()
     res = usr_db.join_recommended_route(conn, route_id, start_lat, start_lng, end_lat, end_lng, start_date,
-                                             end_date, price, distance, mail)
+                                        end_date, price, distance, mail)
     conn.close()
     if res == 0:
         return {"status": "ok"}
     else:
         return {"status": "error"}
+
+
+def get_itinerari_richiesti():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.get_itinerari_richiesti(conn)
+    if conn is not None:
+        conn.close()
+    if len(res) == 0:
+        return json.dumps({"status": "error"})
+    return json.dumps({"status": "ok", "itinerari_richiesti_list": res})
+
+
+def get_itinerari_proposti():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.get_itinerari_proposti(conn)
+    if conn is not None:
+        conn.close()
+    if len(res) == 0:
+        return json.dumps({"status": "error"})
+    return json.dumps({"status": "ok", "itinerari_proposti_list": res})
+
+
+def get_routes():
+    usr_db = DbDao()
+    conn = usr_db.connect()
+    res = usr_db.get_routes(conn)
+    if conn is not None:
+        conn.close()
+    if len(res) == 0:
+        return json.dumps({"status": "error"})
+    return json.dumps({"status": "ok", "route_list": res})
 
 
 if __name__ == "__main__":
@@ -186,5 +224,5 @@ if __name__ == "__main__":
                 41.654548, 12.427688], [10.5, 20.52, "2023-05-05 12:00:00", "2023-05-05 12:30:00", "prova@gmail.com",
                                         2, 41.648593, 12.431090, 41.654548, 12.427688]]
     insert_route_info("2023-07-11 19:28:00", order_list, it_list)'''
-    #print(get_future_confirmed_routes())
+    # print(get_future_confirmed_routes())
     serve()

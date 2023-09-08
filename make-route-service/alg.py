@@ -159,10 +159,12 @@ def topological_sort(graph):
 # Input: matrice delle distanze, dizionario delle precedenze, dizionario dei limiti di tempo, dizionario delle rotte degli utenti
 # Output: tupla contenente la rotta migliore e il dizionario dei tempi di percorrenza degli utenti
 def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
+    print("Starting route calculation")
     node_list = list(map(int, prec_hash.keys()))
     remove_duplicates(node_list)
     route = topological_sort(prec_hash)
     result = two_opt_multistart(route, dist_matrix, prec_hash, node_limit, 1)
+    print("Result: " + str(result))
     if result == None:
         return None
     else:
@@ -170,8 +172,9 @@ def calculate_route(dist_matrix, prec_hash, node_limit, user_routes):
         user_travel_time = {}
         ruote_dict = {tup[0]: tup[1] for tup in final_ruote}
         for route in user_routes:
-            user_travel_time[route["it_id"]] = str(datetime.timedelta(
+            user_travel_time[str(route["it_id"])] = str(datetime.timedelta(
                 minutes=round((float(ruote_dict[route["nodes"][1]]) - float(ruote_dict[route["nodes"][0]])), 0)))
+        print(result, user_travel_time)
         return result, user_travel_time
 
 
@@ -230,7 +233,7 @@ def rabbitMQThreadConsumer():
 
 
 def serverRPCThread():
-    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
+    server = xmlrpc.server.SimpleXMLRPCServer(('', 8000), allow_none=True)
     print("Server RPC is ON on port 8000")
 
     server.register_function(calculate_route, "calculate_route")

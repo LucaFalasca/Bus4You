@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import mysql.connector
 from mysql.connector import Error
 
@@ -33,17 +35,22 @@ class DbDao:
         if conn is not None:
             print("Connection with db successful")
             curs = conn.cursor()
-            curs.callproc('get_stops')
-            conn.commit()
-            for result in curs.stored_results():
-                res = result.fetchall()
-            curs.close()
-            for elem in res:
-                ret.append([elem[0], elem[1], elem[2]])
-            return ret
+            try:
+                curs.callproc('get_stops')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    ret.append([elem[0], elem[1], elem[2]])
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_token ", e)
+                return []
+            finally:
+                curs.close()
         else:
             print("Connection with db failed")
-            return -1
+            return []
 
     @staticmethod
     def stop_query_rect(conn, x, y, height, width):
@@ -344,3 +351,100 @@ class DbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def get_itinerari_richiesti(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_itinerari_richiesti')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    '''
+                    it_id, ora_inizio, ora_fine, utente, nome_fermata_partenza, lat_fermata_partenza, lon_fermata_partenza, 
+                    nome_fermata_arrivo, lat_fermata_arrivo, lon_fermata_arrivo
+                    '''
+                    if elem[1] is None:
+                        ret.append(OrderedDict(
+                            {"it_id": elem[0], "ora_fine": elem[2], "utente": elem[3], "starting_point": elem[4],
+                             "start_lat": elem[5], "start_lon": elem[6], "ending_point": elem[7],
+                             "ending_lat": elem[8], "ending_lon": elem[9]}))
+                    else:
+                        ret.append(OrderedDict(
+                            {"it_id": elem[0], "ora_inizio": elem[1], "utente": elem[3], "starting_point": elem[4],
+                             "start_lat": elem[5], "start_lon": elem[6], "ending_point": elem[7],
+                             "ending_lat": elem[8], "ending_lon": elem[9]}))
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_itinerari_richiesti ", e)
+                return []
+            finally:
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return []
+
+    @staticmethod
+    def get_itinerari_proposti(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_itinerari_proposti')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    '''
+                    it_id, start_datetime, end_datetime, cost, distance, state, it_req_id, route_id, utente, 
+                    starting_point, start_lat, start_lon, ending_point, end_lat,  end_lon
+                    '''
+                    ret.append(OrderedDict(
+                        {"it_id": elem[0], "ora_inizio": elem[1], "ora_fine": elem[2], "costo": elem[3],
+                         "distanza": elem[4], "stato": elem[5], "it_req_id": elem[6], "route_id": elem[7],
+                         "utente": elem[8], "starting_point": elem[9], "start_lat": elem[10], "start_lon": elem[11],
+                         "ending_point": elem[12], "ending_lat": elem[13], "ending_lon": elem[14]}))
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_itinerari_proposti ", e)
+                return []
+            finally:
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return []
+
+    @staticmethod
+    def get_routes(conn):
+        ret = []
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_routes')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                for elem in res:
+                    '''
+                    route_id, expiration, archiviato, stato
+                    '''
+                    ret.append(OrderedDict(
+                        {"route_id": elem[0], "expiration": elem[1], "archiviato": elem[2], "stato": elem[3]}))
+                return ret
+            except mysql.connector.Error as e:
+                print("Error while calling get_routes ", e)
+                return []
+            finally:
+                curs.close()
+        else:
+            print("Connection with db failed")
+            return []

@@ -33,7 +33,7 @@ def login():
             session['logged'] = True
             session['usr'] = mail.split('@')[0]
             session['mail'] = mail
-            session['token'] = response['token']
+            #session['token'] = response['token']
             return redirect(url_for('request_route'))
         else:
             flash('Login failed incorrect mail or password', category='info')
@@ -97,7 +97,7 @@ def request_route():
     print(end_lat)
     print(end_lng)
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops'
-    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()["stop_list"]
 
     if starting_point is None or ending_point is None or date is None or start_or_finish is None or time is None \
             or start_lat is None or start_lng is None or end_lat is None or end_lng is None:
@@ -109,7 +109,10 @@ def request_route():
     else:
         gateway_request_route_url = 'http://gateway-api:50052/api/route-from-map?user=' + mail + '&starting_point=' + starting_point + '&start_lat=' + start_lat + '&start_lng=' + start_lng + '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
         print(gateway_request_route_url)
-        response = requests.get(gateway_request_route_url).json()
+        status = requests.get(gateway_request_route_url).json()["status"]
+        response = False
+        if status == 'ok':
+            response = True
         session['user_routes'] = response
         return render_template("select_route_from_map.html", bus_stops=bus_stops, response=response)
 
@@ -140,7 +143,7 @@ def get_stops_rect():
     gateway_get_bus_stops_url = 'http://gateway-api:50052/api/get_bus_stops_rect?x=' + x + '&y=' + y + '&height=' + height + '&width=' + width
     print(gateway_get_bus_stops_url)
     # print(requests.get(gateway_get_bus_stops_url))
-    bus_stops = requests.get(gateway_get_bus_stops_url).json()
+    bus_stops = requests.get(gateway_get_bus_stops_url).json()["data"]
     return jsonify(result=bus_stops)
 
 
@@ -258,7 +261,7 @@ def reject_book():
                                         '&ending_point=' + ending_point + '&end_lat=' + end_lat + '&end_lng=' + end_lng + \
                                         '&date=' + date + '&start-finish=' + start_or_finish + '&time=' + time
             print(gateway_request_route_url)
-            response = requests.get(gateway_request_route_url).json()
+            response = requests.get(gateway_request_route_url).json()["data"]
             session['user_routes'] = response
             flash("Book requeued correctly", category='info')
 

@@ -63,3 +63,25 @@ class UserDbDao:
         else:
             print("Connection with db failed")
             return -1
+
+    @staticmethod
+    def get_token(conn):
+        res = None
+        if conn is not None:
+            print("Connection with db successful")
+            curs = conn.cursor()
+            try:
+                curs.callproc('get_token')
+                conn.commit()
+                for result in curs.stored_results():
+                    res = result.fetchall()
+                return res[0][0]
+            except mysql.connector.errors.DatabaseError as e:
+                print("Error while calling get_token ", e)
+                return None
+            finally:
+                curs.close()
+
+        else:
+            print("Connection with db failed")
+            return None
