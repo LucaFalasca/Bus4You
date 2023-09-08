@@ -3,6 +3,7 @@ import time
 import xmlrpc.client
 import datetime
 from collections import OrderedDict
+from circuitbreaker import circuit
 
 import requests
 from flask import Flask, json, request, Response, jsonify
@@ -10,6 +11,7 @@ from flask import Flask, json, request, Response, jsonify
 api = Flask(__name__)
 
 
+@circuit
 @api.route('/api/login', methods=['GET'])
 def login():
     mail = request.args.get('usr')
@@ -121,6 +123,7 @@ def get_bus_stops_rect():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@circuit
 @api.route('/api/get_path', methods=['POST'])
 def get_path():
     data = request.get_json()
@@ -144,6 +147,7 @@ def get_path():
     return json.dumps(final_ret)
 
 
+@circuit
 @api.route('/api/get_path_from_stops', methods=['POST'])
 def get_path_from_stops():
     stops = request.get_json()
@@ -163,6 +167,7 @@ def get_path_from_stops():
     return json.dumps(final_ret)
 
 
+@circuit
 @api.route('/api/confirm_it', methods=['GET'])
 def confirm_it():
     it_id = request.args.get('it_id')
@@ -172,6 +177,7 @@ def confirm_it():
         return json.dumps(ret)
 
 
+@circuit
 @api.route('/api/reject_it', methods=['GET'])
 def reject_it():
     it_id = request.args.get('it_id')
@@ -181,6 +187,7 @@ def reject_it():
         return json.dumps(ret)
 
 
+@circuit
 @api.route('/api/get_retry_info', methods=['GET'])
 def get_retry_info():
     it_id = request.args.get('it_id')
@@ -260,6 +267,7 @@ def get_km_price_from_subroute():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@circuit
 @api.route('/api/join_recommended_route', methods=['GET', 'POST'])
 def join_recommended_route():
     try:
@@ -305,6 +313,7 @@ def get_bus_stops_api():
         return Response(json.dumps({"status": "ok", "stop_list": ret}), status=200, mimetype='application/json')'''
 
 
+@circuit
 @api.route('/api/get_itinerari_richiesti', methods=['GET', 'POST'])
 def get_itinerari_richiesti():
     try:
@@ -318,6 +327,7 @@ def get_itinerari_richiesti():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@circuit
 @api.route('/api/get_itinerari_proposti', methods=['GET', 'POST'])
 def get_itinerari_proposti():
     try:
@@ -331,6 +341,7 @@ def get_itinerari_proposti():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@circuit
 @api.route('/api/get_routes', methods=['GET', 'POST'])
 def get_routes():
     try:
@@ -342,7 +353,9 @@ def get_routes():
             return Response(json.dumps(ret, sort_keys=False), status=400, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
-    
+
+
+@circuit
 @api.route('/api/make-route-raw', methods=['POST'])
 def make_route_raw():
     try:
@@ -389,6 +402,8 @@ def make_route_raw():
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
+
+@circuit
 @api.route('/api/make-route', methods=['POST'])
 def make_route():
     try:
@@ -439,10 +454,24 @@ def make_route():
         print(e)
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
+
 @api.route('/api/get_random_cluster_from_it_id', methods=['GET'])
 def get_random_cluster_from_it_id():
     try:
         it_id = request.args.get('it_id')
+
+@circuit
+@api.route('/api/get_recommended_routes', methods=['POST', 'GET'])
+def get_recommended_routes():
+    try:
+        with xmlrpc.client.ServerProxy("http://reccomend-service:8000/", allow_none=True) as proxy:
+            result = proxy.get_future_confirmed_routes()
+        res = {"status": "ok", "recommended-routes-list":json.loads(result)}
+        return Response(json.dumps(res, sort_keys=False), status=200, mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
 
         with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
             ret = proxy.get_random_cluster_from_it_id(it_id)
