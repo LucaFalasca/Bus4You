@@ -478,5 +478,42 @@ def get_recommended_routes():
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 
+@circuit
+@api.route('/api/get_random_cluster_from_it_id', methods=['GET'])
+def get_random_cluster_from_it_id():
+    try:
+        it_id = request.args.get('it_id')
+
+        with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
+            ret = proxy.get_random_cluster_from_it_id(it_id)
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
+@circuit
+@api.route('/api/get_all_clusters', methods=['GET'])
+def get_all_clusters():
+    try:
+
+        with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
+            ret = proxy.get_all_clusters()
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
+@circuit
+@api.route('/api/get_random_cluster', methods=['GET'])
+def get_random_cluster():
+    try:
+
+        with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
+            ret = proxy.get_random_cluster()
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)

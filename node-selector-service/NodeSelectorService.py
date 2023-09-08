@@ -240,7 +240,32 @@ def serverRPCThread():
     print("Server RPC is ON on port 8000")
 
     server.register_function(send_nodes_for_computation, "send_nodes_for_computation")
+    server.register_function(get_random_cluster_from_it_id, "get_random_cluster_from_it_id")
+    server.register_function(get_all_clusters, "get_all_clusters")
+    server.register_function(get_random_cluster, "get_random_cluster")  # Registra il metodo get_random_cluster
     server.serve_forever()
+
+
+def get_random_cluster_from_it_id(it_id):
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    ret = dao.get_cluster_nodes_json(int(it_id))
+    dao.close()
+    return ret
+
+
+def get_all_clusters():
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    ret = dao.get_all_clusters_json()
+    dao.close()
+    return ret
+
+
+def get_random_cluster():
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    ret = dao.get_random_cluster_json()
+    print(ret)
+    dao.close()
+    return ret
 
 
 if __name__ == "__main__":
