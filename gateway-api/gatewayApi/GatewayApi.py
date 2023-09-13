@@ -514,6 +514,14 @@ def get_random_cluster():
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
+@api.route('/api/get_bus_status', methods=['GET'])
+def get_bus_status():
+    try:
+        smart_gc_url = "https://webapp.smartcity.uniupo.click/api/riempimenti/" + str(request.args.get('bus_id'))
+        status = requests.get(smart_gc_url).json()
+        return Response(json.dumps(status), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
 
 if __name__ == '__main__':
     api.run(debug=True, host='0.0.0.0', port=50052)

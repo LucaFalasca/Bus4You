@@ -359,6 +359,25 @@ def join_recommended_route():
 
     return redirect(url_for('load_recomended_routes_page'))
 
+@app.route('/bus_status', methods=['GET'])
+def bus_status():
+    #smart_gc_url = "https://webapp.smartcity.uniupo.click/api/zone/"
+    #buses = requests.get(smart_gc_url).json()
+    buses = [{
+        "zona": "916",
+        "numero": 7,
+        "coordinate": [41.895122, 12.566986],
+        "ricarica_residua": 52
+    },
+    {
+        "zona": "1024",
+        "numero": 2,
+        "coordinate": [41.895122, 12.502441],
+        "ricarica_residua": 74
+    }
+    ]
+    return render_template("bus_status.html", buses=buses)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
