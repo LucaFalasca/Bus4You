@@ -103,7 +103,7 @@ services:
     build: ./gateway-api
     container_name: gateway-api
     ports:
-      - "50052:50052"
+      - "80:50052"
     volumes:
       - ./gateway-api:/app
 
