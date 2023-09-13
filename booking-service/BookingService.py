@@ -88,6 +88,29 @@ def create_booking_type_end(it_id, username, name_start_stop, name_end_stop, dat
     return booking_id
 
 
+def create_booking_type_waste(username, name_start_stop, name_end_stop, date, hour_end,
+                            position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y, waste):
+    position_start_stop = WGS84Point((position_start_stop_X, position_start_stop_Y))
+    position_end_stop = WGS84Point((position_end_stop_X, position_end_stop_Y))
+
+    # get ID's, and create if not exists
+    user_id = dao.create_user(username)
+    stop_id_1 = dao.create_stop(name_start_stop, position_start_stop)
+    stop_id_2 = dao.create_end_stop(name_end_stop, position_end_stop)
+    booking_id = dao.create_booking_type_waste(username, name_start_stop, name_end_stop, date, hour_end,
+                                             position_start_stop, position_end_stop, waste)
+    dao.connect_booking_to_stop(booking_id, user_id, stop_id_1, stop_id_2)
+    print("BOOKING_ID_PERA" + str(booking_id))
+
+    if dao.search_for_compatibility_type_1(booking_id):
+        dao.get_compatible_time_bookings(booking_id)
+    if dao.search_for_compatibility_type_2(booking_id):
+        dao.get_compatible_time_bookings(booking_id)
+    if dao.search_for_compatibility_type_3(booking_id):
+        dao.get_compatible_time_bookings(booking_id)
+    return booking_id
+
+
 def create_booking_type_start(it_id, username, name_start_stop, name_end_stop, date, hour_start,
                               position_start_stop_X, position_start_stop_Y, position_end_stop_X, position_end_stop_Y):
 
@@ -189,6 +212,16 @@ def insert_booking(user, starting_point, start_lat, start_lng, ending_point, end
             print("ho fatto la richiesta rpc")
     print("Funziono?")
     return it_id
+
+
+@circuit
+def insert_waste_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng, date,
+                   time, waste):
+    id_book = None
+
+    with xmlrpc.client.ServerProxy("http://db-service:8000/") as proxy:
+        id_book = create_booking_type_waste(user, starting_point, ending_point, date, time, start_lat, start_lng, end_lat, end_lng, waste)
+    return id_book
 
 @circuit
 def json_to_route_info(json_input):
@@ -308,6 +341,7 @@ def serverRPCThread():
     server = xmlrpc.server.SimpleXMLRPCServer(('', 8000))
     print("Server RPC is ON on port 8000")
     server.register_function(insert_booking, "insert_booking")
+    server.register_function(insert_waste_booking, "insert_waste_booking")
     server.serve_forever()
 
 
@@ -333,6 +367,11 @@ if __name__ == "__main__":
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     #some_calls()
     #print(dao.get_start_end_bookings_with_limit(8,10))
+    create_booking_type_waste("SmartCG","Garbage Start", "Deposit Point", "2023-07-23" , "23:59",  41.9014, 12.5005, 42.9014, 13.5005, "L")
+    create_booking_type_waste("SmartCG","Garbage Start 2", "Deposit Point", "2023-07-23" , "23:59",  41.9014, 12.5005, 42.9014, 13.5005, "L")
+    create_booking_type_waste("SmartCG","Garbage Start 3", "Deposit Point", "2023-07-23" , "23:59",  41.9014, 12.5005, 42.9014, 13.5005, "L")
+    insert_waste_booking("SmartCG","Garbage Start 4",  42.9014, 13.5005, "Deposit Point", 42.9014, 13.5005, "2023-07-23", "23:59", "L")
+
     dao.close()
 
 

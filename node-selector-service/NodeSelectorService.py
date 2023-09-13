@@ -242,6 +242,7 @@ def serverRPCThread():
     server.register_function(send_nodes_for_computation, "send_nodes_for_computation")
     server.register_function(get_random_cluster_from_it_id, "get_random_cluster_from_it_id")
     server.register_function(get_all_clusters, "get_all_clusters")
+    server.register_function(get_all_clusters_waste, "get_all_clusters_waste")
     server.register_function(get_random_cluster, "get_random_cluster")  # Registra il metodo get_random_cluster
     server.serve_forever()
 
@@ -257,6 +258,12 @@ def get_all_clusters():
     dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
     ret = dao.get_all_clusters_json()
     dao.close()
+    return ret
+
+
+def get_all_clusters_waste():
+    dao = Neo4jDAO("neo4j://neo4jDb:7687", "neo4j", "123456789")
+    ret = dao.get_all_clusters_waste_json()
     return ret
 
 

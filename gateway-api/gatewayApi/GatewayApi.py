@@ -504,6 +504,18 @@ def get_all_clusters():
 
 
 @circuit
+@api.route('/api/get_all_clusters_waste', methods=['GET'])
+def get_all_clusters_waste():
+
+
+        with xmlrpc.client.ServerProxy("http://node-selector-service:8000/") as proxy:
+            ret = proxy.get_all_clusters_waste()
+            print(ret)
+            return Response(json.dumps(ret), status=200, mimetype='application/json')
+
+
+
+@circuit
 @api.route('/api/get_random_cluster', methods=['GET'])
 def get_random_cluster():
     try:
@@ -513,6 +525,28 @@ def get_random_cluster():
             return Response(json.dumps(ret), status=200, mimetype='application/json')
     except:
         return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
+
+@circuit
+@api.route('/api/insert_waste_booking', methods=['GET'])
+def insert_waste_booking():
+    try:
+        user = request.args.get('user')
+        starting_point = request.args.get('starting_point')
+        start_lat = request.args.get('start_lat')
+        start_lng = request.args.get('start_lng')
+        ending_point = request.args.get('ending_point')
+        end_lat = request.args.get('end_lat')
+        end_lng = request.args.get('end_lng')
+        date = request.args.get('date')
+        with xmlrpc.client.ServerProxy("http://booking_service:8000/") as proxy:
+            result = proxy.insert_waste_booking(user, starting_point, start_lat, start_lng, ending_point, end_lat, end_lng,
+                                          date, "23:59", "L")
+            print(result)
+            return Response(json.dumps({"status": "ok", "it_req_id": result}), status=200, mimetype='application/json')
+    except:
+        return Response(json.dumps({"status": "error"}), status=400, mimetype='application/json')
+
 
 
 if __name__ == '__main__':

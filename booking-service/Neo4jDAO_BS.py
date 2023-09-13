@@ -72,6 +72,28 @@ class Neo4jDAO:
             booking_id = result.single()[0]
         return booking_id
 
+    def create_booking_type_waste(self, username, name_start_stop, name_end_stop, date, hour_end, position_start_stop,
+                                  position_end_stop, waste):
+        with self.driver.session() as session:
+            result = session.run(
+                "MERGE (b:Booking {name_start_stop: $name_start_stop, type: 'end', name_end_stop: $name_end_stop, date: $date,"
+                "hour_end: $hour_end, position_start_stop: $position_start_stop,"
+                "position_end_stop: $position_end_stop, waste: $waste})"
+                "RETURN id(b)",
+                name_start_stop=name_start_stop, name_end_stop=name_end_stop, date=date,
+                hour_end=hour_end, position_start_stop=position_start_stop, position_end_stop=position_end_stop,
+                waste=waste
+            )
+            booking_id = result.single()[0]
+
+            # Aggiunta attributo it_id al nodo appena creato
+            session.run(
+                "MATCH (b:Booking) WHERE id(b) = $booking_id SET b.it_id = $booking_id",
+                booking_id=booking_id
+            )
+
+        return booking_id
+
 
     def connect_booking_to_stop(self, booking_id, username_id, start_stop_id, end_stop_id):
         with self.driver.session() as session:

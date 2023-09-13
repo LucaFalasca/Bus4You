@@ -503,6 +503,96 @@ class Neo4jDAO:
         # Ritorna il dizionario dei cluster
         return clusters
 
+    def get_cluster_nodes_waste_json(self, booking_id):
+        print("Ciao Mondo 3")
+        limit = 7  # Imposta il limite desiderato
+
+        query = (
+            "MATCH (startNode:Booking) "
+            "WHERE startNode.it_id = $booking_id "
+            "CALL apoc.path.spanningTree(startNode, { "
+            "  relationshipFilter: 'COMPATIBLE', "
+            "  labelFilter: 'Booking', "
+            "  maxLevel: $limit, "
+            "  limit: $limit "
+            "}) "
+            "YIELD path "
+            "UNWIND nodes(path) AS bookingNode "
+            "OPTIONAL MATCH (bookingNode)<-[:BOOKS]-(user:User) "
+            "RETURN DISTINCT id(bookingNode) AS b_id, bookingNode.hour_start AS b_hs, bookingNode.hour_end AS b_he, "
+            "bookingNode.date AS b_day, bookingNode.name_start_stop AS start_stop, bookingNode.name_end_stop AS end_stop, "
+            "bookingNode.position_end_stop AS position_end_stop, bookingNode.position_start_stop AS position_start_stop, "
+            "bookingNode.type AS b_type, bookingNode.it_id AS it_id, user.name AS user_name, bookingNode.waste AS waste"
+        )
+
+        with self.driver.session() as session:
+            result = session.run(query, booking_id=booking_id, limit=limit)
+            bookings = []
+            for record in result:
+                booking_id = record["b_id"]
+                compatible_bookings = session.run(
+                    "MATCH (booking:Booking)-[:COMPATIBLE]-(other:Booking) "
+                    "WHERE id(booking) = $booking_id "
+                    "RETURN id(other) as other_id, other.it_id as other_it_id",
+                    booking_id=booking_id
+                )
+                compatible_ids = [comp_record["other_it_id"] for comp_record in compatible_bookings]
+
+                booking = {
+                    "it_id": record["it_id"],
+                    "id_neo4j": booking_id,
+                    "date": record["b_day"],
+                    "name_start_stop": record["start_stop"],
+                    "name_end_stop": record["end_stop"],
+                    "position_start_stop": str(record["position_start_stop"]),  # Converti in stringa
+                    "position_end_stop": str(record["position_end_stop"]),  # Converti in stringa
+                    "user": record["user_name"],
+                    "type": record["b_type"],
+                    "waste": record["waste"],
+                    "compatible_bookings": compatible_ids
+                }
+
+                if record["b_type"] == "start":
+                    booking["hour"] = (record["b_hs"], "None")
+                else:
+                    booking["hour"] = ("None", record["b_he"])
+
+                bookings.append(booking)
+
+        return bookings
+    def get_all_clusters_waste_json(self):
+        # Ottieni tutti gli it_id dai nodi Booking nel database
+        with self.driver.session() as session:
+            result = session.run("MATCH (b:Booking) RETURN b.it_id AS it_id")
+            all_it_ids = [record["it_id"] for record in result]
+
+        # Inizializza un dizionario vuoto per i cluster
+        clusters = {}
+
+        # Il cluster_id serve per identificare i diversi cluster
+        cluster_id = 1
+
+        while all_it_ids:
+            # Preleva un it_id da all_it_ids
+            it_id = all_it_ids.pop()
+
+            # Ottieni il cluster per l'it_id corrente
+            cluster = self.get_cluster_nodes_waste_json(it_id)
+
+            # Aggiungi il cluster al dizionario dei cluster
+            clusters[f"cluster {cluster_id}"] = cluster
+
+            # Incrementa l'identificativo del cluster
+            cluster_id += 1
+
+            # Rimuovi tutti gli it_id nel cluster corrente da all_it_ids
+            cluster_it_ids = [booking["it_id"] for booking in cluster]
+            all_it_ids = [it_id for it_id in all_it_ids if it_id not in cluster_it_ids]
+
+        # Ritorna il dizionario dei cluster
+        return clusters
+
+
     import json
     import random
 
